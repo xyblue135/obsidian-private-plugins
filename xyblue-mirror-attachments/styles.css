@@ -1,4 +1,9 @@
-/* Mirror Attachments UI */
+/*
+ * xyblue 私人 · 附件镜像
+ * 类型：xyblue 私人插件（非公共发布版）
+ * 说明：用户可见文案与维护注释已中文化；内部插件 ID 与 data.json 保持不变，以兼容原有设置和数据。
+ */
+/* xyblue 私人 · 附件镜像：设置界面样式 */
 .mirror-attachments-conflict-modal {
   min-width: min(520px, 90vw);
 }

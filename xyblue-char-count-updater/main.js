@@ -1,3 +1,8 @@
+/*
+ * xyblue 私人 · 字数与 Token 统计
+ * 类型：xyblue 私人插件（非公共发布版）
+ * 说明：用户可见文案与维护注释已中文化；内部插件 ID 与 data.json 保持不变，以兼容原有设置和数据。
+ */
 "use strict";
 
 const {
@@ -522,7 +527,7 @@ class CharCountSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl("h2", { text: "Char Count Updater 设置" });
+    containerEl.createEl("h2", { text: "xyblue 私人 · 字数与 Token 统计" });
     containerEl.createEl("p", {
       text: "插件只修改 YAML 中已经存在的 char_count、token_count 字段，绝不会创建字段或 frontmatter。",
       cls: "setting-item-description",

@@ -1,3 +1,8 @@
+/*
+ * xyblue 私人 · 图片缩放与相框
+ * 类型：xyblue 私人插件（非公共发布版）
+ * 说明：用户可见文案与维护注释已中文化；内部插件 ID 与 data.json 保持不变，以兼容原有设置和数据。
+ */
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const obsidian_1 = require("obsidian");

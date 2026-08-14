@@ -1,3 +1,8 @@
+/*
+ * xyblue 私人 · AI 元数据
+ * 类型：xyblue 私人插件（非公共发布版）
+ * 说明：用户可见文案与维护注释已中文化；内部插件 ID 与 data.json 保持不变，以兼容原有设置和数据。
+ */
 .metadata-property.ai-metadata-enabled-row {
   position: relative;
   padding-right: 34px;
@@ -89,7 +94,7 @@
   display: none;
 }
 
-/* v0.4.4 pending-notes / folder sync dashboard */
+/* v0.4.4 待更新笔记 / 文件夹同步面板 */
 .ai-metadata-pending-modal {
   width: min(920px, 92vw);
   max-width: 920px;
@@ -342,7 +347,7 @@
   word-break: break-word;
 }
 
-/* v0.4.6 Obsidian-style expandable folder tree */
+/* v0.4.6 Obsidian 风格可展开文件夹树 */
 .ai-metadata-tree-modal {
   width: min(980px, 94vw);
   max-width: 980px;
@@ -544,7 +549,7 @@
   }
 }
 
-/* v0.5.0 stoppable folder recognition */
+/* v0.5.0 可停止的文件夹识别 */
 .ai-metadata-tree-stop {
   flex: none;
   min-height: 26px;
@@ -561,7 +566,7 @@
   background: var(--background-modifier-error-hover);
 }
 
-/* v0.5.3 settings refresh */
+/* v0.5.3 设置页刷新 */
 .ai-metadata-settings-panel {
   --ai-meta-card-gap: 14px;
   padding-bottom: 28px;

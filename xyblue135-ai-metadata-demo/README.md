@@ -6,9 +6,12 @@
 - 设置页改为卡片分组布局，并在顶部显示当前扫描模式、自动更新状态和模型。
 - 文件夹识别在排队后、请求过程中和写入前会再次检查 status，避免文章中途从 done 改为 undone 后仍被写入。
 
-# xyblue-AI-Metadata v0.5.5
+# xyblue 私人 · AI 元数据
 
-Author: **xyblue135**
+> **私人插件**：xyblue 自用维护版，不作为公共插件发布。
+> **兼容说明**：保留原插件内部 `id` 和 `data.json`，升级覆盖时可继续使用已有配置与记录。
+
+维护者：**xyblue**
 
 这是一个 Obsidian Desktop 本地插件，用 AI 维护 `/Notes` 中 Markdown 的 `summary` 和 `tags`。
 
@@ -285,7 +288,7 @@ JSON mode
 
 ### 空正文不再算红色失败
 
-只有 YAML/frontmatter、或去掉 frontmatter 后没有可分析正文的 Markdown，现在显示为黄色 **“无正文”**，归类为“跳过”，不计入失败，也不会反复作为待更新任务提交给模型。以后该文件增加正文后，会因为源指纹变化重新进入待更新列表。
+只有 YAML/frontmatter、或去掉 frontmatter 后没有可分析正文的 Markdown，会显示为黄色 **“无正文”**，归类为“跳过”，不计入失败。默认非指纹模式下，后续只要 Summary/Tags 对应字段仍为空，就会继续作为待补全项；开启 fingerprint 后则按内容指纹判断是否过期。
 
 ## v0.4.4：按文件夹查看并同步待更新 Markdown
 
@@ -293,7 +296,7 @@ JSON mode
 
 ### 待更新笔记面板
 
-设置页点击 **“查看待更新”**，或命令面板运行 `Open pending metadata notes dashboard`。面板会实际扫描 `/Notes` 白名单中的 Markdown，并显示：
+设置页点击 **“查看待更新”**，或命令面板运行 `打开待更新元数据笔记面板`。面板会实际扫描 `/Notes` 白名单中的 Markdown，并显示：
 
 - 总 Markdown 数、待更新数、已完成数。
 - 哪些具体文件夹还有待更新内容。
@@ -368,7 +371,7 @@ JSON mode
 
 默认关闭，以保留 v0.3.0 的稳定行为。开启后：
 
-- “Generate summary and tags” 命令只发送 **1 次** `/chat/completions` 请求。
+- “为当前 Notes 笔记生成摘要和标签” 命令只发送 **1 次** `/chat/completions` 请求。
 - 自动更新同一篇笔记的 `summary + tags` 也只发送 **1 次**请求。
 - 当时正文、标题、现有 tags、Tags 目录等上下文只发送一次；自 v0.5.1 起整库 Tags 目录已完全移出 Prompt，只保留当前文章自己的现有 tags。
 - 模型必须在一次回复中严格返回：
@@ -452,7 +455,8 @@ Combined Metadata API
 - `tags` 默认最多 7 个（可在“Tags 数量”中修改上限）；少于上限也正常写入。
 - AI 返回带 weight 的候选，插件本地排序、归一化、去重后写入 value。
 - 扫描白名单 Markdown 的 frontmatter tags 和行内 `#tags`，维护仅供本地大小写匹配使用的 Tag 索引；该索引不会发送给 AI。
-- 自动更新比较“正文 + 非 AI 管理属性”的源指纹；`summary` / `tags` 不参与指纹，避免 AI 自己写回后无限触发。
+- 默认识别方式改为 **Properties 内容存在性**：`summary` 非空即视为 Summary 已完成，`tags` 非空即视为 Tags 已完成；正文后续变化不会自动令它们过期。
+- 可选开启 **内容指纹 fingerprint 识别**：开启后才持久化正文源指纹并按内容变化判断 Summary/Tags 是否需要更新；关闭时数据库中的指纹字段会被删除。
 - 全局 API 串行队列，默认请求间隔 30 秒。
 - 单次 API 硬超时默认 180 秒，可主动销毁 HTTP/HTTPS 请求。
 - 自动更新倒计时从整轮任务真正完成后开始。
@@ -467,6 +471,8 @@ Combined Metadata API
 - API 请求超时（秒）
 - API 请求间隔（秒）
 - **实验性：合并 Summary + Tags 请求**
+- **内容指纹 fingerprint 识别（默认关闭）**
+- **Summary 输入 Markdown 清理（默认关闭）**
 - 白名单目录
 - Tags 数量
 - Tag 大小写规范化
@@ -539,5 +545,15 @@ POST {Base URL}/chat/completions
 
 - 插件显示名称改为 `xyblue-AI-Metadata`。
 - 保持插件 ID `xyblue135-ai-metadata-demo` 不变，兼容原插件升级。
-- 发布包保留原始 `data.json`，已有设置、文章指纹、标签目录与更新日志继续沿用。
+- 发布包保留原始 `data.json` 中的其他记录；v0.5.6 会移除旧的持久化文章指纹字段，但保留 Tag 目录、更新日志、标签评分、错误记录等其他状态。
 - 保留 v0.5.4 的可选 Summary Markdown 清理功能。
+
+
+## v0.5.6
+
+- 默认关闭内容指纹识别。
+- 默认以 Properties 是否有内容判断完成状态：`summary` 非空即完成，`tags` 非空即完成。
+- 当一项已有内容、另一项为空时，批量/自动任务只补缺失项，不覆盖已有项。
+- 新增可选 **内容指纹 fingerprint 识别** 开关；首次开启时以当前已有 Summary/Tags 建立基线，避免全库立即重跑。
+- 关闭 fingerprint 后删除 `lastSeenSourceHash`、`lastSummaryHash`、`lastTagsHash`，不再在 `data.json` 保存这些持久化指纹。
+- 单次 AI 请求期间仍会使用临时内容 hash 防止“请求过程中正文变化却写入旧结果”，该临时校验不会写进数据库。

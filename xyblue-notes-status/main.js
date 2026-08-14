@@ -1,3 +1,8 @@
+/*
+ * xyblue 私人 · 笔记状态
+ * 类型：xyblue 私人插件（非公共发布版）
+ * 说明：用户可见文案与维护注释已中文化；内部插件 ID 与 data.json 保持不变，以兼容原有设置和数据。
+ */
 const { Plugin, Notice, TFile, TFolder, normalizePath } = require("obsidian");
 
 const STYLE_ID = "xyblue-notes-status-styles";
@@ -94,7 +99,7 @@ module.exports = class XyblueNotesStatusPlugin extends Plugin {
         const result = this.collectRows();
         this.reportInvalidFiles(result.invalidFiles, true);
         if (result.invalidFiles.length === 0) {
-          new Notice("Notes Status：白名单目录结构检查通过，仅包含文件夹和 .md 文件。");
+          new Notice("xyblue 私人·笔记状态：白名单目录结构检查通过，仅包含文件夹和 .md 文件。");
         }
       }
     });
@@ -125,7 +130,7 @@ module.exports = class XyblueNotesStatusPlugin extends Plugin {
       window.clearTimeout(timeout);
       timeout = window.setTimeout(() => {
         Promise.resolve(fn(...args)).catch((e) => {
-          console.error("xyblue-notes-status: reload failed", e);
+          console.error("xyblue 私人·笔记状态： reload failed", e);
         });
       }, delay);
     };
@@ -173,8 +178,8 @@ module.exports = class XyblueNotesStatusPlugin extends Plugin {
       );
     } catch (e) {
       this.whitelistRoots = [];
-      console.warn("xyblue-notes-status: whitelist.json missing or invalid", e);
-      new Notice("Notes Status：whitelist.json 读取失败，当前不会给任何目录添加状态图标。");
+      console.warn("xyblue 私人·笔记状态： whitelist.json missing or invalid", e);
+      new Notice("xyblue 私人·笔记状态：whitelist.json 读取失败，当前不会给任何目录添加状态图标。");
     }
   }
 
@@ -216,11 +221,11 @@ module.exports = class XyblueNotesStatusPlugin extends Plugin {
           this.iconMap.set(targetPath, svgContent);
           this.iconSourcePaths.add(svgPath);
         } catch (e) {
-          console.warn(`xyblue-notes-status: failed to load icon for "${targetPath}" from "${svgPath}"`, e);
+          console.warn(`xyblue 私人·笔记状态： failed to load icon for "${targetPath}" from "${svgPath}"`, e);
         }
       }
     } catch (e) {
-      console.warn("xyblue-notes-status: icons.json missing or invalid", e);
+      console.warn("xyblue 私人·笔记状态： icons.json missing or invalid", e);
     }
   }
 
@@ -231,7 +236,7 @@ module.exports = class XyblueNotesStatusPlugin extends Plugin {
 
     if (showNotice) {
       const roots = this.whitelistRoots.length ? this.whitelistRoots.join(", ") : "（空）";
-      new Notice(`Notes Status：配置已重新加载。白名单：${roots}`);
+      new Notice(`xyblue 私人·笔记状态：配置已重新加载。白名单：${roots}`);
     }
   }
 
@@ -389,7 +394,7 @@ module.exports = class XyblueNotesStatusPlugin extends Plugin {
       }
 
       if (!(root instanceof TFolder)) {
-        console.warn(`xyblue-notes-status: whitelist entry is not a folder: ${rootPath}`);
+        console.warn(`xyblue 私人·笔记状态： whitelist entry is not a folder: ${rootPath}`);
         continue;
       }
 
@@ -412,7 +417,7 @@ module.exports = class XyblueNotesStatusPlugin extends Plugin {
     const preview = sorted.slice(0, 3).join("、");
     const more = sorted.length > 3 ? ` 等 ${sorted.length} 个` : "";
     const message =
-      `Notes Status：白名单目录检测到非 .md 文件：${preview}${more}。` +
+      `xyblue 私人·笔记状态：白名单目录检测到非 .md 文件：${preview}${more}。` +
       `请把 .jpg/.png/.pdf/.zip 等附件移出白名单目录。`;
 
     console.warn(message, sorted);
@@ -483,7 +488,7 @@ module.exports = class XyblueNotesStatusPlugin extends Plugin {
 
   buildCss(rows) {
     const lines = [
-      "/* Notes Status - whitelist only */",
+      "/* xyblue 私人 · 笔记状态 - whitelist only */",
       ".workspace-leaf-content[data-type=\"file-explorer\"] .nav-folder-title-content,",
       ".workspace-leaf-content[data-type=\"file-explorer\"] .nav-file-title-content,",
       ".workspace-leaf-content[data-type=\"file-explorer\"] .tree-item-self[data-path] > .tree-item-inner {",

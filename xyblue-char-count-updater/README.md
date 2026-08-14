@@ -1,4 +1,7 @@
-# Char Count Updater 3.1.0
+# xyblue 私人 · 字数与 Token 统计
+
+> **私人插件**：xyblue 自用维护版，不作为公共插件发布。
+> **兼容说明**：保留原插件内部 `id` 和 `data.json`，升级覆盖时可继续使用已有配置与记录。
 
 自动更新 Obsidian Markdown 文件 YAML frontmatter 中已经存在的统计字段。
 
@@ -76,4 +79,4 @@ Token 估算只适合粗略筛选和预算，不等于特定模型 tokenizer 的
 <Vault>/.obsidian/plugins/xyblue-char-count-updater/
 ```
 
-然后重新加载 Obsidian，并在第三方插件中启用 **Char Count Updater**。
+然后重新加载 Obsidian，并在第三方插件中启用 **xyblue 私人 · 字数与 Token 统计**。

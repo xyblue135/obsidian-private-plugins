@@ -1,9 +1,9 @@
 {
   "id": "xyblue-code-block-wrap",
-  "name": "Code Block Wrap Toggle",
+  "name": "xyblue 私人 · 代码块增强",
   "version": "1.2.1",
   "minAppVersion": "1.5.0",
-  "description": "可配置的紧凑代码块插件：支持自动换行、深色样式、代码块背景独立覆盖、工具栏/复制按钮尺寸、内边距、圆角与配色实时调整。",
-  "author": "xyblue135",
+  "description": "【xyblue 私人插件】可配置代码块自动换行、横向滚动、紧凑工具栏、复制按钮、背景颜色、圆角和深色样式。",
+  "author": "xyblue",
   "isDesktopOnly": false
 }

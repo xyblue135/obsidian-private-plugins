@@ -1,3 +1,8 @@
+/*
+ * xyblue 私人 · 代码块增强
+ * 类型：xyblue 私人插件（非公共发布版）
+ * 说明：用户可见文案与维护注释已中文化；内部插件 ID 与 data.json 保持不变，以兼容原有设置和数据。
+ */
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const obsidian_1 = require("obsidian");
@@ -22,7 +27,7 @@ const DEFAULT_SETTINGS = {
     accentColor: '#7aa2f7',
 };
 /**
- * Code Block Wrap Toggle v1.2.0
+ * xyblue 私人 · 代码块增强 v1.2.0
  * - 保留 v1.1.4 的安全滚动条实现。
  * - 新增设置页和实时可调紧凑深色 UI。
  */
@@ -318,7 +323,7 @@ class CodeBlockWrapSettingTab extends obsidian_1.PluginSettingTab {
     display() {
         const { containerEl } = this;
         containerEl.empty();
-        containerEl.createEl('h2', { text: 'Code Block Wrap Toggle' });
+        containerEl.createEl('h2', { text: 'xyblue 私人 · 代码块增强' });
         containerEl.createEl('p', {
             text: '调整后会实时应用到当前代码块。默认采用紧凑深色样式，所有参数都会自动保存。',
             cls: 'setting-item-description',

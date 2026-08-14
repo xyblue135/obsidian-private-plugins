@@ -1,3 +1,8 @@
+/*
+ * xyblue 私人 · 文件夹模板笔记
+ * 类型：xyblue 私人插件（非公共发布版）
+ * 说明：用户可见文案与维护注释已中文化；内部插件 ID 与 data.json 保持不变，以兼容原有设置和数据。
+ */
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const obsidian_1 = require("obsidian");
@@ -10,7 +15,7 @@ const DEFAULT_SETTINGS = {
     noteTemplate: DEFAULT_TEMPLATE,
 };
 /**
- * Folder Template Note 主插件。
+ * xyblue 私人 · 文件夹模板笔记 主插件。
  *
  * 功能：
  * 1. 监听文件浏览器右键菜单。
@@ -118,7 +123,7 @@ class FolderTemplateNotePlugin extends obsidian_1.Plugin {
             new obsidian_1.Notice(`已创建：${file.path}`);
         }
         catch (error) {
-            console.error("[Folder Template Note] 创建模板笔记失败：", error);
+            console.error("[xyblue 私人·文件夹模板笔记] 创建模板笔记失败：", error);
             new obsidian_1.Notice("创建模板笔记失败，请查看开发者控制台日志");
         }
     }
@@ -276,7 +281,7 @@ class FolderTemplateNoteSettingTab extends obsidian_1.PluginSettingTab {
     display() {
         const { containerEl } = this;
         containerEl.empty();
-        containerEl.createEl("h2", { text: "Folder Template Note 设置" });
+        containerEl.createEl("h2", { text: "xyblue 私人 · 文件夹模板笔记" });
         new obsidian_1.Setting(containerEl)
             .setName("菜单 Emoji / Unicode")
             .setDesc("显示在“新建模板笔记”前面的字符。可以输入 📝、📄、✍️、🧩 等，也可以留空。")

@@ -1,8 +1,11 @@
-# Mirror Attachments v1.6.6
+# xyblue 私人 · 附件镜像
 
-作者：**xyblue135**
+> **私人插件**：xyblue 自用维护版，不作为公共插件发布。
+> **兼容说明**：保留原插件内部 `id` 和 `data.json`，升级覆盖时可继续使用已有配置与记录。
 
-Mirror Attachments 用于让 `Notes` 与 `Attachments` 保持一对一镜像目录，并统一处理系统文件的粘贴、拖入、命名与 Markdown 链接。
+维护者：**xyblue**
+
+xyblue 私人 · 附件镜像 用于让 `Notes` 与 `Attachments` 保持一对一镜像目录，并统一处理系统文件的粘贴、拖入、命名与 Markdown 链接。
 
 ## v1.6.6：智能附件命名 + 批量导入优化
 

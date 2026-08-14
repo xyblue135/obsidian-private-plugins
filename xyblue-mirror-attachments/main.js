@@ -1,3 +1,8 @@
+/*
+ * xyblue 私人 · 附件镜像
+ * 类型：xyblue 私人插件（非公共发布版）
+ * 说明：用户可见文案与维护注释已中文化；内部插件 ID 与 data.json 保持不变，以兼容原有设置和数据。
+ */
 const {
   Plugin,
   PluginSettingTab,
@@ -36,8 +41,8 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
     // 插件加载完成后，即使 Markdown 没有任何附件，也会补建对应空目录。
     this.app.workspace.onLayoutReady(() => {
       void this.ensureAllNoteFolders().catch((err) => {
-        console.error("[Mirror Attachments] initial folder sync failed:", err);
-        new Notice("Mirror Attachments：初始化一对一附件目录失败，请查看控制台。");
+        console.error("[xyblue 私人·附件镜像] initial folder sync failed:", err);
+        new Notice("xyblue 私人·附件镜像：初始化一对一附件目录失败，请查看控制台。");
       });
     });
 
@@ -50,8 +55,8 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
 
         const folderPath = this.getAttachmentFolderForNotePath(file.path);
         void this.ensureFolder(folderPath).catch((err) => {
-          console.error("[Mirror Attachments] create folder sync failed:", err);
-          new Notice(`Mirror Attachments：无法建立对应附件目录：${folderPath}`);
+          console.error("[xyblue 私人·附件镜像] create folder sync failed:", err);
+          new Notice(`xyblue 私人·附件镜像：无法建立对应附件目录：${folderPath}`);
         });
       })
     );
@@ -76,8 +81,8 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
         evt.stopPropagation();
 
         void this.importFiles(files, note, editor).catch((err) => {
-          console.error("[Mirror Attachments] paste failed:", err);
-          new Notice("Mirror Attachments：粘贴附件失败，请查看控制台。");
+          console.error("[xyblue 私人·附件镜像] paste failed:", err);
+          new Notice("xyblue 私人·附件镜像：粘贴附件失败，请查看控制台。");
         });
       })
     );
@@ -98,8 +103,8 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
         evt.stopPropagation();
 
         void this.importFiles(files, note, editor).catch((err) => {
-          console.error("[Mirror Attachments] drop failed:", err);
-          new Notice("Mirror Attachments：拖入附件失败，请查看控制台。");
+          console.error("[xyblue 私人·附件镜像] drop failed:", err);
+          new Notice("xyblue 私人·附件镜像：拖入附件失败，请查看控制台。");
         });
       })
     );
@@ -118,8 +123,8 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
         this.renameSyncQueue = this.renameSyncQueue
           .then(() => this.syncAttachmentFolderAfterRename(newPath, oldPath))
           .catch((err) => {
-            console.error("[Mirror Attachments] rename sync failed:", err);
-            new Notice("Mirror Attachments：同步附件目录失败，请查看控制台。");
+            console.error("[xyblue 私人·附件镜像] rename sync failed:", err);
+            new Notice("xyblue 私人·附件镜像：同步附件目录失败，请查看控制台。");
           });
       })
     );
@@ -133,8 +138,8 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
         if (!this.isManagedNotePath(file.path)) return;
 
         void this.trashAttachmentFolderAfterNoteDelete(file.path).catch((err) => {
-          console.error("[Mirror Attachments] delete sync failed:", err);
-          new Notice("Mirror Attachments：关联删除附件目录失败，请查看控制台。");
+          console.error("[xyblue 私人·附件镜像] delete sync failed:", err);
+          new Notice("xyblue 私人·附件镜像：关联删除附件目录失败，请查看控制台。");
         });
       })
     );
@@ -578,7 +583,7 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
       try {
         addFile(item.getAsFile());
       } catch (err) {
-        console.warn("[Mirror Attachments] cannot read DataTransferItem:", err);
+        console.warn("[xyblue 私人·附件镜像] cannot read DataTransferItem:", err);
       }
     }
 
@@ -788,8 +793,8 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
     try {
       await this.ensureFolder(targetFolder);
     } catch (err) {
-      console.error("[Mirror Attachments] cannot create target folder:", err);
-      new Notice(`Mirror Attachments：目标目录无法创建\n${targetFolder}`, 7000);
+      console.error("[xyblue 私人·附件镜像] cannot create target folder:", err);
+      new Notice(`xyblue 私人·附件镜像：目标目录无法创建\n${targetFolder}`, 7000);
       throw err;
     }
 
@@ -818,7 +823,7 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
           });
         }
       } catch (err) {
-        console.error(`[Mirror Attachments] failed to import ${file.name || "file"}:`, err);
+        console.error(`[xyblue 私人·附件镜像] failed to import ${file.name || "file"}:`, err);
         failed.push(file.name || "未知附件");
       }
     }
@@ -830,7 +835,7 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
 
     if (renamed.length === 1) {
       new Notice(
-        `Mirror Attachments：文件已存在，保存为 ${renamed[0].to}`,
+        `xyblue 私人·附件镜像：文件已存在，保存为 ${renamed[0].to}`,
         5000
       );
     } else if (renamed.length > 1) {
@@ -839,25 +844,25 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
         .map((item) => `${item.from} → ${item.to}`)
         .join("\n");
       const more = renamed.length > 3 ? `\n另有 ${renamed.length - 3} 个重名附件` : "";
-      new Notice(`Mirror Attachments：${renamed.length} 个重名附件已自动改名\n${preview}${more}`, 7000);
+      new Notice(`xyblue 私人·附件镜像：${renamed.length} 个重名附件已自动改名\n${preview}${more}`, 7000);
     }
 
     if (failed.length) {
       const preview = failed.slice(0, 3).join("、");
       const more = failed.length > 3 ? ` 等 ${failed.length} 个文件` : "";
       new Notice(
-        `Mirror Attachments：${failed.length} 个附件保存失败：${preview}${more}`,
+        `xyblue 私人·附件镜像：${failed.length} 个附件保存失败：${preview}${more}`,
         7000
       );
     }
 
     if (links.length) {
       new Notice(
-        `Mirror Attachments：已保存 ${links.length} 个附件到 ${targetFolder}`,
+        `xyblue 私人·附件镜像：已保存 ${links.length} 个附件到 ${targetFolder}`,
         4500
       );
     } else if (failed.length) {
-      new Notice("Mirror Attachments：没有附件成功保存，请查看控制台。", 6000);
+      new Notice("xyblue 私人·附件镜像：没有附件成功保存，请查看控制台。", 6000);
     }
   }
 
@@ -870,7 +875,7 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
 
     if (!(folder instanceof TFolder)) {
       new Notice(
-        `Mirror Attachments：对应附件目录尚不存在：${folderPath}`,
+        `xyblue 私人·附件镜像：对应附件目录尚不存在：${folderPath}`,
         5000
       );
       return;
@@ -897,7 +902,7 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
 
     // 某些 Obsidian 版本没有公开 revealInFolder，至少给出准确目录。
     new Notice(
-      `Mirror Attachments：附件目录：${folderPath}`,
+      `xyblue 私人·附件镜像：附件目录：${folderPath}`,
       7000
     );
   }
@@ -924,7 +929,7 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
     await this.cleanupEmptyAttachmentParents(this.parentPath(folderPath));
 
     new Notice(
-      `Mirror Attachments：已随文章移入回收站\n${folderPath}`,
+      `xyblue 私人·附件镜像：已随文章移入回收站\n${folderPath}`,
       5000
     );
   }
@@ -960,7 +965,7 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
       await this.cleanupEmptyAttachmentParents(this.parentPath(oldFolder));
 
       new Notice(
-        `Mirror Attachments：文章已移出 Notes，原附件目录已移入回收站\n${oldFolder}`,
+        `xyblue 私人·附件镜像：文章已移出 Notes，原附件目录已移入回收站\n${oldFolder}`,
         6000
       );
       return;
@@ -991,7 +996,7 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
     // 按你的要求：目标存在就停止，不合并、不覆盖、不改名。
     if (newAbstract) {
       new Notice(
-        `Mirror Attachments：目标位置已存在同名附件目录：${newFolder}。未移动、未合并、未改名。`,
+        `xyblue 私人·附件镜像：目标位置已存在同名附件目录：${newFolder}。未移动、未合并、未改名。`,
         7000
       );
       return;
@@ -1022,7 +1027,7 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
     );
 
     new Notice(
-      `Mirror Attachments：附件目录已同步\n${oldFolder}\n→ ${newFolder}` +
+      `xyblue 私人·附件镜像：附件目录已同步\n${oldFolder}\n→ ${newFolder}` +
         (cleanedParents ? `\n并清理 ${cleanedParents} 个旧空目录` : ""),
       5000
     );
@@ -1050,7 +1055,7 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
       cls: "mirror-attachments-hero-text"
     });
     heroText.createEl("h2", {
-      text: "Mirror Attachments"
+      text: "xyblue 私人 · 附件镜像"
     });
     heroText.createEl("p", {
       text:
@@ -1253,13 +1258,13 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
               : "";
 
             new Notice(
-              `Mirror Attachments：已补建 ${result.created} 个目录，回收 ${result.trashed} 个多余目录${conflictText}`,
+              `xyblue 私人·附件镜像：已补建 ${result.created} 个目录，回收 ${result.trashed} 个多余目录${conflictText}`,
               7000
             );
             await this.refreshAuditPanel(auditPanel);
           } catch (err) {
-            console.error("[Mirror Attachments] repair failed:", err);
-            new Notice("Mirror Attachments：自动纠错失败，请查看控制台。");
+            console.error("[xyblue 私人·附件镜像] repair failed:", err);
+            new Notice("xyblue 私人·附件镜像：自动纠错失败，请查看控制台。");
           } finally {
             button.setDisabled(false);
           }
@@ -1332,7 +1337,7 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
     try {
       audit = await this.plugin.auditFolderConsistency();
     } catch (err) {
-      console.error("[Mirror Attachments] audit failed:", err);
+      console.error("[xyblue 私人·附件镜像] audit failed:", err);
       panelEl.empty();
       panelEl.createEl("div", {
         cls: "mirror-attachments-audit-summary is-error",

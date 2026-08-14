@@ -1,9 +1,9 @@
 {
   "id": "xyblue135-ai-metadata-demo",
-  "name": "xyblue-AI-Metadata",
-  "version": "0.5.5",
+  "name": "xyblue 私人 · AI 元数据",
+  "version": "0.5.6",
   "minAppVersion": "1.7.2",
-  "description": "AI summary and tags for Notes, with optional Markdown cleanup, preserved local state database, status filtering, API validation, tag normalization, and stoppable automatic updates.",
-  "author": "xyblue135",
+  "description": "【xyblue 私人插件】使用兼容 OpenAI 的 API 为 Notes 维护 summary 与 tags；默认按非空元数据判断，可选内容指纹与 Markdown 清理。",
+  "author": "xyblue",
   "isDesktopOnly": true
 }

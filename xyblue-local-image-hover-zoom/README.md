@@ -1,6 +1,9 @@
-# Local Image Hover Zoom
+# xyblue 私人 · 图片缩放与相框
 
-作者：**xyblue135**  
+> **私人插件**：xyblue 自用维护版，不作为公共插件发布。
+> **兼容说明**：保留原插件内部 `id` 和 `data.json`，升级覆盖时可继续使用已有配置与记录。
+
+维护者：**xyblue**  
 版本：**1.4.0**
 
 Obsidian 正文图片增强插件：使用 `Shift + 鼠标滚轮` 临时改变图片真实布局尺寸，同时给**标准 Markdown `![]()` 图片**提供可切换的高级相框主题。所有变化都只存在于当前 Obsidian DOM，不写回 Markdown。
@@ -50,7 +53,7 @@ manifest.json
 styles.css
 ```
 
-然后在 Obsidian → 设置 → 第三方插件中启用 **Local Image Hover Zoom**。
+然后在 Obsidian → 设置 → 第三方插件中启用 **xyblue 私人 · 图片缩放与相框**。
 
 
 ## v1.4.1 修复
