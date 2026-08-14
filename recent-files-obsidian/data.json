@@ -1,12 +1,24 @@
 {
   "recentFiles": [
     {
-      "basename": "附件资源健康检查_稳定展开可复制版 (1)",
-      "path": "主页组件/附件资源健康检查_稳定展开可复制版 (1).md"
+      "basename": "关于gh-github-cli",
+      "path": "Notes/01_CICD/关于gh-github-cli.md"
+    },
+    {
+      "basename": "PyTorch 与 ONNX Runtime 的 CUDA 环境对齐的故障排除",
+      "path": "Notes/01运维_0ai相关/图像识别/PyTorch 与 ONNX Runtime 的 CUDA 环境对齐的故障排除.md"
+    },
+    {
+      "basename": "ffmpeg的命令使用",
+      "path": "Notes/04音视频/音视频_ffmpeg/ffmpeg的命令使用.md"
     },
     {
       "basename": "年度活跃",
       "path": "主页组件/年度活跃.md"
+    },
+    {
+      "basename": "附件资源健康检查_稳定展开可复制版 (1)",
+      "path": "主页组件/附件资源健康检查_稳定展开可复制版 (1).md"
     },
     {
       "basename": "密码管理",
@@ -17,16 +29,8 @@
       "path": "主页组件/附件资源健康检查-Mirror-Attachments-v1.6.6.md"
     },
     {
-      "basename": "关于gh-github-cli",
-      "path": "Notes/01_CICD/关于gh-github-cli.md"
-    },
-    {
       "basename": "【git】git常见分支命名_发布版本",
       "path": "Notes/01_CICD/运维_git/【git】git常见分支命名_发布版本.md"
-    },
-    {
-      "basename": "ffmpeg的命令使用",
-      "path": "Notes/04音视频/音视频_ffmpeg/ffmpeg的命令使用.md"
     },
     {
       "basename": "ollama的11434端口的v1参数",
@@ -51,10 +55,6 @@
     {
       "basename": "编译ffmpeg-cpu版本",
       "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg-cpu版本.md"
-    },
-    {
-      "basename": "PyTorch 与 ONNX Runtime 的 CUDA 环境对齐的故障排除",
-      "path": "Notes/01运维_0ai相关/图像识别/PyTorch 与 ONNX Runtime 的 CUDA 环境对齐的故障排除.md"
     },
     {
       "basename": "ultralytics偷偷安装onnxruntime【坏处】",

@@ -1,0 +1,712 @@
+/*
+ * xyblue135 私人 · AI 元数据
+ * 类型：xyblue135 私人插件（非公共发布版）
+ * 说明：用户可见文案与维护注释已中文化；内部插件 ID 与 data.json 保持不变，以兼容原有设置和数据。
+ */
+.metadata-property.ai-metadata-enabled-row {
+  position: relative;
+  padding-right: 34px;
+}
+
+.ai-metadata-property-button {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  padding: 4px;
+  margin: 0;
+  border: 0;
+  border-radius: var(--radius-s);
+  color: var(--text-muted);
+  background: transparent;
+  opacity: 0.5;
+  z-index: 5;
+  transition: opacity 120ms ease, color 120ms ease, background-color 120ms ease;
+}
+
+.metadata-property.ai-metadata-enabled-row:hover > .ai-metadata-property-button,
+.ai-metadata-property-button:focus-visible,
+.ai-metadata-property-button:hover {
+  opacity: 1;
+  color: var(--interactive-accent);
+  background: var(--background-modifier-hover);
+}
+
+.ai-metadata-property-button.is-loading {
+  opacity: 1;
+  color: var(--interactive-accent);
+}
+
+.ai-metadata-property-button.is-loading svg {
+  animation: ai-metadata-spin 0.9s linear infinite;
+}
+
+.ai-metadata-property-button.is-success {
+  opacity: 1;
+  color: var(--text-success);
+}
+
+.ai-metadata-property-button.is-error {
+  opacity: 1;
+  color: var(--text-error);
+}
+
+.ai-metadata-harness-textarea {
+  width: min(640px, 60vw);
+  min-height: 130px;
+  font-family: var(--font-monospace);
+  line-height: 1.45;
+}
+
+.ai-metadata-settings-details {
+  margin: 10px 0 18px;
+  padding: 10px 12px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  background: var(--background-secondary);
+}
+
+.ai-metadata-settings-details > summary {
+  cursor: pointer;
+  color: var(--text-normal);
+  font-weight: 600;
+}
+
+.ai-metadata-tag-catalog-preview {
+  margin-top: 10px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+@keyframes ai-metadata-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ai-metadata-statusbar {
+  cursor: default;
+  white-space: nowrap;
+}
+
+.ai-metadata-statusbar.is-hidden {
+  display: none;
+}
+
+/* v0.4.4 待更新笔记 / 文件夹同步面板 */
+.ai-metadata-pending-modal {
+  width: min(920px, 92vw);
+  max-width: 920px;
+}
+
+.ai-metadata-pending-modal .modal-content {
+  max-height: 78vh;
+  overflow: auto;
+}
+
+.ai-metadata-pending-intro {
+  margin: -4px 0 12px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.ai-metadata-pending-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.ai-metadata-pending-loading,
+.ai-metadata-pending-summary,
+.ai-metadata-pending-empty {
+  padding: 10px 12px;
+  margin: 8px 0 12px;
+  border-radius: var(--radius-m);
+  background: var(--background-secondary);
+  color: var(--text-muted);
+}
+
+.ai-metadata-pending-summary .is-pending {
+  color: var(--text-warning);
+  font-weight: 600;
+}
+
+.ai-metadata-pending-summary .is-done {
+  color: var(--text-success);
+  font-weight: 600;
+}
+
+.ai-metadata-folder-group,
+.ai-metadata-last-result {
+  margin: 10px 0;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  background: var(--background-primary-alt);
+}
+
+.ai-metadata-folder-group > summary,
+.ai-metadata-last-result > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.ai-metadata-folder-name {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-metadata-folder-count {
+  flex: none;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  font-weight: 500;
+}
+
+.ai-metadata-folder-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 12px 10px;
+}
+
+.ai-metadata-file-list {
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.ai-metadata-file-row {
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.ai-metadata-file-row:last-child {
+  border-bottom: 0;
+}
+
+.ai-metadata-file-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-metadata-file-link {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--link-color);
+  text-align: left;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ai-metadata-file-link:hover {
+  color: var(--link-color-hover);
+  text-decoration: underline;
+}
+
+.ai-metadata-file-badges {
+  display: flex;
+  gap: 5px;
+  flex: none;
+}
+
+.ai-metadata-pending-badge {
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--background-modifier-hover);
+  color: var(--text-warning);
+  font-size: 11px;
+}
+
+.ai-metadata-file-path {
+  margin-top: 3px;
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  word-break: break-all;
+}
+
+.ai-metadata-file-preview {
+  margin-top: 7px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ai-metadata-file-error {
+  margin-top: 6px;
+  color: var(--text-error);
+  font-size: var(--font-ui-smaller);
+}
+
+.ai-metadata-folder-child-note {
+  padding: 10px 12px;
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+.ai-metadata-last-result-body {
+  padding: 0 12px 12px;
+  color: var(--text-muted);
+}
+
+.ai-metadata-last-result-body details {
+  margin-top: 8px;
+}
+
+.ai-metadata-result-file {
+  padding: 3px 0 3px 12px;
+  word-break: break-all;
+  font-size: var(--font-ui-smaller);
+}
+
+.ai-metadata-result-file.is-success {
+  color: var(--text-success);
+}
+
+.ai-metadata-result-file.is-error {
+  color: var(--text-error);
+}
+
+.ai-metadata-folder-actions {
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ai-metadata-folder-progress {
+  flex: 1 1 320px;
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-metadata-root-folder-note {
+  width: 100%;
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  text-align: right;
+}
+
+.ai-metadata-pending-summary .is-skipped,
+.ai-metadata-pending-badge.is-skipped,
+.ai-metadata-result-file.is-skipped,
+.ai-metadata-root-folder-note.is-skipped {
+  color: var(--text-warning);
+}
+
+.ai-metadata-pending-badge.is-skipped {
+  background: var(--background-modifier-hover);
+  font-weight: 600;
+}
+
+.ai-metadata-inline-action {
+  margin-top: 7px;
+  padding: 3px 8px;
+  font-size: var(--font-ui-smaller);
+}
+
+.ai-metadata-raw-output {
+  margin-top: 7px;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.ai-metadata-raw-output > summary {
+  cursor: pointer;
+  color: var(--text-accent);
+}
+
+.ai-metadata-raw-output pre {
+  max-height: 260px;
+  margin: 7px 0 0;
+  padding: 9px 10px;
+  overflow: auto;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  background: var(--background-secondary);
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* v0.4.6 Obsidian 风格可展开文件夹树 */
+.ai-metadata-tree-modal {
+  width: min(980px, 94vw);
+  max-width: 980px;
+}
+
+.ai-metadata-folder-tree {
+  margin: 10px 0 16px;
+  padding: 6px 0;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  background: var(--background-primary);
+  overflow: hidden;
+}
+
+.ai-metadata-tree-node {
+  min-width: 0;
+}
+
+.ai-metadata-tree-folder-row {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px 3px calc(8px + var(--ai-tree-depth, 0) * 17px);
+  border-radius: var(--radius-s);
+  color: var(--text-normal);
+}
+
+.ai-metadata-tree-folder-row:hover {
+  background: var(--background-modifier-hover);
+}
+
+.ai-metadata-tree-chevron {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+.ai-metadata-tree-chevron.is-empty {
+  opacity: 0.28;
+}
+
+.ai-metadata-tree-folder-label {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 5px;
+  border: 0;
+  background: transparent;
+  color: var(--text-normal);
+  text-align: left;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.ai-metadata-tree-folder-label:hover,
+.ai-metadata-tree-folder-label:focus-visible,
+.ai-metadata-tree-chevron:hover,
+.ai-metadata-tree-chevron:focus-visible {
+  background: transparent;
+  box-shadow: none;
+}
+
+.ai-metadata-tree-folder-icon,
+.ai-metadata-tree-file-icon {
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.ai-metadata-tree-folder-icon svg,
+.ai-metadata-tree-file-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ai-metadata-tree-folder-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-ui-small);
+  font-weight: 600;
+}
+
+.ai-metadata-tree-counts {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-faint);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.ai-metadata-tree-counts .is-pending {
+  color: var(--text-warning);
+  font-weight: 600;
+}
+
+.ai-metadata-tree-counts .is-done {
+  color: var(--text-success);
+}
+
+.ai-metadata-tree-counts .is-skipped {
+  color: var(--text-warning);
+}
+
+.ai-metadata-tree-identify {
+  flex: none;
+  min-height: 26px;
+  height: 26px;
+  padding: 2px 9px;
+  margin-left: 5px;
+  font-size: 11px;
+  border-radius: var(--radius-s);
+}
+
+.ai-metadata-tree-root-tag {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--background-secondary);
+  color: var(--text-faint);
+  font-size: 10px;
+}
+
+.ai-metadata-tree-folder-body.is-collapsed {
+  display: none;
+}
+
+.ai-metadata-tree-file-row {
+  margin: 0;
+  padding: 7px 10px 9px calc(39px + var(--ai-tree-depth, 1) * 17px);
+  border-bottom: 0;
+  background: transparent;
+}
+
+.ai-metadata-tree-file-row:hover {
+  background: var(--background-modifier-hover);
+}
+
+.ai-metadata-tree-file-row .ai-metadata-file-head {
+  gap: 6px;
+}
+
+.ai-metadata-tree-file-row .ai-metadata-file-link {
+  color: var(--text-normal);
+  font-weight: 500;
+}
+
+.ai-metadata-tree-file-row .ai-metadata-file-path {
+  margin-left: 23px;
+  opacity: 0.78;
+}
+
+.ai-metadata-tree-file-row .ai-metadata-file-preview,
+.ai-metadata-tree-file-row .ai-metadata-file-error,
+.ai-metadata-tree-file-row .ai-metadata-inline-action,
+.ai-metadata-tree-file-row .ai-metadata-raw-output {
+  margin-left: 23px;
+}
+
+.ai-metadata-tree-live-progress {
+  margin: 3px 10px 6px calc(39px + var(--ai-tree-depth, 0) * 17px);
+  padding: 6px 9px;
+  border-radius: var(--radius-s);
+  background: var(--background-secondary);
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .ai-metadata-tree-counts > span:not(.is-pending) {
+    display: none;
+  }
+
+  .ai-metadata-tree-folder-row {
+    padding-right: 5px;
+  }
+
+  .ai-metadata-tree-identify {
+    padding-inline: 7px;
+  }
+}
+
+/* v0.5.0 可停止的文件夹识别 */
+.ai-metadata-tree-stop {
+  flex: none;
+  min-height: 26px;
+  height: 26px;
+  padding: 2px 9px;
+  margin-left: 5px;
+  font-size: 11px;
+  border-radius: var(--radius-s);
+  color: var(--text-error);
+  border-color: var(--background-modifier-error);
+}
+
+.ai-metadata-tree-stop:hover:not(:disabled) {
+  background: var(--background-modifier-error-hover);
+}
+
+/* v0.5.3 设置页刷新 */
+.ai-metadata-settings-panel {
+  --ai-meta-card-gap: 14px;
+  padding-bottom: 28px;
+}
+
+.ai-metadata-settings-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 2px 0 18px;
+  padding: 18px 20px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--background-primary-alt), var(--background-secondary));
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.06);
+}
+
+.ai-metadata-settings-hero h2 {
+  margin: 0 0 5px;
+  font-size: 1.55em;
+  letter-spacing: -0.02em;
+}
+
+.ai-metadata-settings-hero p {
+  margin: 0;
+  max-width: 620px;
+}
+
+.ai-metadata-settings-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  max-width: 360px;
+}
+
+.ai-metadata-settings-chip,
+.ai-metadata-filter-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 9px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 999px;
+  background: var(--background-primary);
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ai-metadata-filter-badge {
+  color: var(--interactive-accent);
+  border-color: color-mix(in srgb, var(--interactive-accent) 35%, var(--background-modifier-border));
+  background: color-mix(in srgb, var(--interactive-accent) 9%, var(--background-primary));
+}
+
+.ai-metadata-settings-card {
+  margin: 0 0 var(--ai-meta-card-gap);
+  padding: 0 16px 4px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 14px;
+  background: var(--background-primary-alt);
+  overflow: hidden;
+}
+
+.ai-metadata-settings-card > h3 {
+  margin: 0 -16px;
+  padding: 13px 16px 12px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  background: var(--background-secondary);
+  font-size: 1.03em;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.ai-metadata-settings-card.is-advanced > h3::after {
+  content: "  高级";
+  margin-left: 8px;
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  font-weight: 500;
+}
+
+.ai-metadata-settings-card .setting-item {
+  padding: 13px 0;
+  border-top: 0;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.ai-metadata-settings-card .setting-item:last-child {
+  border-bottom: 0;
+}
+
+.ai-metadata-settings-card .setting-item-name {
+  font-weight: 650;
+}
+
+.ai-metadata-settings-card .setting-item-description {
+  margin-top: 4px;
+  line-height: 1.55;
+}
+
+.ai-metadata-settings-card input[type="text"],
+.ai-metadata-settings-card input[type="password"],
+.ai-metadata-settings-card input[type="number"] {
+  min-width: min(300px, 38vw);
+}
+
+.ai-metadata-settings-card textarea.ai-metadata-harness-textarea {
+  width: min(720px, 58vw);
+  min-height: 120px;
+  border-radius: var(--radius-m);
+}
+
+.ai-metadata-settings-card .ai-metadata-settings-details {
+  margin: 12px 0;
+  background: var(--background-primary);
+}
+
+.ai-metadata-settings-card button.mod-cta {
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .ai-metadata-settings-hero {
+    flex-direction: column;
+  }
+
+  .ai-metadata-settings-chips {
+    justify-content: flex-start;
+    max-width: none;
+  }
+
+  .ai-metadata-settings-card input[type="text"],
+  .ai-metadata-settings-card input[type="password"],
+  .ai-metadata-settings-card input[type="number"],
+  .ai-metadata-settings-card textarea.ai-metadata-harness-textarea {
+    min-width: 0;
+    width: min(100%, 560px);
+  }
+}

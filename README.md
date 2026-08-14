@@ -2,7 +2,7 @@
 
 Obsidian 插件状态快照与维护记录仓库。
 
-本仓库对 `.obsidian/plugins` 整个目录（自建 `xyblue-*` 插件 + 第三方插件）做统一版本化，
+本仓库对 `.obsidian/plugins` 整个目录（自建 `xyblue135-*` 插件 + 第三方插件）做统一版本化，
 用于**快照 / 回溯 Obsidian 插件状态**，不发布到社区插件市场。
 
 ## 结构

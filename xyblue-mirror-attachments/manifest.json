@@ -1,9 +1,0 @@
-{
-  "id": "xyblue-mirror-attachments",
-  "name": "xyblue 私人 · 附件镜像",
-  "version": "1.6.6",
-  "minAppVersion": "1.5.0",
-  "description": "【xyblue 私人插件】让 Notes 与 Attachments 保持一对一镜像目录，并统一处理附件保存、命名、重名与 Markdown 链接。",
-  "author": "xyblue",
-  "isDesktopOnly": false
-}
