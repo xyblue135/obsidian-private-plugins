@@ -1,0 +1,62 @@
+<svg height="140" width="140" xmlns="http://www.w3.org/2000/svg" viewBox="-10 0 140 140">
+  <g stroke="#3b176f" stroke-width="4" stroke-linejoin="round">
+    <!-- Obsidian 主轮廓 -->
+    <path
+      d="M60 8
+         L93 35
+         L108 82
+         L82 126
+         L58 136
+         L30 116
+         L12 76
+         L28 34 Z"
+      fill="#7c3aed"
+    />
+
+    <!-- 左侧切面 -->
+    <path
+      d="M60 8
+         L28 34
+         L12 76
+         L48 62 Z"
+      fill="#a855f7"
+    />
+
+    <!-- 中央切面 -->
+    <path
+      d="M60 8
+         L48 62
+         L58 136
+         L82 126
+         L75 64 Z"
+      fill="#8b5cf6"
+    />
+
+    <!-- 右侧切面 -->
+    <path
+      d="M60 8
+         L93 35
+         L108 82
+         L75 64 Z"
+      fill="#6d28d9"
+    />
+
+    <!-- 下部深色切面 -->
+    <path
+      d="M12 76
+         L48 62
+         L58 136
+         L30 116 Z"
+      fill="#5b21b6"
+    />
+
+    <!-- 内部高光 -->
+    <path
+      d="M60 19
+         L52 57
+         L70 49 Z"
+      fill="#ddd6fe"
+      stroke="none"
+    />
+  </g>
+</svg>

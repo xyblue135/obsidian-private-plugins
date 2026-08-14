@@ -1,0 +1,9 @@
+{
+  "id": "xyblue-mirror-attachments",
+  "name": "Mirror Attachments",
+  "version": "1.6.6",
+  "minAppVersion": "1.5.0",
+  "description": "为 Notes 中每个 Markdown 维护一对一附件目录；图片/PDF 时间戳嵌入，普通附件保留原名并自动处理重名。",
+  "author": "xyblue135",
+  "isDesktopOnly": false
+}

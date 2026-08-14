@@ -1,0 +1,14 @@
+xyblue-AI-Metadata v0.5.5 安装说明
+
+推荐升级方式（保留原数据库）：
+1. 先关闭 Obsidian，或禁用旧版插件。
+2. 备份原目录：<Vault>/.obsidian/plugins/xyblue135-ai-metadata-demo/
+3. 将压缩包中的 xyblue135-ai-metadata-demo 文件夹覆盖到原目录。
+4. 本版本已经携带你原上传插件中的 data.json；不要另外删除或清空它。
+5. 重新打开 Obsidian并启用“xyblue-AI-Metadata”。
+
+兼容说明：
+- manifest 的插件 ID 仍是 xyblue135-ai-metadata-demo，因此 Obsidian 会把它视为原插件的升级版本。
+- 只修改显示名称为 xyblue-AI-Metadata。
+- data.json 中原有 settings/state、文章处理指纹、Tag 目录和更新日志都会继续读取。
+- v0.5.4 新增的“Summary 输入 Markdown 清理”仍为可选开关，旧 data.json 没有该字段时会自动采用默认值 false。

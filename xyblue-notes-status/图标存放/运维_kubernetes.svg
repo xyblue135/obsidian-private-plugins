@@ -1,0 +1,44 @@
+<svg height="280" width="280" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 280" role="img">
+  <title>Kubernetes Logo</title>
+  <desc>Heptagon with white helm wheel inside, on a blue background</desc>
+
+  <defs>
+    <linearGradient id="hexGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3C5BDC"/>
+      <stop offset="1" stop-color="#2A45B8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Heptagon (7-sided) background -->
+  <polygon points="140,12 250,60 250,200 140,268 30,200 30,60"
+           fill="url(#hexGrad)"/>
+
+  <!-- Helm wheel (Kubernetes "ship's wheel") -->
+  <g transform="translate(140,140)">
+    <!-- outer ring -->
+    <circle r="62" fill="none" stroke="#FFFFFF" stroke-width="9"/>
+    <!-- inner ring (hub) -->
+    <circle r="11" fill="none" stroke="#FFFFFF" stroke-width="7"/>
+    <!-- 7 spokes -->
+    <g stroke="#FFFFFF" stroke-width="7" stroke-linecap="round">
+      <line x1="0" y1="-62" x2="0" y2="-18"/>
+      <line x1="55.84" y1="-27.92" x2="16.21" y2="-8.10"/>
+      <line x1="34.50" y1="50.62" x2="10.01" y2="14.69"/>
+      <line x1="-34.50" y1="50.62" x2="-10.01" y2="14.69"/>
+      <line x1="-55.84" y1="-27.92" x2="-16.21" y2="-8.10"/>
+    </g>
+
+    <!-- 7 handle stubs outside the ring -->
+    <g fill="#FFFFFF">
+      <!-- top -->
+      <circle cx="0" cy="-62" r="8"/>
+      <!-- top-right (2 handles, mapped from heptagon points) -->
+      <g>
+        <rect x="55" y="-5" width="22" height="10" rx="3" transform="rotate(-26.5 62 -2)"/>
+        <rect x="30" y="48" width="22" height="10" rx="3" transform="rotate(26.5 38 52)"/>
+        <rect x="-52" y="48" width="22" height="10" rx="3" transform="rotate(-26.5 -38 52)"/>
+        <rect x="-77" y="-5" width="22" height="10" rx="3" transform="rotate(26.5 -62 -2)"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,316 @@
+/* Mirror Attachments UI */
+.mirror-attachments-conflict-modal {
+  min-width: min(520px, 90vw);
+}
+
+.mirror-attachments-conflict-hint {
+  color: var(--text-muted);
+}
+
+.mirror-attachments-conflict-input {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.mirror-attachments-conflict-error {
+  min-height: 1.4em;
+  margin-top: 8px;
+  color: var(--text-error);
+  font-size: var(--font-ui-small);
+}
+
+.mirror-attachments-conflict-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* v1.5 一对一目录校错 */
+.mirror-attachments-audit-help {
+  color: var(--text-muted);
+}
+
+.mirror-attachments-audit-panel {
+  margin: 10px 0 20px;
+  padding: 12px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  background: var(--background-secondary);
+}
+
+.mirror-attachments-audit-loading {
+  color: var(--text-muted);
+}
+
+.mirror-attachments-audit-summary {
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.mirror-attachments-audit-summary.is-ok {
+  color: var(--text-success);
+  background: rgba(var(--color-green-rgb), 0.10);
+}
+
+.mirror-attachments-audit-summary.is-warning {
+  color: var(--text-warning);
+  background: rgba(var(--color-orange-rgb), 0.10);
+}
+
+.mirror-attachments-audit-summary.is-error {
+  color: var(--text-error);
+  background: rgba(var(--color-red-rgb), 0.10);
+}
+
+.mirror-attachments-audit-group {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.mirror-attachments-audit-group-title {
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.mirror-attachments-audit-group.is-missing .mirror-attachments-audit-group-title,
+.mirror-attachments-audit-group.is-extra .mirror-attachments-audit-group-title {
+  color: var(--text-warning);
+}
+
+.mirror-attachments-audit-group.is-conflict .mirror-attachments-audit-group-title {
+  color: var(--text-error);
+}
+
+.mirror-attachments-audit-group ul {
+  max-height: 220px;
+  margin: 0;
+  padding-left: 22px;
+  overflow: auto;
+}
+
+.mirror-attachments-audit-group li {
+  margin: 4px 0;
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-smaller);
+  overflow-wrap: anywhere;
+}
+
+/* v1.6.6 设置页信息架构与视觉优化 */
+.mirror-attachments-settings {
+  --mirror-card-radius: 12px;
+}
+
+.mirror-attachments-hero {
+  margin: 4px 0 22px;
+  padding: 18px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    var(--background-secondary),
+    var(--background-primary-alt)
+  );
+}
+
+.mirror-attachments-hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mirror-attachments-hero-text {
+  min-width: 0;
+}
+
+.mirror-attachments-hero h2 {
+  margin: 0;
+  font-size: 1.45em;
+}
+
+.mirror-attachments-hero p {
+  max-width: 760px;
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.mirror-attachments-version-badge,
+.mirror-attachments-badge,
+.mirror-attachments-rule-tag {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.mirror-attachments-version-badge {
+  padding: 4px 9px;
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  font-size: var(--font-ui-smaller);
+  font-weight: 700;
+}
+
+.mirror-attachments-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.mirror-attachments-badge {
+  padding: 3px 8px;
+  background: var(--background-primary);
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.mirror-attachments-section-heading {
+  margin: 24px 0 6px;
+  padding-top: 6px;
+}
+
+.mirror-attachments-section-heading h3 {
+  margin: 0;
+  font-size: 1.05em;
+}
+
+.mirror-attachments-section-heading p {
+  margin: 5px 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  line-height: 1.55;
+}
+
+.mirror-attachments-info-card,
+.mirror-attachments-tip,
+.mirror-attachments-rule-card {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--mirror-card-radius);
+  background: var(--background-secondary);
+}
+
+.mirror-attachments-info-card {
+  margin: 10px 0 6px;
+  padding: 12px 14px;
+}
+
+.mirror-attachments-info-title {
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.mirror-attachments-info-card p {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.mirror-attachments-info-card code,
+.mirror-attachments-rule-card code {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--background-primary);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.mirror-attachments-tip {
+  margin: 10px 0 4px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  line-height: 1.55;
+}
+
+.mirror-attachments-tip strong {
+  color: var(--text-normal);
+}
+
+.mirror-attachments-rule-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.mirror-attachments-rule-card {
+  padding: 14px;
+  min-width: 0;
+}
+
+.mirror-attachments-rule-card.is-embed {
+  border-left: 3px solid var(--color-green);
+}
+
+.mirror-attachments-rule-card.is-link {
+  border-left: 3px solid var(--color-blue);
+}
+
+.mirror-attachments-rule-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.mirror-attachments-rule-tag {
+  padding: 2px 7px;
+  background: var(--background-primary);
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.mirror-attachments-rule-exts {
+  margin-top: 9px;
+  color: var(--text-accent);
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-smaller);
+  overflow-wrap: anywhere;
+}
+
+.mirror-attachments-rule-card p {
+  margin: 8px 0 10px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.mirror-attachments-shortcut-card {
+  margin-bottom: 20px;
+}
+
+.mirror-attachments-settings .setting-item {
+  padding-top: 13px;
+  padding-bottom: 13px;
+}
+
+.mirror-attachments-settings .mirror-attachments-audit-panel {
+  border-radius: var(--mirror-card-radius);
+}
+
+@media (max-width: 700px) {
+  .mirror-attachments-rule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mirror-attachments-hero-top,
+  .mirror-attachments-rule-card-top {
+    align-items: flex-start;
+  }
+}
+
+/* v1.6.6 命名规则强调提示 */
+.mirror-attachments-tip-accent {
+  border-left: 3px solid var(--interactive-accent);
+  background: var(--background-primary-alt);
+}
+
+.mirror-attachments-rule-card code {
+  scrollbar-width: thin;
+}

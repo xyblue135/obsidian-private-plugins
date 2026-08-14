@@ -1,0 +1,21 @@
+.xyblue-template-note-name-input {
+  width: 100%;
+}
+
+/* 设置页中的模板编辑框尽量占满可用宽度，方便直接修改 YAML。 */
+.xyblue-template-note-template-input {
+  width: min(720px, 70vw);
+  min-height: 320px;
+  font-family: var(--font-monospace);
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.xyblue-template-note-variable-help {
+  margin-top: 8px;
+  color: var(--text-muted);
+}
+
+.xyblue-template-note-variable-help code {
+  white-space: normal;
+}

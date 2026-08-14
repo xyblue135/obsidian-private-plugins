@@ -1,0 +1,9 @@
+{
+  "id": "xyblue-folder-template-note",
+  "name": "Folder Template Note",
+  "version": "1.2.0",
+  "minAppVersion": "1.0.0",
+  "description": "右键文件夹创建模板笔记，不依赖 Templater；支持自定义菜单 Emoji / Unicode，并可在设置页直接编辑和保存元数据模板。",
+  "author": "xyblue135",
+  "isDesktopOnly": false
+}

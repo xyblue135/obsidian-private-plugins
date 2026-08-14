@@ -1,0 +1,9 @@
+{
+  "id": "xyblue-notes-status",
+  "name": "Notes Status",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "仅对白名单目录及其子目录显示状态图标，支持文件夹、Markdown 文章、自定义 SVG 图标与公开状态标记。",
+  "author": "xyblue135",
+  "isDesktopOnly": false
+}

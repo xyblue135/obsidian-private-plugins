@@ -1,0 +1,9 @@
+{
+  "id": "xyblue135-ai-metadata-demo",
+  "name": "xyblue-AI-Metadata",
+  "version": "0.5.5",
+  "minAppVersion": "1.7.2",
+  "description": "AI summary and tags for Notes, with optional Markdown cleanup, preserved local state database, status filtering, API validation, tag normalization, and stoppable automatic updates.",
+  "author": "xyblue135",
+  "isDesktopOnly": true
+}

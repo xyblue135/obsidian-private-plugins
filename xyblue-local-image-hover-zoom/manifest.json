@@ -1,0 +1,9 @@
+{
+  "id": "xyblue-local-image-hover-zoom",
+  "name": "Local Image Hover Zoom",
+  "version": "1.4.1",
+  "minAppVersion": "1.5.0",
+  "description": "Shift + 滚轮临时改变正文图片布局尺寸；相框严格只作用于标准 Markdown ![]() 图片，并内置多套高级主题；不修改 Markdown 或图片文件。",
+  "author": "xyblue135",
+  "isDesktopOnly": true
+}

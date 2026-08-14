@@ -1,0 +1,33 @@
+<svg height="256" width="256" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+
+  <!-- Git 橙色菱形 -->
+  <path fill="#F05032" d="
+        M244 116L140 12
+        C133 5 123 5 116 12
+        L12 116
+        C5 123 5 133 12 140
+        L116 244
+        C123 251 133 251 140 244
+        L244 140
+        C251 133 251 123 244 116Z"></path>
+
+  <!-- Git 分支线 -->
+  <path fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" d="
+        M128 64
+        V192
+        M128 128
+        L176 176"></path>
+
+  <!-- 顶部节点 -->
+  <circle cx="128" cy="64" r="18" fill="#FFFFFF"></circle>
+
+  <!-- 中间节点 -->
+  <circle cx="128" cy="128" r="18" fill="#FFFFFF"></circle>
+
+  <!-- 右侧节点 -->
+  <circle cx="176" cy="176" r="18" fill="#FFFFFF"></circle>
+
+  <!-- 底部节点 -->
+  <circle cx="128" cy="192" r="18" fill="#FFFFFF"></circle>
+
+</svg>
