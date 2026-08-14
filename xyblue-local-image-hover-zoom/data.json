@@ -1,0 +1,21 @@
+{
+  "settingsVersion": 5,
+  "modifier": "Shift",
+  "step": 0.15,
+  "minScale": 0.35,
+  "maxScale": 4,
+  "showScaleBadge": true,
+  "frameEnabled": true,
+  "frameTheme": "mc-cherry",
+  "frameBorderWidth": 4,
+  "framePixelUnit": 1,
+  "frameMargin": 12,
+  "frameRadius": 0,
+  "frameMainColor": "#d88f9f",
+  "frameBackgroundColor": "#f4c6ce",
+  "frameInnerDarkColor": "#8f5966",
+  "frameLightColor": "#efb4c0",
+  "frameOuterColor": "#a96877",
+  "frameShadowColor": "#5a2d3c",
+  "frameShadowOpacity": 0.22
+}

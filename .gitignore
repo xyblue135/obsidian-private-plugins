@@ -1,0 +1,21 @@
+# ===== Obsidian 插件状态仓库 .gitignore =====
+# 目的：快照整个 plugins 目录（含第三方插件），用于回溯/恢复插件状态。
+# 因此默认跟踪一切：manifest.json / main.js / styles.css / data.json / README 等。
+
+# 构建依赖（如某插件后续引入 node 工程）
+node_modules/
+
+# 日志
+*.log
+
+# Hot Reload 标记文件
+.hotreload
+
+# 编辑器/系统临时文件
+*.tmp
+.DS_Store
+
+# 注意：data.json（各插件运行时设置）这里【刻意不忽略】，因为你的目标是
+# 备份/恢复插件状态。但请知悉：obsidian-livesync、pandoc 等插件的 data.json
+# 可能含同步地址 / API Key 等凭据。若此仓库未来 push 到 GitHub，务必设为
+# 私有仓库，或先手动清理敏感字段再提交。

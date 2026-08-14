@@ -1,0 +1,20 @@
+{
+  "wrapEnabled": true,
+  "styleMode": "dark",
+  "showToolbarMarker": false,
+  "overrideCodeBackground": true,
+  "toolbarHeight": 16,
+  "copyButtonSize": 16,
+  "copyIconSize": 6,
+  "codePaddingVertical": 8,
+  "codePaddingHorizontal": 12,
+  "borderRadius": 7,
+  "scrollbarHeight": 6,
+  "codeBackground": "#546d5e",
+  "toolbarBackground": "#171c24",
+  "borderColor": "#2a3140",
+  "codeTextColor": "#d7dde8",
+  "mutedColor": "#8994a6",
+  "hoverColor": "#252c39",
+  "accentColor": "#7aa2f7"
+}

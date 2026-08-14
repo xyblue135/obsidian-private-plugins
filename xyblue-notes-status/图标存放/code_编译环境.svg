@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 512 512"
+     width="512" height="512">
+  <g fill="none"
+     stroke="#263D43"
+     stroke-width="18"
+     stroke-linecap="round"
+     stroke-linejoin="round">
+
+    <!-- 编译信息面板 -->
+    <path d="M128 78H108
+             C93 78 82 90 82 105
+             V386
+             C82 403 95 416 112 416
+             H294" />
+    <path d="M292 78H314
+             C329 78 340 90 340 105
+             V236" />
+
+    <!-- 顶部夹具 -->
+    <rect x="132" y="48" width="160" height="54" rx="27" />
+
+    <!-- 编译日志 -->
+    <path d="M120 158H266" />
+    <path d="M120 226H238" />
+    <path d="M120 294H214" />
+
+    <!-- 设置齿轮 -->
+    <circle cx="358" cy="348" r="64" />
+    <circle cx="358" cy="348" r="23" stroke-width="14" />
+
+    <path d="M358 258V276" />
+    <path d="M358 420V438" />
+    <path d="M268 348H286" />
+    <path d="M430 348H448" />
+    <path d="M294 284L307 297" />
+    <path d="M409 399L422 412" />
+    <path d="M294 412L307 399" />
+    <path d="M409 297L422 284" />
+  </g>
+</svg>

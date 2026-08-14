@@ -1,0 +1,208 @@
+{
+  "recentFiles": [
+    {
+      "basename": "附件资源健康检查_稳定展开可复制版 (1)",
+      "path": "主页组件/附件资源健康检查_稳定展开可复制版 (1).md"
+    },
+    {
+      "basename": "年度活跃",
+      "path": "主页组件/年度活跃.md"
+    },
+    {
+      "basename": "密码管理",
+      "path": "主页组件/密码管理.md"
+    },
+    {
+      "basename": "附件资源健康检查-Mirror-Attachments-v1.6.6",
+      "path": "主页组件/附件资源健康检查-Mirror-Attachments-v1.6.6.md"
+    },
+    {
+      "basename": "关于gh-github-cli",
+      "path": "Notes/01_CICD/关于gh-github-cli.md"
+    },
+    {
+      "basename": "【git】git常见分支命名_发布版本",
+      "path": "Notes/01_CICD/运维_git/【git】git常见分支命名_发布版本.md"
+    },
+    {
+      "basename": "ffmpeg的命令使用",
+      "path": "Notes/04音视频/音视频_ffmpeg/ffmpeg的命令使用.md"
+    },
+    {
+      "basename": "ollama的11434端口的v1参数",
+      "path": "Notes/01运维_0ai相关/ollama系列/ollama的11434端口的v1参数.md"
+    },
+    {
+      "basename": "ffmpeg使用py批量压制hevc格式",
+      "path": "Notes/04音视频/音视频_ffmpeg/ffmpeg使用py批量压制hevc格式.md"
+    },
+    {
+      "basename": "FFmpeg添加ffplay和DLL模块",
+      "path": "Notes/04音视频/音视频_ffmpeg/FFmpeg添加ffplay和DLL模块.md"
+    },
+    {
+      "basename": "win和linux下安装编译版本ffmpeg",
+      "path": "Notes/04音视频/音视频_ffmpeg/win和linux下安装编译版本ffmpeg.md"
+    },
+    {
+      "basename": "编译ffmpeg_gpu-cuda加速版本【Visual_Studio_2022_+_CUDA_Toolkit_12.x_+_MSYS2】",
+      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu-cuda加速版本【Visual_Studio_2022_+_CUDA_Toolkit_12.x_+_MSYS2】.md"
+    },
+    {
+      "basename": "编译ffmpeg-cpu版本",
+      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg-cpu版本.md"
+    },
+    {
+      "basename": "PyTorch 与 ONNX Runtime 的 CUDA 环境对齐的故障排除",
+      "path": "Notes/01运维_0ai相关/图像识别/PyTorch 与 ONNX Runtime 的 CUDA 环境对齐的故障排除.md"
+    },
+    {
+      "basename": "ultralytics偷偷安装onnxruntime【坏处】",
+      "path": "Notes/01运维_0ai相关/图像识别/ultralytics【一站式开源 Python 库】/ultralytics偷偷安装onnxruntime【坏处】.md"
+    },
+    {
+      "basename": "00_介绍pytorch和一些常见的误区",
+      "path": "Notes/01运维_0ai相关/图像识别/PyTorch是训练 + 推理框架/00_介绍pytorch和一些常见的误区.md"
+    },
+    {
+      "basename": "使用kmbox进行键盘透传",
+      "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/效率处理/使用kmbox进行键盘透传.md"
+    },
+    {
+      "basename": "为什么Ultralytics能避开部署大坑【好处】",
+      "path": "Notes/01运维_0ai相关/图像识别/ultralytics【一站式开源 Python 库】/为什么Ultralytics能避开部署大坑【好处】.md"
+    },
+    {
+      "basename": "ultralytics简单介绍",
+      "path": "Notes/01运维_0ai相关/图像识别/ultralytics【一站式开源 Python 库】/ultralytics简单介绍.md"
+    },
+    {
+      "basename": "00视觉工具生态关系图",
+      "path": "Notes/01运维_0ai相关/图像识别/00视觉工具生态关系图.md"
+    },
+    {
+      "basename": "onnx的安装",
+      "path": "Notes/01运维_0ai相关/图像识别/onnx是推理/onnx的安装.md"
+    },
+    {
+      "basename": "onnx是什么",
+      "path": "Notes/01运维_0ai相关/图像识别/onnx是推理/onnx是什么.md"
+    },
+    {
+      "basename": "1",
+      "path": "Notes/01运维_0ai相关/图像识别/tensort/1.md"
+    },
+    {
+      "basename": "pip中安装TensorRT运行时",
+      "path": "Notes/01运维_0ai相关/图像识别/tensort/pip中安装TensorRT运行时.md"
+    },
+    {
+      "basename": "ONNX_→_TensorRT_模型转换_Web_管理工具",
+      "path": "Notes/01运维_0ai相关/图像识别/ONNX_→_TensorRT_模型转换_Web_管理工具.md"
+    },
+    {
+      "basename": "01_安装cpu和gpu版本的pytorch【不会带onnx的runtime】",
+      "path": "Notes/01运维_0ai相关/图像识别/PyTorch是训练 + 推理框架/01_安装cpu和gpu版本的pytorch【不会带onnx的runtime】.md"
+    },
+    {
+      "basename": "1",
+      "path": "Notes/01运维_0ai相关/图像识别/opencv/1.md"
+    },
+    {
+      "basename": "CUDA Toolkit是什么",
+      "path": "Notes/Z_nvidia/n卡加速类/CUDA Toolkit是什么.md"
+    },
+    {
+      "basename": "安装n卡的cuda以及codec_sdk",
+      "path": "Notes/Z_nvidia/n卡加速类/安装n卡的cuda以及codec_sdk.md"
+    },
+    {
+      "basename": "opencv对比yolo",
+      "path": "Notes/01运维_0ai相关/图像识别/opencv/opencv对比yolo.md"
+    },
+    {
+      "basename": "介绍opencv",
+      "path": "Notes/01运维_0ai相关/图像识别/opencv/介绍opencv.md"
+    },
+    {
+      "basename": "数据标注工具X-AnyLabeling",
+      "path": "Notes/01运维_0ai相关/图像识别/标注工具/数据标注工具X-AnyLabeling.md"
+    },
+    {
+      "basename": "yolo全版本对比",
+      "path": "Notes/01运维_0ai相关/图像识别/yolo全版本对比.md"
+    },
+    {
+      "basename": "通过opencv预处理图片促进yolo推理速度和质量",
+      "path": "Notes/01运维_0ai相关/图像识别/opencv/通过opencv预处理图片促进yolo推理速度和质量.md"
+    },
+    {
+      "basename": "修复freellm的bug",
+      "path": "Notes/01运维_0ai相关/网关/freellmapi/修复freellm的bug.md"
+    },
+    {
+      "basename": "scrcpy 虚拟显示器使用教程",
+      "path": "Notes/02代码/code_android/adb相关/scrcpy 虚拟显示器使用教程.md"
+    },
+    {
+      "basename": "自VMware公开免费下载之后放迷路步骤",
+      "path": "Notes/01运维_0linux/运维_虚拟机/01_VMware/自VMware公开免费下载之后放迷路步骤.md"
+    },
+    {
+      "basename": "kail破解密码",
+      "path": "Notes/Y_破解和攻击类/kail破解密码.md"
+    },
+    {
+      "basename": "添加开始菜单搜索",
+      "path": "Notes/Y_常用小知识_软件/添加开始菜单搜索.md"
+    },
+    {
+      "basename": "arp协议和arp攻击",
+      "path": "Notes/Y_破解和攻击类/arp协议和arp攻击.md"
+    },
+    {
+      "basename": "使用hashcat工具且显卡加速进行一定的暴力破解",
+      "path": "Notes/Y_破解和攻击类/使用hashcat工具且显卡加速进行一定的暴力破解.md"
+    },
+    {
+      "basename": "关于网卡名字前缀名的介绍",
+      "path": "Notes/01运维_0网络/网卡知识/关于网卡名字前缀名的介绍.md"
+    },
+    {
+      "basename": "win上如何查看网卡的芯片",
+      "path": "Notes/01运维_0网络/网卡知识/win上如何查看网卡的芯片.md"
+    },
+    {
+      "basename": "Linux一个高级电源管理工具TLP",
+      "path": "Notes/01运维_0linux/00_硬件/电源/Linux一个高级电源管理工具TLP.md"
+    },
+    {
+      "basename": "Escrcpy 相比 scrcpy 有什么优势？",
+      "path": "Notes/02代码/code_android/adb相关/Escrcpy 相比 scrcpy 有什么优势？.md"
+    },
+    {
+      "basename": "调用生图",
+      "path": "Notes/01运维_0ai相关/网关/调用生图.md"
+    },
+    {
+      "basename": "调用指定模型",
+      "path": "Notes/01运维_0ai相关/网关/调用指定模型.md"
+    },
+    {
+      "basename": "记录一次18kstar项目freellmapi的bug修复并纳入主分支【主介绍】",
+      "path": "Notes/01_CICD/github规范化提交/记录一次18kstar项目freellmapi的bug修复并纳入主分支【主介绍】.md"
+    },
+    {
+      "basename": "【ip n】ip neighbor",
+      "path": "Notes/01运维_0网络/网卡配置/【ip n】ip neighbor.md"
+    },
+    {
+      "basename": "ADB 脚本为什么会产生步骤延迟？",
+      "path": "Notes/02代码/code_android/adb相关/ADB 脚本为什么会产生步骤延迟？.md"
+    }
+  ],
+  "omittedPaths": [],
+  "omittedTags": [],
+  "updateOn": "file-open",
+  "omitBookmarks": false
+}
