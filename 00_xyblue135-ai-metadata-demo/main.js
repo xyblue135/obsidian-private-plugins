@@ -6,7 +6,7 @@
 /*
  * xyblue135-AI-Metadata for Obsidian
  * Author: xyblue135
- * v0.5.6
+ * v0.5.7
  *
  * Features:
  * - Inline AI buttons beside summary/tags only for the root /Notes whitelist.
@@ -31,12 +31,25 @@ const {
   setIcon,
 } = require("obsidian");
 
-const DEFAULT_SUMMARY_HARNESS = [
+const LEGACY_SUMMARY_HARNESS_V056 = [
   "语言：中文。",
   "形式：单句摘要，直接概括核心知识。",
   "不要使用‘本文介绍了’、‘这篇笔记’等套话。",
   "不要 Markdown、不要引号、不要前后解释。",
   "摘要长度不得超过 {{summaryMaxChars}} 个字符。",
+].join("\n");
+
+const DEFAULT_SUMMARY_HARNESS = [
+  "语言：中文。",
+  "形式：输出一段自然、完整、连贯的内容摘要，通常使用 2～3 个完整句子，但保持为单段，不换行。",
+  "目标：生成文章内容总览，而不是最终结论、技术速记或参数清单；仅阅读摘要时，也应能大致知道背景问题、关键排查/分析过程、主要判断、技术方案，以及重要限制或待验证项。",
+  "正文中存在时，优先覆盖：①核心对象/问题或场景；②关键测试、数据、实验或判断依据；③证据如何导向核心判断；④最终方法/方案；⑤有技术辨识度的型号、参数、组件、接口、协议、算法、工具或实现方式；⑥重要风险、限制、异常或待验证问题。",
+  "不要只写‘问题 + 最终方案’；如果正文包含排查、测试、选型、实现、注意事项等多个阶段，应尽量保留这些阶段的覆盖范围。",
+  "优先保留具体信息和因果关系，不要用‘进行了相关测试’‘采用某些方法’等模糊措辞替代正文中的关键技术信息。",
+  "表达必须像正常中文文章摘要，不要写成电报体、日志体、参数串或关键词堆叠；不要为了省字大量使用 /、+、→ 代替自然语言关系（技术名称或必要公式中的符号除外）。",
+  "不要使用‘本文介绍了’‘这篇文章讲了’‘这篇笔记主要是’等空泛开场；可以使用‘针对……’‘通过……发现……’‘进一步……’‘同时……’等自然连接方式。",
+  "长度：不得超过 {{summaryMaxChars}} 个字符；正文信息充足时，尽量使用字符预算的 75%～95%，宁可压缩重复和修饰词，也不要无故删除关键技术阶段。",
+  "不要 Markdown、不要标题、不要引号、不要前后解释，只输出摘要正文。",
 ].join("\n");
 
 const TAG_VALUE_SAFETY_PROTOCOL = [
@@ -152,7 +165,7 @@ const DEFAULT_SETTINGS = {
   apiKey: "",
   model: "auto",
   whitelistFolder: "Notes",
-  summaryMaxChars: 100,
+  summaryMaxChars: 300,
   summaryMarkdownCleanupEnabled: false,
   contentFingerprintEnabled: false,
   maxTags: 7,
@@ -170,6 +183,7 @@ const DEFAULT_SETTINGS = {
   tagCaseNormalizationEnabled: true,
   technicalTagCanonicalList: DEFAULT_TECHNICAL_TAG_CANONICAL_LIST,
   summaryHarness: DEFAULT_SUMMARY_HARNESS,
+  summaryNaturalOverviewMigratedV057: true,
   tagsHarness: DEFAULT_TAGS_HARNESS,
 };
 
@@ -238,6 +252,28 @@ module.exports = class AiMetadataPlugin extends Plugin {
     if (!savedSettings.technicalTagCanonicalList) {
       this.settings.technicalTagCanonicalList = DEFAULT_TECHNICAL_TAG_CANONICAL_LIST;
     }
+
+    // v0.5.7：摘要从“100 字单句速记”迁移为“约 300 字自然内容总览”。
+    // 只在首次升级时执行一次，之后用户仍可自行改回任意长度或自定义 Harness。
+    let summaryV057MigrationChanged = false;
+    if (savedSettings.summaryNaturalOverviewMigratedV057 !== true) {
+      const savedMaxChars = Number(savedSettings.summaryMaxChars);
+      if (!Number.isFinite(savedMaxChars) || savedMaxChars <= 120) {
+        this.settings.summaryMaxChars = 300;
+        summaryV057MigrationChanged = true;
+      }
+      const savedSummaryHarness = String(savedSettings.summaryHarness || "");
+      const looksLikeLegacySingleSentence = !savedSummaryHarness
+        || savedSummaryHarness === LEGACY_SUMMARY_HARNESS_V056
+        || savedSummaryHarness.includes("形式：只输出一个完整的单句摘要")
+        || savedSummaryHarness.includes("形式：单句摘要");
+      if (looksLikeLegacySingleSentence) {
+        this.settings.summaryHarness = DEFAULT_SUMMARY_HARNESS;
+        summaryV057MigrationChanged = true;
+      }
+      this.settings.summaryNaturalOverviewMigratedV057 = true;
+      summaryV057MigrationChanged = true;
+    }
     this.state = Object.assign({}, DEFAULT_STATE, savedState);
     this.state.files = Object.assign({}, DEFAULT_STATE.files, savedState.files || {});
     this.state.tagCatalog = Object.assign({}, DEFAULT_STATE.tagCatalog, savedState.tagCatalog || {});
@@ -248,6 +284,8 @@ module.exports = class AiMetadataPlugin extends Plugin {
     if (this.settings.contentFingerprintEnabled !== true) {
       this.clearPersistentFingerprintMarkers();
       // 迁移结果立即写回磁盘，确保旧 hash 字段真正从 data.json 删除，而不是只在内存中忽略。
+      await this.saveAllData();
+    } else if (summaryV057MigrationChanged) {
       await this.saveAllData();
     }
 
@@ -1125,6 +1163,36 @@ module.exports = class AiMetadataPlugin extends Plugin {
       .replaceAll("{{whitelistFolder}}", this.normalizeWhitelistFolder());
   }
 
+  getSummaryLengthTargets() {
+    const maxChars = Math.max(20, Number(this.settings.summaryMaxChars) || 300);
+    return {
+      maxChars,
+      targetMin: Math.max(20, Math.floor(maxChars * 0.75)),
+      targetIdeal: Math.max(20, Math.floor(maxChars * 0.88)),
+      targetMax: Math.max(20, Math.floor(maxChars * 0.95)),
+    };
+  }
+
+  normalizeSummaryOutput(text) {
+    const { maxChars } = this.getSummaryLengthTargets();
+    let summary = String(text || "")
+      .replace(/^[\"'“”]+|[\"'“”]+$/g, "")
+      .replace(/\s*\n+\s*/g, " ")
+      .replace(/[ \t]{2,}/g, " ")
+      .trim();
+    if (!summary || summary.length <= maxChars) return summary;
+
+    // 避免旧版 slice(maxChars) 把摘要直接切断在半句话中。
+    const clipped = summary.slice(0, maxChars);
+    const minimumUsefulCut = Math.floor(maxChars * 0.65);
+    let cutAt = -1;
+    for (const punctuation of ["。", "！", "？", "；"]) {
+      cutAt = Math.max(cutAt, clipped.lastIndexOf(punctuation));
+    }
+    if (cutAt >= minimumUsefulCut) return clipped.slice(0, cutAt + 1).trim();
+    return `${clipped.slice(0, Math.max(1, maxChars - 1)).trimEnd()}…`;
+  }
+
   cleanMarkdownForSummary(body) {
     if (this.settings.summaryMarkdownCleanupEnabled !== true) return String(body || "");
 
@@ -1164,22 +1232,24 @@ module.exports = class AiMetadataPlugin extends Plugin {
 
   async generateSummary(body, title, context = {}) {
     const summaryBody = this.cleanMarkdownForSummary(body);
+    const { maxChars, targetMin, targetIdeal, targetMax } = this.getSummaryLengthTargets();
     const harness = this.settings.summaryHarnessEnabled
       ? `\n\nHarness 约束：\n${this.renderHarness(this.settings.summaryHarness)}`
       : "";
     const system = `你是 Obsidian 知识库的元数据整理助手。${harness}`;
     const prompt = [
       `笔记标题：${title}`,
-      `最大字符数：${this.settings.summaryMaxChars}`,
-      "请根据以下笔记正文生成 summary。只输出 summary 文本本身。",
+      `摘要硬上限：${maxChars} 字符。`,
+      `正文信息充足时，目标长度约 ${targetIdeal} 字符，建议落在 ${targetMin}～${targetMax} 字符；不要为了简短只写最终结论。`,
+      "请生成自然、完整的内容概览，通常 2～3 句、保持单段不换行；避免电报体、参数串和关键词堆叠。只输出 summary 文本本身。",
       "",
       summaryBody,
     ].join("\n");
 
     const text = await this.chat(system, prompt, { ...context, phase: "Summary" });
-    const summary = String(text).replace(/^[\"'“”]+|[\"'“”]+$/g, "").trim();
+    const summary = this.normalizeSummaryOutput(text);
     if (!summary) throw new Error("AI 返回了空 summary");
-    return summary.slice(0, Math.max(20, Number(this.settings.summaryMaxChars) || 100));
+    return summary;
   }
 
   async generateTags(body, title, currentTags, context = {}) {
@@ -1229,6 +1299,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
   async generateCombinedMetadata(body, title, currentTags, context = {}) {
     const combinedBody = this.cleanMarkdownForSummary(body);
     const maxTags = Math.max(1, Number(this.settings.maxTags) || 7);
+    const { maxChars: summaryMaxChars, targetMin: summaryTargetMin, targetIdeal: summaryTargetIdeal, targetMax: summaryTargetMax } = this.getSummaryLengthTargets();
     const summaryHarness = this.settings.summaryHarnessEnabled
       ? `\n[Summary Harness]\n${this.renderHarness(this.settings.summaryHarness)}`
       : "";
@@ -1245,10 +1316,10 @@ module.exports = class AiMetadataPlugin extends Plugin {
     ].filter(Boolean).join("\n");
     const basePrompt = [
       `笔记标题：${title}`,
-      `Summary 最大字符数：${this.settings.summaryMaxChars}`,
+      `Summary 硬上限：${summaryMaxChars} 字符；正文信息充足时目标约 ${summaryTargetIdeal} 字符，建议 ${summaryTargetMin}～${summaryTargetMax} 字符。`,
       `当前 tags（已转为 value）：${currentTags.length ? currentTags.join("、") : "无"}`,
       "同时完成以下两个结果：",
-      "1. summary：根据正文生成单句摘要。",
+      "1. summary：生成自然、完整的文章内容概览，通常 2～3 个完整句子、保持单段不换行；不要只写最终结论，不要写成电报体、参数串或关键词堆叠。",
       `2. tags：生成最多 ${maxTags} 个互不重复、合法的标签，并按 Harness 的技术优先规则给 weight；优先质量，不要求凑满。`,
       "",
       "唯一允许的返回结构：",
@@ -1273,10 +1344,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
       rawAttempts.push(text);
       try {
         const parsed = this.parseCombinedMetadata(text);
-        const summary = String(parsed.summary ?? "")
-          .replace(/^[\"'“”]+|[\"'“”]+$/g, "")
-          .trim()
-          .slice(0, Math.max(20, Number(this.settings.summaryMaxChars) || 100));
+        const summary = this.normalizeSummaryOutput(parsed.summary ?? "");
         if (!summary) throw new StructuredOutputError("合并请求没有返回可用 summary", text);
         const weightedTags = this.rankWeightedTags(parsed.tags);
         return { summary, weightedTags };
@@ -2927,7 +2995,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
     containerEl.createEl("h3", { text: "高级输出约束" });
     new Setting(containerEl)
       .setName("摘要语义约束（Summary Harness）")
-      .setDesc("关闭后不附加下面的语义约束，但仍保留最小输出协议。支持 {{summaryMaxChars}}。")
+      .setDesc("关闭后不附加下面的语义约束，但仍保留最小输出协议。v0.5.7 默认改为自然内容总览（通常 2～3 句、单段）。支持 {{summaryMaxChars}}。")
       .addToggle((toggle) => toggle.setValue(this.plugin.settings.summaryHarnessEnabled).onChange(async (value) => {
         this.plugin.settings.summaryHarnessEnabled = value;
         await this.plugin.saveAllData();
@@ -2983,6 +3051,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
     containerEl.createEl("h3", { text: "摘要参数" });
     new Setting(containerEl)
       .setName("摘要最大字符数（Summary）")
+      .setDesc("推荐 250～320；v0.5.7 默认 300。正文信息充足时，Prompt 会引导模型使用约 75%～95% 的字符预算，而不是只写几十字结论。")
       .addText((text) => {
         text.inputEl.type = "number";
         text.setValue(String(this.plugin.settings.summaryMaxChars)).onChange(async (value) => {

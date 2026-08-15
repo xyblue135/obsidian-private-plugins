@@ -1,0 +1,10 @@
+{
+  "settings": {
+    "baseUrl": "http://127.0.0.1:3001/v1",
+    "apiKey": "",
+    "model": "auto",
+    "whitelistFolder": "Notes",
+    "summaryMaxChars": 300
+  },
+  "state": {}
+}

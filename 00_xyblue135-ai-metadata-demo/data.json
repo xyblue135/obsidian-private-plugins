@@ -21,7 +21,7 @@
     "tagsHarnessEnabled": true,
     "tagCaseNormalizationEnabled": true,
     "technicalTagCanonicalList": "Linux\nPrometheus\nGrafana\nDocker\nKubernetes\nK8s\nNginx\nMySQL\nPostgreSQL\nRedis\nMongoDB\nGit\nGitHub\nGitLab\nJenkins\nAnsible\nTerraform\nPython\nJava\nJavaScript\nTypeScript\nNodeJS\nReact\nVue\nAngular\nSpring\nSpringBoot\nOpenAI\nChatGPT\nObsidian\nSelenium\nFFmpeg\nFluent\nUnity\nYOLO\nPyTorch\nTensorFlow\nCUDA\nOpenCV\nNumPy\nPandas\nScikitLearn\nREST\nHTTP\nHTTPS\nTCP\nUDP\nDNS\nSSH\nTLS\nJSON\nYAML\nXML\nHTML\nCSS\nSQL\nNoSQL\nAPI\nSDK\nCI\nCD\nDevOps\nMLOps\nLLM\nRAG\nNacos\nZabbix\nLoki\nPromtail\nSkyWalking",
-    "summaryHarness": "语言：中文。\n形式：单句摘要，直接概括核心知识。\n不要使用‘本文介绍了’、‘这篇笔记’等套话。\n不要 Markdown、不要引号、不要前后解释。\n摘要长度不得超过 {{summaryMaxChars}} 个字符。",
+    "summaryHarness": "语言：中文。\n\n形式：只输出一个完整的单句摘要，可以使用逗号、顿号、分号组织多个信息层次，但不要拆成多个句号结尾的句子。\n\n目标：生成“高信息密度的文章内容总览”，而不是只提炼最终结论；读者只看摘要，也应大致知道文章为什么产生、做了哪些关键测试或分析、得出了什么判断、采用了什么方案、涉及哪些重要技术细节，以及还有什么风险、限制或待验证问题。\n\n摘要必须尽可能覆盖以下信息，正文中存在时不得无故省略：\n1. 核心对象、背景问题或故障现象；\n2. 关键排查过程、实验、测试数据或判断依据；\n3. 根据这些证据得到的核心判断或因果关系；\n4. 最终采用或设计的技术方案；\n5. 具有技术辨识度的关键参数、组件、接口、协议、算法、工具或实现方式；\n6. 重要注意事项、风险、限制、异常现象或仍待验证的问题。\n\n不要只写“问题 + 最终解决方案”，如果正文包含完整的排查、测试、选型、实现和风险分析，应尽量把这些阶段全部压缩进摘要。\n\n优先保留具体信息，例如型号、技术名词、接口名称、关键数值、测试结果、核心模块和异常现象；不要用“进行了测试”“采用相关方法”“做了一些优化”等模糊描述代替具体内容。\n\n对于技术文章，优先保留能够体现文章技术深度和检索价值的关键词，使摘要能够用于后续 AI 分类、技术含量判断、搜索和文章排序。\n\n长度要求：\n摘要不得超过 {{summaryMaxChars}} 个字符；\n当正文信息充足时，不要主动追求简短，摘要长度应尽量达到 {{summaryMaxChars}} 的 75%～95%；\n除非原文内容本身很少，否则不要只输出几十个字的结论型摘要；\n如果内容过多，优先压缩措辞，而不是删除关键阶段和关键技术信息。\n\n表达要求：\n直接从具体对象、问题或场景开始，例如“针对……”“在……场景下……”；\n不要使用“本文介绍了”“这篇文章讲了”“这篇笔记主要是”等空泛套话；\n不要 Markdown；\n不要标题；\n不要引号；\n不要前后解释；\n",
     "tagsHarness": "最多输出 {{maxTags}} 个互不重复的标签 value；优先质量，不要为了凑数量加入泛化、重复或低信息量标签；不得使用 skill/Linux、domain/云计算 这类层级前缀。\nweight 主要表示‘技术专有性 + 对检索这篇笔记的区分度’，不是泛泛的主题相关度。\n具体技术实体优先高权重：软件/工具、框架、库、协议、API、算法、数据结构、数据库、系统组件、具体文件或媒体格式等，应优先于宽泛动作或用途词。\n当具体技术词和泛化概念表达相近时，具体技术词必须明显更高。例如 FFmpeg≈0.98，视频转码≈0.72，格式转换≈0.45；不要让‘格式转换’这类泛词压过 FFmpeg。\n建议权重层级：核心具体技术 0.90~1.00；具体机制/算法/协议/格式 0.80~0.94；明确任务或领域 0.60~0.79；泛化动作/用途 0.30~0.59。\n避免同义词、近义重复、上下位概念重复占位；在最多 {{maxTags}} 个标签内尽量覆盖不同的高信息量技术维度。"
   },
   "state": {
@@ -3549,7 +3549,7 @@
       },
       "Notes/Y_常用小知识_硬件/避雷寨板笔记本-风扇异响-电池鼓包.md": {
         "lastAiUpdatedAt": 1786296539733,
-        "lastChangeSource": "ai-plugin",
+        "lastChangeSource": "external-change",
         "lastReason": "manual-folder",
         "lastError": "",
         "lastErrorType": "",
@@ -3585,7 +3585,7 @@
             "weight": 0.6
           }
         ],
-        "lastChangedAt": 1786296539734
+        "lastChangedAt": 1786724228233
       },
       "Notes/Y_常用小知识_硬件/组装一台自己的台式机.md": {
         "lastAiUpdatedAt": 1786296604590,
@@ -3705,7 +3705,7 @@
       },
       "Notes/Y_常用小知识_硬件/常见光模块类型.md": {
         "lastAiUpdatedAt": 1786296747932,
-        "lastChangeSource": "ai-plugin",
+        "lastChangeSource": "external-change",
         "lastReason": "manual-folder",
         "lastError": "",
         "lastErrorType": "",
@@ -3737,7 +3737,7 @@
             "weight": 0.75
           }
         ],
-        "lastChangedAt": 1786296747933
+        "lastChangedAt": 1786769407054
       },
       "Notes/Y_常用小知识_硬件/如果机箱不加风扇会怎么样.md": {
         "lastAiUpdatedAt": 1786296793270,
@@ -6074,82 +6074,6 @@
           }
         ],
         "lastChangedAt": 1786298991321
-      },
-      "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu-cuda加速版本【Visual_Studio_2022_+_CUDA_Toolkit_12.x_+_MSYS2】.md": {
-        "lastChangeSource": "external-metadata",
-        "lastChangedAt": 1786681516565,
-        "lastAiUpdatedAt": 1786299041956,
-        "lastReason": "manual-folder",
-        "lastError": "",
-        "lastErrorType": "",
-        "lastRawModelOutput": "",
-        "lastSkipReason": "",
-        "lastTagScores": [
-          {
-            "value": "libnpp",
-            "weight": 0.95
-          },
-          {
-            "value": "FFmpeg",
-            "weight": 0.9
-          },
-          {
-            "value": "nasm",
-            "weight": 0.85
-          },
-          {
-            "value": "x86asm",
-            "weight": 0.8
-          },
-          {
-            "value": "MSYS2",
-            "weight": 0.75
-          },
-          {
-            "value": "patherror",
-            "weight": 0.65
-          }
-        ]
-      },
-      "Notes/04音视频/音视频_ffmpeg/编译ffmpeg-cpu版本.md": {
-        "lastAiUpdatedAt": 1786299095227,
-        "lastChangeSource": "external-metadata",
-        "lastReason": "manual-folder",
-        "lastError": "",
-        "lastErrorType": "",
-        "lastRawModelOutput": "",
-        "lastSkipReason": "",
-        "lastTagScores": [
-          {
-            "value": "FFmpeg",
-            "weight": 0.95
-          },
-          {
-            "value": "MSYS2",
-            "weight": 0.9
-          },
-          {
-            "value": "VS2026",
-            "weight": 0.9
-          },
-          {
-            "value": "x86_64",
-            "weight": 0.85
-          },
-          {
-            "value": "CPU编译",
-            "weight": 0.8
-          },
-          {
-            "value": "Windows",
-            "weight": 0.7
-          },
-          {
-            "value": "编译脚本",
-            "weight": 0.6
-          }
-        ],
-        "lastChangedAt": 1786681470119
       },
       "Notes/04音视频/音视频_ffmpeg/ffmpeg的命令使用.md": {
         "lastAiUpdatedAt": 1786299207136,
@@ -10030,46 +9954,6 @@
           }
         ],
         "lastChangedAt": 1786313773768
-      },
-      "Notes/02代码/code_编译环境/安装MSYS2环境.md": {
-        "lastAiUpdatedAt": 1786313819708,
-        "lastChangeSource": "ai-plugin",
-        "lastReason": "auto",
-        "lastError": "",
-        "lastErrorType": "",
-        "lastRawModelOutput": "",
-        "lastSkipReason": "",
-        "lastTagScores": [
-          {
-            "value": "编译工具链",
-            "weight": 0.15
-          },
-          {
-            "value": "环境变量配置",
-            "weight": 0.15
-          },
-          {
-            "value": "交叉编译",
-            "weight": 0.15
-          },
-          {
-            "value": "MSYS2",
-            "weight": 0.15
-          },
-          {
-            "value": "Windows开发",
-            "weight": 0.15
-          },
-          {
-            "value": "MinGW-w64",
-            "weight": 0.1
-          },
-          {
-            "value": "gcc历史",
-            "weight": 0.05
-          }
-        ],
-        "lastChangedAt": 1786313819709
       },
       "Notes/02代码/code_编译环境/安装MinGW构建工具.md": {
         "lastAiUpdatedAt": 1786293446180,
@@ -25622,133 +25506,143 @@
             "weight": 0.82
           }
         ]
+      },
+      "Notes/Y_常用小知识_软件/win的winget.md": {
+        "lastChangeSource": "external-change",
+        "lastChangedAt": 1786694137296
+      },
+      "Notes/04音视频/音视频_ffmpeg/编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md": {
+        "lastAiUpdatedAt": 1786299095227,
+        "lastChangeSource": "external-metadata",
+        "lastReason": "manual-folder",
+        "lastError": "",
+        "lastErrorType": "",
+        "lastRawModelOutput": "",
+        "lastSkipReason": "",
+        "lastTagScores": [
+          {
+            "value": "FFmpeg",
+            "weight": 0.95
+          },
+          {
+            "value": "MSYS2",
+            "weight": 0.9
+          },
+          {
+            "value": "VS2026",
+            "weight": 0.9
+          },
+          {
+            "value": "x86_64",
+            "weight": 0.85
+          },
+          {
+            "value": "CPU编译",
+            "weight": 0.8
+          },
+          {
+            "value": "Windows",
+            "weight": 0.7
+          },
+          {
+            "value": "编译脚本",
+            "weight": 0.6
+          }
+        ],
+        "lastChangedAt": 1786681470119
+      },
+      "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md": {
+        "lastChangeSource": "external-change",
+        "lastChangedAt": 1786698369878,
+        "lastAiUpdatedAt": 1786299041956,
+        "lastReason": "manual-folder",
+        "lastError": "",
+        "lastErrorType": "",
+        "lastRawModelOutput": "",
+        "lastSkipReason": "",
+        "lastTagScores": [
+          {
+            "value": "libnpp",
+            "weight": 0.95
+          },
+          {
+            "value": "FFmpeg",
+            "weight": 0.9
+          },
+          {
+            "value": "nasm",
+            "weight": 0.85
+          },
+          {
+            "value": "x86asm",
+            "weight": 0.8
+          },
+          {
+            "value": "MSYS2",
+            "weight": 0.75
+          },
+          {
+            "value": "patherror",
+            "weight": 0.65
+          }
+        ]
+      },
+      "Notes/02代码/code_编译环境/安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】.md": {
+        "lastAiUpdatedAt": 1786313819708,
+        "lastChangeSource": "external-change",
+        "lastReason": "auto",
+        "lastError": "",
+        "lastErrorType": "",
+        "lastRawModelOutput": "",
+        "lastSkipReason": "",
+        "lastTagScores": [
+          {
+            "value": "编译工具链",
+            "weight": 0.15
+          },
+          {
+            "value": "环境变量配置",
+            "weight": 0.15
+          },
+          {
+            "value": "交叉编译",
+            "weight": 0.15
+          },
+          {
+            "value": "MSYS2",
+            "weight": 0.15
+          },
+          {
+            "value": "Windows开发",
+            "weight": 0.15
+          },
+          {
+            "value": "MinGW-w64",
+            "weight": 0.1
+          },
+          {
+            "value": "gcc历史",
+            "weight": 0.05
+          }
+        ],
+        "lastChangedAt": 1786698623035
+      },
+      "Notes/02代码/代码_RUST【编译噩梦 使用天堂】/RUST的介绍.md": {
+        "lastChangeSource": "external-change",
+        "lastChangedAt": 1786707144303
+      },
+      "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md": {
+        "lastChangeSource": "ai-plugin",
+        "lastChangedAt": 1786769917947,
+        "lastAiUpdatedAt": 1786769917945,
+        "lastReason": "manual",
+        "lastError": "",
+        "lastErrorType": "",
+        "lastRawModelOutput": "",
+        "lastSkipReason": ""
       }
     },
     "tagCatalog": {
-      "GitHubCLI": {
-        "count": 1,
-        "files": 1
-      },
-      "PersonalAccessToken": {
-        "count": 1,
-        "files": 1
-      },
-      "FineGrainedToken": {
-        "count": 1,
-        "files": 1
-      },
-      "ClassicToken": {
-        "count": 1,
-        "files": 1
-      },
-      "GitCredentialHelper": {
-        "count": 1,
-        "files": 1
-      },
-      "GitHubActions": {
-        "count": 1,
-        "files": 1
-      },
-      "GitHubAPI": {
-        "count": 1,
-        "files": 1
-      },
-      "Git": {
-        "count": 6,
-        "files": 6
-      },
-      "版本控制": {
-        "count": 7,
-        "files": 7
-      },
-      "分支管理": {
-        "count": 4,
-        "files": 4
-      },
-      "开源社区": {
-        "count": 1,
-        "files": 1
-      },
-      "技术改进": {
-        "count": 1,
-        "files": 1
-      },
-      "软件配置": {
-        "count": 2,
-        "files": 2
-      },
-      "代码仓库": {
-        "count": 1,
-        "files": 1
-      },
-      "merge": {
-        "count": 1,
-        "files": 1
-      },
-      "rebase": {
-        "count": 1,
-        "files": 1
-      },
-      "并行开发": {
-        "count": 1,
-        "files": 1
-      },
-      "功能隔离": {
-        "count": 1,
-        "files": 1
-      },
-      "github": {
-        "count": 4,
-        "files": 4
-      },
-      "SSH": {
-        "count": 8,
-        "files": 8
-      },
-      "远程仓库": {
-        "count": 1,
-        "files": 1
-      },
-      "公钥管理": {
-        "count": 1,
-        "files": 1
-      },
-      "初始化仓库": {
-        "count": 1,
-        "files": 1
-      },
-      "命令行工具": {
-        "count": 41,
-        "files": 41
-      },
-      "文件操作": {
-        "count": 7,
-        "files": 7
-      },
-      "暂存区": {
-        "count": 1,
-        "files": 1
-      },
-      "工作区": {
-        "count": 1,
-        "files": 1
-      },
-      "开发流程": {
-        "count": 1,
-        "files": 1
-      },
-      "发布分支": {
-        "count": 1,
-        "files": 1
-      },
-      "热修复分支": {
-        "count": 1,
-        "files": 1
-      },
-      "标签规范": {
-        "count": 1,
-        "files": 1
-      },
       "DUET": {
         "count": 1,
         "files": 1
@@ -26097,30 +25991,6 @@
         "count": 1,
         "files": 1
       },
-      "GRUB密码": {
-        "count": 1,
-        "files": 1
-      },
-      "启动分区加密": {
-        "count": 1,
-        "files": 1
-      },
-      "PBKDF2": {
-        "count": 1,
-        "files": 1
-      },
-      "LUKS": {
-        "count": 1,
-        "files": 1
-      },
-      "单用户模式": {
-        "count": 1,
-        "files": 1
-      },
-      "权限控制": {
-        "count": 3,
-        "files": 3
-      },
       "BMC": {
         "count": 2,
         "files": 2
@@ -26144,6 +26014,30 @@
       "安全加固": {
         "count": 17,
         "files": 17
+      },
+      "GRUB密码": {
+        "count": 1,
+        "files": 1
+      },
+      "启动分区加密": {
+        "count": 1,
+        "files": 1
+      },
+      "PBKDF2": {
+        "count": 1,
+        "files": 1
+      },
+      "LUKS": {
+        "count": 1,
+        "files": 1
+      },
+      "单用户模式": {
+        "count": 1,
+        "files": 1
+      },
+      "权限控制": {
+        "count": 3,
+        "files": 3
       },
       "Logstash": {
         "count": 1,
@@ -26753,6 +26647,10 @@
         "count": 2,
         "files": 2
       },
+      "命令行工具": {
+        "count": 41,
+        "files": 41
+      },
       "参数定制": {
         "count": 1,
         "files": 1
@@ -26813,6 +26711,10 @@
         "count": 1,
         "files": 1
       },
+      "SSH": {
+        "count": 8,
+        "files": 8
+      },
       "UnrealEngine": {
         "count": 1,
         "files": 1
@@ -26865,34 +26767,6 @@
         "count": 1,
         "files": 1
       },
-      "USB网络接口": {
-        "count": 1,
-        "files": 1
-      },
-      "Python脚本": {
-        "count": 5,
-        "files": 5
-      },
-      "HID协议": {
-        "count": 1,
-        "files": 1
-      },
-      "固件调试": {
-        "count": 1,
-        "files": 1
-      },
-      "USB主从控制器": {
-        "count": 1,
-        "files": 1
-      },
-      "数据中继": {
-        "count": 1,
-        "files": 1
-      },
-      "透传设备": {
-        "count": 1,
-        "files": 1
-      },
       "板载模式": {
         "count": 1,
         "files": 1
@@ -26918,6 +26792,34 @@
         "files": 1
       },
       "游戏外设": {
+        "count": 1,
+        "files": 1
+      },
+      "USB网络接口": {
+        "count": 1,
+        "files": 1
+      },
+      "Python脚本": {
+        "count": 5,
+        "files": 5
+      },
+      "HID协议": {
+        "count": 1,
+        "files": 1
+      },
+      "固件调试": {
+        "count": 1,
+        "files": 1
+      },
+      "USB主从控制器": {
+        "count": 1,
+        "files": 1
+      },
+      "数据中继": {
+        "count": 1,
+        "files": 1
+      },
+      "透传设备": {
         "count": 1,
         "files": 1
       },
@@ -27817,6 +27719,10 @@
         "count": 1,
         "files": 1
       },
+      "软件配置": {
+        "count": 2,
+        "files": 2
+      },
       "Bandizip": {
         "count": 1,
         "files": 1
@@ -28352,6 +28258,10 @@
       "求职意向": {
         "count": 1,
         "files": 1
+      },
+      "github": {
+        "count": 4,
+        "files": 4
       },
       "Ansible": {
         "count": 9,
@@ -29289,6 +29199,18 @@
         "count": 1,
         "files": 1
       },
+      "显示服务器协议": {
+        "count": 1,
+        "files": 1
+      },
+      "系统调试": {
+        "count": 2,
+        "files": 2
+      },
+      "桌面环境": {
+        "count": 1,
+        "files": 1
+      },
       "X11Forwarding": {
         "count": 1,
         "files": 1
@@ -29302,18 +29224,6 @@
         "files": 1
       },
       "DISPLAY": {
-        "count": 1,
-        "files": 1
-      },
-      "显示服务器协议": {
-        "count": 1,
-        "files": 1
-      },
-      "系统调试": {
-        "count": 2,
-        "files": 2
-      },
-      "桌面环境": {
         "count": 1,
         "files": 1
       },
@@ -31057,6 +30967,22 @@
         "count": 1,
         "files": 1
       },
+      "PrivateRepository": {
+        "count": 1,
+        "files": 1
+      },
+      "MavenConfig": {
+        "count": 1,
+        "files": 1
+      },
+      "LocalRepositoryPath": {
+        "count": 1,
+        "files": 1
+      },
+      "WindowsConfig": {
+        "count": 1,
+        "files": 1
+      },
       "持久层框架": {
         "count": 1,
         "files": 1
@@ -31082,22 +31008,6 @@
         "files": 1
       },
       "数据库操作": {
-        "count": 1,
-        "files": 1
-      },
-      "PrivateRepository": {
-        "count": 1,
-        "files": 1
-      },
-      "MavenConfig": {
-        "count": 1,
-        "files": 1
-      },
-      "LocalRepositoryPath": {
-        "count": 1,
-        "files": 1
-      },
-      "WindowsConfig": {
         "count": 1,
         "files": 1
       },
@@ -31185,25 +31095,9 @@
         "count": 1,
         "files": 1
       },
-      "链表": {
-        "count": 1,
-        "files": 1
-      },
-      "数组": {
-        "count": 1,
-        "files": 1
-      },
       "指针": {
         "count": 2,
         "files": 2
-      },
-      "动态扩容": {
-        "count": 1,
-        "files": 1
-      },
-      "C语言": {
-        "count": 1,
-        "files": 1
       },
       "连续内存空间": {
         "count": 1,
@@ -31226,6 +31120,22 @@
         "files": 1
       },
       "动态数组": {
+        "count": 1,
+        "files": 1
+      },
+      "链表": {
+        "count": 1,
+        "files": 1
+      },
+      "数组": {
+        "count": 1,
+        "files": 1
+      },
+      "动态扩容": {
+        "count": 1,
+        "files": 1
+      },
+      "C语言": {
         "count": 1,
         "files": 1
       },
@@ -31301,26 +31211,6 @@
         "count": 1,
         "files": 1
       },
-      "CMake": {
-        "count": 5,
-        "files": 5
-      },
-      "GNUMake": {
-        "count": 1,
-        "files": 1
-      },
-      "Ninja": {
-        "count": 1,
-        "files": 1
-      },
-      "CXX17": {
-        "count": 1,
-        "files": 1
-      },
-      "MinGW": {
-        "count": 1,
-        "files": 1
-      },
       "编译工具链": {
         "count": 1,
         "files": 1
@@ -31338,6 +31228,26 @@
         "files": 2
       },
       "gcc历史": {
+        "count": 1,
+        "files": 1
+      },
+      "CMake": {
+        "count": 5,
+        "files": 5
+      },
+      "GNUMake": {
+        "count": 1,
+        "files": 1
+      },
+      "Ninja": {
+        "count": 1,
+        "files": 1
+      },
+      "CXX17": {
+        "count": 1,
+        "files": 1
+      },
+      "MinGW": {
         "count": 1,
         "files": 1
       },
@@ -31952,6 +31862,10 @@
       "http_proxy": {
         "count": 1,
         "files": 1
+      },
+      "Git": {
+        "count": 6,
+        "files": 6
       },
       "wget": {
         "count": 1,
@@ -33733,22 +33647,6 @@
         "count": 1,
         "files": 1
       },
-      "Nmap": {
-        "count": 2,
-        "files": 2
-      },
-      "端口扫描": {
-        "count": 2,
-        "files": 2
-      },
-      "IPv4": {
-        "count": 1,
-        "files": 1
-      },
-      "网络排查": {
-        "count": 1,
-        "files": 1
-      },
       "Test-NetConnection": {
         "count": 2,
         "files": 2
@@ -33756,6 +33654,10 @@
       "端口检测": {
         "count": 1,
         "files": 1
+      },
+      "Nmap": {
+        "count": 2,
+        "files": 2
       },
       "Npcap": {
         "count": 1,
@@ -33770,6 +33672,18 @@
         "files": 1
       },
       "Ncat": {
+        "count": 1,
+        "files": 1
+      },
+      "端口扫描": {
+        "count": 2,
+        "files": 2
+      },
+      "IPv4": {
+        "count": 1,
+        "files": 1
+      },
+      "网络排查": {
         "count": 1,
         "files": 1
       },
@@ -33877,22 +33791,6 @@
         "count": 1,
         "files": 1
       },
-      "Docker部署": {
-        "count": 2,
-        "files": 2
-      },
-      "高带宽": {
-        "count": 1,
-        "files": 1
-      },
-      "隐藏IP": {
-        "count": 1,
-        "files": 1
-      },
-      "延迟优化": {
-        "count": 1,
-        "files": 1
-      },
       "腾讯云": {
         "count": 1,
         "files": 1
@@ -33906,6 +33804,22 @@
         "files": 1
       },
       "解析同步": {
+        "count": 1,
+        "files": 1
+      },
+      "Docker部署": {
+        "count": 2,
+        "files": 2
+      },
+      "高带宽": {
+        "count": 1,
+        "files": 1
+      },
+      "隐藏IP": {
+        "count": 1,
+        "files": 1
+      },
+      "延迟优化": {
         "count": 1,
         "files": 1
       },
@@ -34757,14 +34671,6 @@
         "count": 2,
         "files": 2
       },
-      "内部网络": {
-        "count": 1,
-        "files": 1
-      },
-      "网络通信": {
-        "count": 1,
-        "files": 1
-      },
       "host模式": {
         "count": 1,
         "files": 1
@@ -34772,6 +34678,14 @@
       "容器管理": {
         "count": 7,
         "files": 7
+      },
+      "内部网络": {
+        "count": 1,
+        "files": 1
+      },
+      "网络通信": {
+        "count": 1,
+        "files": 1
       },
       "host": {
         "count": 1,
@@ -34916,6 +34830,10 @@
       "时区同步": {
         "count": 1,
         "files": 1
+      },
+      "版本控制": {
+        "count": 7,
+        "files": 7
       },
       "PID共享": {
         "count": 1,
@@ -35193,6 +35111,10 @@
         "count": 1,
         "files": 1
       },
+      "文件操作": {
+        "count": 7,
+        "files": 7
+      },
       "命令注入": {
         "count": 1,
         "files": 1
@@ -35469,6 +35391,14 @@
         "count": 1,
         "files": 1
       },
+      "Excel": {
+        "count": 1,
+        "files": 1
+      },
+      "ANSI编码": {
+        "count": 1,
+        "files": 1
+      },
       "atime": {
         "count": 1,
         "files": 1
@@ -35486,14 +35416,6 @@
         "files": 1
       },
       "stat命令": {
-        "count": 1,
-        "files": 1
-      },
-      "Excel": {
-        "count": 1,
-        "files": 1
-      },
-      "ANSI编码": {
         "count": 1,
         "files": 1
       },
@@ -35673,6 +35595,58 @@
         "count": 1,
         "files": 1
       },
+      "tlp": {
+        "count": 2,
+        "files": 2
+      },
+      "upower": {
+        "count": 1,
+        "files": 1
+      },
+      "acpi": {
+        "count": 1,
+        "files": 1
+      },
+      "power_supply": {
+        "count": 1,
+        "files": 1
+      },
+      "linux_power": {
+        "count": 1,
+        "files": 1
+      },
+      "system_interface": {
+        "count": 1,
+        "files": 1
+      },
+      "battery_monitor": {
+        "count": 1,
+        "files": 1
+      },
+      "suspend": {
+        "count": 1,
+        "files": 1
+      },
+      "poweroff": {
+        "count": 1,
+        "files": 1
+      },
+      "合盖子": {
+        "count": 1,
+        "files": 1
+      },
+      "CPU频率": {
+        "count": 1,
+        "files": 1
+      },
+      "充电阈值": {
+        "count": 1,
+        "files": 1
+      },
+      "cpupower": {
+        "count": 2,
+        "files": 2
+      },
       "带宽检测": {
         "count": 1,
         "files": 1
@@ -35714,58 +35688,6 @@
         "files": 1
       },
       "dri": {
-        "count": 1,
-        "files": 1
-      },
-      "tlp": {
-        "count": 2,
-        "files": 2
-      },
-      "upower": {
-        "count": 1,
-        "files": 1
-      },
-      "acpi": {
-        "count": 1,
-        "files": 1
-      },
-      "power_supply": {
-        "count": 1,
-        "files": 1
-      },
-      "linux_power": {
-        "count": 1,
-        "files": 1
-      },
-      "system_interface": {
-        "count": 1,
-        "files": 1
-      },
-      "battery_monitor": {
-        "count": 1,
-        "files": 1
-      },
-      "CPU频率": {
-        "count": 1,
-        "files": 1
-      },
-      "充电阈值": {
-        "count": 1,
-        "files": 1
-      },
-      "cpupower": {
-        "count": 2,
-        "files": 2
-      },
-      "suspend": {
-        "count": 1,
-        "files": 1
-      },
-      "poweroff": {
-        "count": 1,
-        "files": 1
-      },
-      "合盖子": {
         "count": 1,
         "files": 1
       },
@@ -36061,18 +35983,6 @@
         "count": 2,
         "files": 2
       },
-      "ChatCompletions": {
-        "count": 1,
-        "files": 1
-      },
-      "OpenAI兼容API": {
-        "count": 1,
-        "files": 1
-      },
-      "局域网访问": {
-        "count": 1,
-        "files": 1
-      },
       "CachedInput": {
         "count": 1,
         "files": 1
@@ -36082,6 +35992,18 @@
         "files": 1
       },
       "Token统计": {
+        "count": 1,
+        "files": 1
+      },
+      "ChatCompletions": {
+        "count": 1,
+        "files": 1
+      },
+      "OpenAI兼容API": {
+        "count": 1,
+        "files": 1
+      },
+      "局域网访问": {
         "count": 1,
         "files": 1
       },
@@ -36313,18 +36235,6 @@
         "count": 1,
         "files": 1
       },
-      "模型转换": {
-        "count": 1,
-        "files": 1
-      },
-      "Web管理工具": {
-        "count": 1,
-        "files": 1
-      },
-      "实时推送": {
-        "count": 1,
-        "files": 1
-      },
       "图像识别": {
         "count": 1,
         "files": 1
@@ -36337,6 +36247,18 @@
         "count": 1,
         "files": 1
       },
+      "模型转换": {
+        "count": 1,
+        "files": 1
+      },
+      "Web管理工具": {
+        "count": 1,
+        "files": 1
+      },
+      "实时推送": {
+        "count": 1,
+        "files": 1
+      },
       "量化模型": {
         "count": 2,
         "files": 2
@@ -36346,6 +36268,22 @@
         "files": 1
       },
       "本地运行": {
+        "count": 1,
+        "files": 1
+      },
+      "v1": {
+        "count": 1,
+        "files": 1
+      },
+      "compatibility": {
+        "count": 1,
+        "files": 1
+      },
+      "nativeAPI": {
+        "count": 1,
+        "files": 1
+      },
+      "translation": {
         "count": 1,
         "files": 1
       },
@@ -36372,22 +36310,6 @@
       "API请求": {
         "count": 2,
         "files": 2
-      },
-      "v1": {
-        "count": 1,
-        "files": 1
-      },
-      "compatibility": {
-        "count": 1,
-        "files": 1
-      },
-      "nativeAPI": {
-        "count": 1,
-        "files": 1
-      },
-      "translation": {
-        "count": 1,
-        "files": 1
       },
       "前端UI": {
         "count": 1,
@@ -36473,22 +36395,6 @@
         "count": 1,
         "files": 1
       },
-      "mcp": {
-        "count": 2,
-        "files": 2
-      },
-      "工具扩展": {
-        "count": 1,
-        "files": 1
-      },
-      "MCP服务器": {
-        "count": 1,
-        "files": 1
-      },
-      "远程访问": {
-        "count": 1,
-        "files": 1
-      },
       "skill": {
         "count": 2,
         "files": 2
@@ -36522,6 +36428,22 @@
         "files": 1
       },
       "工具集": {
+        "count": 1,
+        "files": 1
+      },
+      "mcp": {
+        "count": 2,
+        "files": 2
+      },
+      "工具扩展": {
+        "count": 1,
+        "files": 1
+      },
+      "MCP服务器": {
+        "count": 1,
+        "files": 1
+      },
+      "远程访问": {
         "count": 1,
         "files": 1
       },
@@ -36601,22 +36523,6 @@
         "count": 1,
         "files": 1
       },
-      "FAISS": {
-        "count": 1,
-        "files": 1
-      },
-      "向量检索": {
-        "count": 1,
-        "files": 1
-      },
-      "嵌入式数据库": {
-        "count": 1,
-        "files": 1
-      },
-      "Serverless": {
-        "count": 1,
-        "files": 1
-      },
       "Obsidian": {
         "count": 1,
         "files": 1
@@ -36630,6 +36536,22 @@
         "files": 1
       },
       "向量数据库": {
+        "count": 1,
+        "files": 1
+      },
+      "FAISS": {
+        "count": 1,
+        "files": 1
+      },
+      "向量检索": {
+        "count": 1,
+        "files": 1
+      },
+      "嵌入式数据库": {
+        "count": 1,
+        "files": 1
+      },
+      "Serverless": {
         "count": 1,
         "files": 1
       },
@@ -36800,1209 +36722,1305 @@
       "模型管控": {
         "count": 1,
         "files": 1
+      },
+      "分支管理": {
+        "count": 4,
+        "files": 4
+      },
+      "开源社区": {
+        "count": 1,
+        "files": 1
+      },
+      "技术改进": {
+        "count": 1,
+        "files": 1
+      },
+      "代码仓库": {
+        "count": 1,
+        "files": 1
+      },
+      "merge": {
+        "count": 1,
+        "files": 1
+      },
+      "rebase": {
+        "count": 1,
+        "files": 1
+      },
+      "并行开发": {
+        "count": 1,
+        "files": 1
+      },
+      "功能隔离": {
+        "count": 1,
+        "files": 1
+      },
+      "远程仓库": {
+        "count": 1,
+        "files": 1
+      },
+      "公钥管理": {
+        "count": 1,
+        "files": 1
+      },
+      "初始化仓库": {
+        "count": 1,
+        "files": 1
+      },
+      "暂存区": {
+        "count": 1,
+        "files": 1
+      },
+      "工作区": {
+        "count": 1,
+        "files": 1
+      },
+      "开发流程": {
+        "count": 1,
+        "files": 1
+      },
+      "发布分支": {
+        "count": 1,
+        "files": 1
+      },
+      "热修复分支": {
+        "count": 1,
+        "files": 1
+      },
+      "标签规范": {
+        "count": 1,
+        "files": 1
+      },
+      "GitHubCLI": {
+        "count": 1,
+        "files": 1
+      },
+      "PersonalAccessToken": {
+        "count": 1,
+        "files": 1
+      },
+      "FineGrainedToken": {
+        "count": 1,
+        "files": 1
+      },
+      "ClassicToken": {
+        "count": 1,
+        "files": 1
+      },
+      "GitCredentialHelper": {
+        "count": 1,
+        "files": 1
+      },
+      "GitHubActions": {
+        "count": 1,
+        "files": 1
+      },
+      "GitHubAPI": {
+        "count": 1,
+        "files": 1
       }
     },
-    "tagCatalogUpdatedAt": 1786690273924,
+    "tagCatalogUpdatedAt": 1786769918593,
     "updateLog": [
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/Nacos全链路部署实战教程.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/nacos的优势是ap模式【介绍ap和cp模式】.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/为nacos增加数据库管理.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/为nacos建立集群cluster高可用.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/关于nacos3.x版本的ai化.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/关于nacos的web页面8848端口.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/第01章-认识nacos.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/第03章-搭建nacos的组件1.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/springcloud大类/springcloudalibaba主要功能.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/springcloud大类/springcloud和spring-cloud-alibaba.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/springcloud大类/springcloud是否被淘汰.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_服务发现/zookeeper大类/zookeeper最主要优势分布式锁.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_虚拟机/01_VMware/VMware和VirtualBox的三种网络区别.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_虚拟机/01_VMware/vmware开启跨屏传输.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_虚拟机/01_VMware/自VMware公开免费下载之后放迷路步骤.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_虚拟机/02_VirtualBox/VirtualBox5.2+eNSP_遇_Docker：Hyper-V_冲突的坑与解决.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_虚拟机/03_WSL/win上的wsl的常用命令.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415282
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_虚拟机/03_WSL/关于WSL虚拟机的使用和扩展.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/01运维_0linux/运维_虚拟机/03_WSL/卸载wsl子系统并且重装.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
       {
         "path": "Notes/01运维_0linux/运维_虚拟机/04_QEMU【跑嵌入式架构】/关于qemu模拟器.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/低版本安卓4.4用kodi绕过jellyfin版本限制.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第10章【给自己视频添加预览图】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第12章【杜比降级为双声道】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第13章【tvbox】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第14章用【tinyMediaManager刮削】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第1章【初识nas影音库】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第2章【部署磁力资源下载】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第3章【挂载云盘webdav】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第4章【可能遇到的问题】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第5章【linux配置硬件加速转码】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第6章【介绍部分插件】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第7章【挂载小雅alist】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第8章【关闭rlone缓存而使用jellyfin缓存】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
+        "at": 1786693415283
       },
       {
         "path": "Notes/01运维_0网络/网络共享类/家庭影院/家庭影院第9章【添加直播源】.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识/树结构/AVL平衡二叉树和红黑平衡二叉搜索树如何解决普通二叉搜索树BST因顺序插入而退化的问题.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识/树结构/为什么数据库选择了B+树而不是B树的根本原因.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识/树结构/常用树结构简单预览.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识/树结构/广度优先BFS和深度搜索DFS.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识/树结构/数据库常用的B+树.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识/树结构/文件系统常用的B树.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识/树结构/普通二叉搜索树_BST_：插入顺序直接决定性能，有序输入会退化成链表.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识/树结构/普通树&二叉树BT&二叉搜索树BST.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识/索引相关/MySQL-InnoDB的架构的隐藏row_id索引【业务禁止】.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识/索引相关/建立索引primary主键和二级索引index或unique_index.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis关闭保护模式通网.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis可视化.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis命令.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis改默认用户和密码.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis的介绍.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis的配置文件下载.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/02_数据类型/redis地理空间Geospatial.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/02_数据类型/redis的hyperloglog估算唯一元素.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/02_数据类型/redis的位图Bitmap.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/02_数据类型/redis的位域Bitfield.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/04_高可用/redis哨兵模式权限问题.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/04_高可用/redis的主从复制.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/04_高可用/redis的哨兵模式.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040868
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/04_高可用/应用程序如何知道redis的哨兵切换到谁了.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/03_持久化/redis在docker中的持久化和恢复数据.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/03_持久化/redis的RDB和AOF.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/05_功能特性/redis发布订阅模式.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/05_功能特性/redis的事务.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识redis/06_排错/redis排错之配置文件.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/01_安装与基础/Linux上安装mysql服务器以及基础命令使用.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/01_安装与基础/mysql为什么有那么多cnf.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/01_安装与基础/mysql数据库速学.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/01_安装与基础/增删改查.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/01_安装与基础/将root用户的localhost对外开放.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/02_操作与优化/Linux上的mysql导入csv文件.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/02_操作与优化/mysql如何设置慢查询日志.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/02_操作与优化/mysql表的复杂操作.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/02_操作与优化/数据库中的黑匣子log-bin.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/03_迁移与备份/备份迁移mysql数据库.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/03_迁移与备份/迁移至mysql数据长度超标.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/04_故障处理/MariaDB报错Access_denied_for_user_'root'@'localhost'.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/04_故障处理/MySQL_自检_&_状态查看命令分类.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/04_故障处理/mysql报错_Public_Key_Retrieval_is_not_allowed.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/04_故障处理/关于数据库连接工具显示系统数据库不全.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
-      },
-      {
-        "path": "Notes/03数据库/数据库_知识_mysql/04_故障处理/紧急处理账户密码忘记.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/adb相关/ADB 脚本为什么会产生步骤延迟？.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/adb相关/adb和autojs的底层不一样.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/adb相关/adb绿色版下载.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/adb相关/Escrcpy 相比 scrcpy 有什么优势？.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/adb相关/scrcpy 虚拟显示器使用教程.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/adb相关/【投屏】扩展坞+网线的scrcpy投屏.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/adb相关/【投屏】有线usb-scrcpy和无线scrcpy.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/adb相关/关于adb程序文件说明.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/adb相关/安卓的adb常用命令.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/apk相关/xplore文件管理器.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/apk相关/【apk】反编译apk来获取部分原文件的网站.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/apk相关/【apk】提取apk的sdkversion.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/apk相关/【apk】雹禁用apk的运行来提高性能.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/apk相关/【开发者模式】shizuku的常见问题.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/工具包/安装android-studio.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/开发者模式/如何抓取手机移动网流量.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/code_android/开发者模式/安卓data访问限制怎么解除（Android14解锁data目录）.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/代码_python/00_pip环境/pip相关_01手动轮子.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/代码_python/00_pip环境/pip相关_02在软路由中安装py和pip模块.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/代码_python/00_pip环境/pip相关_指定安装位置.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/代码_python/00_pip环境/pip相关_缓存机制.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/代码_python/00_python环境/uv的介绍和安装.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/代码_python/00_python环境/环境_01_venv_单一py版本_隔离依赖包.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/代码_python/00_python环境/环境_02_pyenv_多个py版本.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/代码_python/00_python环境/环境_03_对比venv和pyenv.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/代码_python/00_python环境/环境_04_在win上使用绿色版本的python_WinPython.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/代码_python/00_python环境/环境_05_pyenv_在定时任务systemd后台服务常见四大痛点.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
         "path": "Notes/02代码/代码_python/00_python环境/环境_05_在linux上使用绿色版本的python_pyenv.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
-        "path": "Notes/04音视频/音视频_adobe/adobe-ai/用adobe-ai把位图转为矢量图svg.md",
+        "path": "Notes/03数据库/数据库_知识/树结构/AVL平衡二叉树和红黑平衡二叉搜索树如何解决普通二叉搜索树BST因顺序插入而退化的问题.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
-        "path": "Notes/04音视频/音视频_adobe/adobe-破解/genp白嫖adobe全家桶.md",
+        "path": "Notes/03数据库/数据库_知识/树结构/为什么数据库选择了B+树而不是B树的根本原因.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
       },
       {
-        "path": "Notes/04音视频/音视频_adobe/adobe-ps/ps的多种消除工具.md",
+        "path": "Notes/03数据库/数据库_知识/树结构/常用树结构简单预览.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识/树结构/广度优先BFS和深度搜索DFS.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识/树结构/数据库常用的B+树.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识/树结构/文件系统常用的B树.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识/树结构/普通二叉搜索树_BST_：插入顺序直接决定性能，有序输入会退化成链表.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识/树结构/普通树&二叉树BT&二叉搜索树BST.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识/索引相关/MySQL-InnoDB的架构的隐藏row_id索引【业务禁止】.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识/索引相关/建立索引primary主键和二级索引index或unique_index.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis关闭保护模式通网.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis可视化.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis命令.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis改默认用户和密码.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis的介绍.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/01_基础与配置/redis的配置文件下载.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/02_数据类型/redis地理空间Geospatial.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/02_数据类型/redis的hyperloglog估算唯一元素.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/02_数据类型/redis的位图Bitmap.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/02_数据类型/redis的位域Bitfield.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415283
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/03_持久化/redis在docker中的持久化和恢复数据.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/03_持久化/redis的RDB和AOF.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/05_功能特性/redis发布订阅模式.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/05_功能特性/redis的事务.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/04_高可用/redis哨兵模式权限问题.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/04_高可用/redis的主从复制.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/04_高可用/redis的哨兵模式.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/04_高可用/应用程序如何知道redis的哨兵切换到谁了.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识redis/06_排错/redis排错之配置文件.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/01_安装与基础/Linux上安装mysql服务器以及基础命令使用.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/01_安装与基础/mysql为什么有那么多cnf.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/01_安装与基础/mysql数据库速学.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/01_安装与基础/增删改查.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/01_安装与基础/将root用户的localhost对外开放.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/02_操作与优化/Linux上的mysql导入csv文件.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/02_操作与优化/mysql如何设置慢查询日志.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/02_操作与优化/mysql表的复杂操作.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/02_操作与优化/数据库中的黑匣子log-bin.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/03_迁移与备份/备份迁移mysql数据库.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/03_迁移与备份/迁移至mysql数据长度超标.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/04_故障处理/MariaDB报错Access_denied_for_user_'root'@'localhost'.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/04_故障处理/MySQL_自检_&_状态查看命令分类.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/04_故障处理/mysql报错_Public_Key_Retrieval_is_not_allowed.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/04_故障处理/关于数据库连接工具显示系统数据库不全.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/03数据库/数据库_知识_mysql/04_故障处理/紧急处理账户密码忘记.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_adobe/adobe-ae/AE做个边框.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_adobe/adobe-ae/AE技巧和性能优化.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_adobe/adobe-ae/AE的mocha跟踪.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415284
       },
       {
-        "path": "Notes/04音视频/音视频_知识/USB问题/音频设备抢夺控制权.md",
+        "path": "Notes/04音视频/音视频_adobe/adobe-ai/用adobe-ai把位图转为矢量图svg.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040869
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/04音视频/音视频_adobe/adobe-ps/ps的多种消除工具.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/04音视频/音视频_adobe/adobe-破解/genp白嫖adobe全家桶.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/linux屏幕相关/Linux_图形栈逻辑分析.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/linux屏幕相关/Linux下的视图用户级别.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/linux屏幕相关/Linux图形化的挂起逻辑说明.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/linux屏幕相关/xorgX11_wayland关系.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
-      },
-      {
-        "path": "Notes/04音视频/音视频_知识/linux屏幕相关/xorgX11还是WAYLAND的桌面.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/linux屏幕相关/XorgX11转发投屏.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/04音视频/音视频_知识/linux屏幕相关/xorgX11还是WAYLAND的桌面.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/04音视频/音视频_知识/USB问题/音频设备抢夺控制权.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/串流-sunshine/sunshine分支Apollo版本.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/串流-sunshine/【linux】sunshine安装和一些问题解决.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/串流-sunshine/【linux】sunshine降版本来兼容NVENC.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/串流-sunshine/【win】sunshine配合moonlight串流.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/串流-sunshine/在sunshine里面HDMI和DP和VGA_显示器关机表现差异完整解析.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
-      },
-      {
-        "path": "Notes/04音视频/音视频_知识/小工具/Voicemeeter_Banana的基础介绍.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040870
-      },
-      {
-        "path": "Notes/04音视频/音视频_知识/小工具/手机当麦克风_摄像头_扬声器.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/字幕类/字幕格式说明.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/04音视频/音视频_知识/小工具/Voicemeeter_Banana的基础介绍.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
+      },
+      {
+        "path": "Notes/04音视频/音视频_知识/小工具/手机当麦克风_摄像头_扬声器.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/投屏相关/DLNA服务器是个好东西.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/投屏相关/NDI_视频网络传输：原理、部署教程、衍生工具与竞争方案.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/投屏相关/NDI_视频网络传输：原理、部署教程、衍生工具与竞争方案_1.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/投屏相关/【投屏】毫米波投标-一种比较贵的解决方案.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/画面参数介绍和排错/关于画面撕裂的排错及优化.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/画面参数介绍和排错/强大的AV1编码.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/画面参数介绍和排错/色彩动态范围、封装容器、编解码与声道介绍.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/采集卡/linux用v4l-utils操作采集卡.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/采集卡/代码调用采集卡主屏幕黑屏一次原因.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/采集卡/对比采集卡常见的MJPG和YUY【V-2】格式.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/04音视频/音视频_知识/采集卡/采集卡参数说明：便宜与专业设备的区别、编码格式、带宽、延迟与网络传输.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/学习信息/4A统一安全管控平台标准部署流程.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/学习信息/FEC 前向纠错与 CRC 校验完整工作原理教程.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/学习信息/FEC_光通信功能简介.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/学习信息/三大运营商_5GC_部署模式对比分析.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415284
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/学习信息/网络设备SSH自动化交互核心要点.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/对接经历/设备扩容.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/故障处理/Linux_服务器PCI光口网卡掉速排障.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/故障处理/关于封堵用户流量失败的问题.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/故障处理/百台DPI服务器流量监控、负载调度与丢包问题优化实践.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
-      },
-      {
-        "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/生产保障/告警治理与日志集.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040870
-      },
-      {
-        "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/生产保障/容量规划与重大保障.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040870
-      },
-      {
-        "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/生产保障/应急预案与故障演练.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040870
-      },
-      {
-        "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/生产保障/日常巡检体系.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/效率处理/优化脚本_优化邮箱校验速度.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/效率处理/使用Kickstart加速国产化重装进程.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/效率处理/使用kmbox进行键盘透传.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/效率处理/使用采集卡加速国产化重装进程.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/效率处理/基于Python与ADB的移动网网元自动切换及IPv6归属校验.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/效率处理/处理公司的各种文档.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/效率处理/解决开发远程操作抢我电脑.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
         "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/效率处理/轻量告警系统ntfy一行curl发推送.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786686040870
+        "at": 1786693415285
       },
       {
-        "path": "Notes/01_CICD/运维_git/【git】git常见分支.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786688932781
-      },
-      {
-        "path": "Notes/01_CICD/运维_git/【git】git常见分支命名_发布版本.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786688932841
-      },
-      {
-        "path": "Notes/01_CICD/运维_git/【Git】git连GitHub和使用.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786688932951
-      },
-      {
-        "path": "Notes/01_CICD/运维_git/【Git】分支详细.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786688933005
-      },
-      {
-        "path": "Notes/01_CICD/运维_git/【git】git常见分支.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786688937800
-      },
-      {
-        "path": "Notes/01_CICD/运维_git/【git】git常见分支命名_发布版本.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786688937846
-      },
-      {
-        "path": "Notes/01_CICD/运维_git/【Git】git连GitHub和使用.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786688937972
-      },
-      {
-        "path": "Notes/01_CICD/运维_git/【Git】分支详细.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786688938011
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/生产保障/告警治理与日志集.md",
         "source": "external-content",
         "detail": "created",
-        "at": 1786688959352
+        "at": 1786693415285
       },
       {
-        "path": "Notes/01_CICD/运维_git/【git】git常见分支命名_发布版本.md",
+        "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/生产保障/容量规划与重大保障.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415285
+      },
+      {
+        "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/生产保障/应急预案与故障演练.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415285
+      },
+      {
+        "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/生产保障/日常巡检体系.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693415285
+      },
+      {
+        "path": "Notes/Y_常用小知识_软件/win的winget.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786693799952
+      },
+      {
+        "path": "Notes/Y_常用小知识_软件/win的winget.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786688959404
+        "at": 1786693805300
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_软件/win的winget.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786688965294
+        "at": 1786693987892
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_软件/win的winget.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689014931
+        "at": 1786693993297
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_软件/win的winget.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689017323
+        "at": 1786694132220
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_软件/win的winget.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689019886
+        "at": 1786694137296
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689021994
+        "at": 1786698364936
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689025745
+        "at": 1786698369878
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/02代码/code_编译环境/安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689028027
+        "at": 1786698617707
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/02代码/code_编译环境/安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689030772
+        "at": 1786698618026
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/02代码/code_编译环境/安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689034639
+        "at": 1786698623035
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/02代码/代码_RUST【更适合运维的语言】/RUST的介绍.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786701582923
+      },
+      {
+        "path": "Notes/02代码/代码_RUST【更适合运维的语言】/RUST的介绍.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689037816
+        "at": 1786701588295
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/02代码/代码_RUST【更适合运维的语言】/RUST的介绍.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689041147
+        "at": 1786707138931
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/02代码/代码_RUST【更适合运维的语言】/RUST的介绍.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689043232
+        "at": 1786707144303
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/避雷寨板笔记本-风扇异响-电池鼓包.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689043619
+        "at": 1786724228233
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/从“连续鼓包、拔电池不开机”到“保留 DC IN + 模拟 BAT”的完整新手笔记.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786768326484
+      },
+      {
+        "path": "Notes/Y_常用小知识_硬件/从“连续鼓包、拔电池不开机”到“保留 DC IN + 模拟 BAT”的完整新手笔记.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689049306
+        "at": 1786768331494
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/从连续鼓包拔电池不开机到保留 DC IN + 模拟 BAT的折腾日记.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689103207
+        "at": 1786768349666
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/从连续鼓包拔电池不开机到保留 DC IN + 模拟 BAT的折腾日记.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689105206
+        "at": 1786768351751
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/从连续鼓包拔电池不开机到保留 DC IN + 模拟 BAT的折腾日记.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689110295
+        "at": 1786768354476
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/从连续鼓包拔电池不开机到保留 DC IN + 模拟 BAT的折腾日记.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689123450
+        "at": 1786768357128
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/从连续鼓包拔电池不开机到保留 DC IN + 模拟 BAT的折腾日记.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689129306
+        "at": 1786768362135
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786769365031
+      },
+      {
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689198377
+        "at": 1786769394837
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689201144
+        "at": 1786769404081
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/常见光模块类型.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689203764
+        "at": 1786769407054
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689206395
+        "at": 1786769418258
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786689211401
+        "at": 1786769423269
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689220805
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689223320
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689226008
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689231014
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689231916
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689234195
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689239202
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689239321
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689241459
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689243586
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689245925
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689248025
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689249619
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689255305
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689292986
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689297615
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689303293
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689467318
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786689472322
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786690221847
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "external-change",
-        "detail": "modify",
-        "at": 1786690222965
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
         "source": "ai-plugin",
         "detail": "manual:summary",
-        "at": 1786690232716
+        "at": 1786769450961
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
         "source": "ai-plugin",
         "detail": "modify",
-        "at": 1786690232741
+        "at": 1786769450964
       },
       {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
-        "source": "ai-plugin",
-        "detail": "manual:tags",
-        "at": 1786690271775
-      },
-      {
-        "path": "Notes/01_CICD/关于gh-github-cli.md",
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
         "source": "external-change",
         "detail": "modify",
-        "at": 1786690272501
+        "at": 1786769625262
+      },
+      {
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786769667499
+      },
+      {
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786769670384
+      },
+      {
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
+        "source": "ai-plugin",
+        "detail": "manual:summary",
+        "at": 1786769731595
+      },
+      {
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
+        "source": "ai-plugin",
+        "detail": "modify",
+        "at": 1786769731597
+      },
+      {
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
+        "source": "ai-plugin",
+        "detail": "manual:summary",
+        "at": 1786769818822
+      },
+      {
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
+        "source": "ai-plugin",
+        "detail": "modify",
+        "at": 1786769818823
+      },
+      {
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
+        "source": "ai-plugin",
+        "detail": "manual:summary",
+        "at": 1786769917945
+      },
+      {
+        "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md",
+        "source": "ai-plugin",
+        "detail": "modify",
+        "at": 1786769917947
       }
     ]
   }

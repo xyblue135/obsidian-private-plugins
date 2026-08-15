@@ -1,9 +1,9 @@
 {
   "id": "00_xyblue135-ai-metadata-demo",
   "name": "xyblue135 私人 · AI 元数据",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "minAppVersion": "1.7.2",
-  "description": "【xyblue135 私人插件】使用兼容 OpenAI 的 API 为 Notes 维护 summary 与 tags；默认按非空元数据判断，可选内容指纹与 Markdown 清理。",
+  "description": "【xyblue135 私人插件】使用兼容 OpenAI 的 API 为 Notes 维护 summary 与 tags；默认按非空元数据判断；v0.5.7 优化为约 300 字的自然高信息密度 Summary，可选内容指纹与 Markdown 清理。",
   "author": "xyblue135",
   "isDesktopOnly": true
 }

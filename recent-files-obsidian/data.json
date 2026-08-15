@@ -1,6 +1,54 @@
 {
   "recentFiles": [
     {
+      "basename": "戴睿T30免电池供电改造_超详细博客",
+      "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md"
+    },
+    {
+      "basename": "RUST的介绍",
+      "path": "Notes/02代码/代码_RUST【编译噩梦 使用天堂】/RUST的介绍.md"
+    },
+    {
+      "basename": "常见光模块类型",
+      "path": "Notes/Y_常用小知识_硬件/常见光模块类型.md"
+    },
+    {
+      "basename": "避雷寨板笔记本-风扇异响-电池鼓包",
+      "path": "Notes/Y_常用小知识_硬件/避雷寨板笔记本-风扇异响-电池鼓包.md"
+    },
+    {
+      "basename": "监测电池电源情况",
+      "path": "Notes/01运维_0linux/00_硬件/电源/监测电池电源情况.md"
+    },
+    {
+      "basename": "【Git】分支详细",
+      "path": "Notes/01_CICD/运维_git/【Git】分支详细.md"
+    },
+    {
+      "basename": "安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】",
+      "path": "Notes/02代码/code_编译环境/安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】.md"
+    },
+    {
+      "basename": "编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
+      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
+    },
+    {
+      "basename": "编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
+      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
+    },
+    {
+      "basename": "Windows不是所有版本默认开启长路径",
+      "path": "Notes/Y_常用小知识_软件/Windows不是所有版本默认开启长路径.md"
+    },
+    {
+      "basename": "win的winget",
+      "path": "Notes/Y_常用小知识_软件/win的winget.md"
+    },
+    {
+      "basename": "关于win的winutil工具",
+      "path": "Notes/Y_常用小知识_软件/关于win的winutil工具.md"
+    },
+    {
       "basename": "关于gh-github-cli",
       "path": "Notes/01_CICD/关于gh-github-cli.md"
     },
@@ -47,14 +95,6 @@
     {
       "basename": "win和linux下安装编译版本ffmpeg",
       "path": "Notes/04音视频/音视频_ffmpeg/win和linux下安装编译版本ffmpeg.md"
-    },
-    {
-      "basename": "编译ffmpeg_gpu-cuda加速版本【Visual_Studio_2022_+_CUDA_Toolkit_12.x_+_MSYS2】",
-      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu-cuda加速版本【Visual_Studio_2022_+_CUDA_Toolkit_12.x_+_MSYS2】.md"
-    },
-    {
-      "basename": "编译ffmpeg-cpu版本",
-      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg-cpu版本.md"
     },
     {
       "basename": "ultralytics偷偷安装onnxruntime【坏处】",
@@ -155,50 +195,6 @@
     {
       "basename": "添加开始菜单搜索",
       "path": "Notes/Y_常用小知识_软件/添加开始菜单搜索.md"
-    },
-    {
-      "basename": "arp协议和arp攻击",
-      "path": "Notes/Y_破解和攻击类/arp协议和arp攻击.md"
-    },
-    {
-      "basename": "使用hashcat工具且显卡加速进行一定的暴力破解",
-      "path": "Notes/Y_破解和攻击类/使用hashcat工具且显卡加速进行一定的暴力破解.md"
-    },
-    {
-      "basename": "关于网卡名字前缀名的介绍",
-      "path": "Notes/01运维_0网络/网卡知识/关于网卡名字前缀名的介绍.md"
-    },
-    {
-      "basename": "win上如何查看网卡的芯片",
-      "path": "Notes/01运维_0网络/网卡知识/win上如何查看网卡的芯片.md"
-    },
-    {
-      "basename": "Linux一个高级电源管理工具TLP",
-      "path": "Notes/01运维_0linux/00_硬件/电源/Linux一个高级电源管理工具TLP.md"
-    },
-    {
-      "basename": "Escrcpy 相比 scrcpy 有什么优势？",
-      "path": "Notes/02代码/code_android/adb相关/Escrcpy 相比 scrcpy 有什么优势？.md"
-    },
-    {
-      "basename": "调用生图",
-      "path": "Notes/01运维_0ai相关/网关/调用生图.md"
-    },
-    {
-      "basename": "调用指定模型",
-      "path": "Notes/01运维_0ai相关/网关/调用指定模型.md"
-    },
-    {
-      "basename": "记录一次18kstar项目freellmapi的bug修复并纳入主分支【主介绍】",
-      "path": "Notes/01_CICD/github规范化提交/记录一次18kstar项目freellmapi的bug修复并纳入主分支【主介绍】.md"
-    },
-    {
-      "basename": "【ip n】ip neighbor",
-      "path": "Notes/01运维_0网络/网卡配置/【ip n】ip neighbor.md"
-    },
-    {
-      "basename": "ADB 脚本为什么会产生步骤延迟？",
-      "path": "Notes/02代码/code_android/adb相关/ADB 脚本为什么会产生步骤延迟？.md"
     }
   ],
   "omittedPaths": [],
