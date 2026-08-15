@@ -6,14 +6,14 @@
 /*
  * xyblue135-AI-Metadata for Obsidian
  * Author: xyblue135
- * v0.6.0
+ * v0.6.1
  *
  * Features:
  * - Inline AI buttons beside summary_short / summary_long / tags only for the root /Notes whitelist.
  * - Up to N technically weighted tags (default cap 7), values only (no hierarchy); fewer valid tags are accepted.
  * - Maintains a local-only tag catalog from Markdown files under Notes/ (never sent to AI).
  * - Canonicalizes tag casing locally: existing Vault spelling first, built-in/editable technical spellings as fallback.
- * - Tracks plugin-generated writes vs external content/metadata changes.
+ * - Keeps only essential persistent state: optional per-field fingerprints and error diagnostics.
  * - Sequential API queue with a visible timeout (default 180s) and request gap (default 30s).
  * - Auto-refresh countdown starts only after the whole update cycle has finished.
  * - Folder-scoped pending dashboard with per-note previews, scope-drift protection, and stoppable sequential sync.
@@ -202,9 +202,8 @@ const DEFAULT_SETTINGS = {
 
 const DEFAULT_STATE = {
   files: {},
+  // 仅运行期缓存：Tag Catalog 每次启动后从 Vault 重建，不再持久化到 data.json。
   tagCatalog: {},
-  tagCatalogUpdatedAt: 0,
-  updateLog: [],
 };
 
 class EmptyNoteBodyError extends Error {
@@ -291,10 +290,12 @@ module.exports = class AiMetadataPlugin extends Plugin {
     if (!savedSettings.technicalTagCanonicalList) {
       this.settings.technicalTagCanonicalList = DEFAULT_TECHNICAL_TAG_CANONICAL_LIST;
     }
-    this.state = Object.assign({}, DEFAULT_STATE, savedState);
-    this.state.files = Object.assign({}, DEFAULT_STATE.files, savedState.files || {});
-    this.state.tagCatalog = Object.assign({}, DEFAULT_STATE.tagCatalog, savedState.tagCatalog || {});
-    this.state.updateLog = Array.isArray(savedState.updateLog) ? savedState.updateLog : [];
+    this.state = Object.assign({}, DEFAULT_STATE);
+    this.state.files = this.loadPersistedFileState(savedState.files || {});
+    // Tag Catalog 只存在于当前运行内存中，避免普通编辑/Tag 扫描反复改写 data.json。
+    this.state.tagCatalog = {};
+    // 记录原始磁盘内容签名；首次 saveAllData() 会自动清理旧版运行状态字段。
+    this.lastPersistedDataSignature = JSON.stringify(saved);
 
     // v0.6.0：旧版 lastSummaryHash 不再代表两个新摘要字段，统一移除，避免把旧 summary 误判为双摘要均已完成。
     for (const record of Object.values(this.state.files)) {
@@ -306,9 +307,11 @@ module.exports = class AiMetadataPlugin extends Plugin {
     // 让数据库不再依赖内容指纹。
     if (this.settings.contentFingerprintEnabled !== true) {
       this.clearPersistentFingerprintMarkers();
-      // 迁移结果立即写回磁盘，确保旧 hash 字段真正从 data.json 删除，而不是只在内存中忽略。
-      await this.saveAllData();
     }
+    // v0.6.1：无论 fingerprint 是否开启，都执行一次轻量迁移。
+    // 旧版 tagCatalog / updateLog / lastChangedAt 等运行状态会从 data.json 中清除；
+    // 若迁移前后内容完全一致，则 saveAllData() 会自动跳过落盘。
+    await this.saveAllData();
 
     this.observer = null;
     this.injectTimer = null;
@@ -320,7 +323,6 @@ module.exports = class AiMetadataPlugin extends Plugin {
     this.cycleMode = null;
     this.autoRunController = null;
     this.fileBusy = new Set();
-    this.aiWritingPaths = new Set();
     this.unloading = false;
     this.lifecycleToken = 1;
     this.apiQueue = Promise.resolve();
@@ -393,14 +395,13 @@ module.exports = class AiMetadataPlugin extends Plugin {
 
     this.registerEvent(this.app.vault.on("modify", (file) => {
       if (file instanceof TFile && file.extension === "md" && this.isWhitelisted(file)) {
-        void this.recordObservedChange(file);
+        // 普通编辑只刷新运行期 Tag Catalog；不记录时间戳/日志，也不写 data.json。
         this.scheduleTagCatalogRebuild(1200);
       }
     }));
 
     this.registerEvent(this.app.vault.on("create", (file) => {
       if (file instanceof TFile && file.extension === "md" && this.isWhitelisted(file)) {
-        this.recordLog(file.path, "external-content", "created");
         this.scheduleTagCatalogRebuild(1200);
       }
     }));
@@ -456,8 +457,51 @@ module.exports = class AiMetadataPlugin extends Plugin {
     document.querySelectorAll(".ai-metadata-enabled-row").forEach((el) => el.removeClass("ai-metadata-enabled-row"));
   }
 
+  loadPersistedFileState(savedFiles) {
+    const files = {};
+    const fingerprintEnabled = this.settings.contentFingerprintEnabled === true;
+    for (const [path, source] of Object.entries(savedFiles || {})) {
+      if (!source || typeof source !== "object") continue;
+      const record = {};
+      if (fingerprintEnabled) {
+        for (const key of ["lastSummaryShortHash", "lastSummaryLongHash", "lastTagsHash"]) {
+          if (typeof source[key] === "string" && source[key]) record[key] = source[key];
+        }
+      }
+      for (const key of ["lastError", "lastErrorType", "lastRawModelOutput"]) {
+        if (typeof source[key] === "string" && source[key]) record[key] = source[key];
+      }
+      if (Object.keys(record).length) files[path] = record;
+    }
+    return files;
+  }
+
+  buildPersistedState() {
+    const files = {};
+    const fingerprintEnabled = this.settings.contentFingerprintEnabled === true;
+    for (const [path, source] of Object.entries(this.state.files || {})) {
+      if (!source || typeof source !== "object") continue;
+      const record = {};
+      if (fingerprintEnabled) {
+        for (const key of ["lastSummaryShortHash", "lastSummaryLongHash", "lastTagsHash"]) {
+          if (typeof source[key] === "string" && source[key]) record[key] = source[key];
+        }
+      }
+      for (const key of ["lastError", "lastErrorType", "lastRawModelOutput"]) {
+        if (typeof source[key] === "string" && source[key]) record[key] = source[key];
+      }
+      if (Object.keys(record).length) files[path] = record;
+    }
+    return { files };
+  }
+
   async saveAllData() {
-    await this.saveData({ settings: this.settings, state: this.state });
+    const payload = { settings: this.settings, state: this.buildPersistedState() };
+    const signature = JSON.stringify(payload);
+    if (signature === this.lastPersistedDataSignature) return false;
+    await this.saveData(payload);
+    this.lastPersistedDataSignature = signature;
+    return true;
   }
 
   scheduleStateSave(delay = 400) {
@@ -771,14 +815,10 @@ module.exports = class AiMetadataPlugin extends Plugin {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       const record = this.state.files[file.path] || {};
-      record.lastAttemptAt = Date.now();
       if (error && error.code === "EMPTY_BODY") {
-        if (this.settings.contentFingerprintEnabled === true) record.lastSeenSourceHash = error.fingerprint || record.lastSeenSourceHash || "";
-        else delete record.lastSeenSourceHash;
         record.lastError = "";
         record.lastErrorType = "";
         record.lastRawModelOutput = "";
-        record.lastSkipReason = "无可分析正文";
         this.state.files[file.path] = record;
         this.scheduleStateSave();
         setStateForButtons("idle");
@@ -880,7 +920,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
       });
     });
 
-    this.markProcessed(file, prepared.fingerprint, requested, reason, result.weightedTags || null);
+    this.markProcessed(file, prepared.fingerprint, requested);
     if (requested.includes("tags")) this.scheduleTagCatalogRebuild(700);
     return result;
   }
@@ -894,13 +934,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
   }
 
   async withAiWrite(file, fn) {
-    this.aiWritingPaths.add(file.path);
-    try {
-      await fn();
-    } finally {
-      // 写入期间通常会触发 Vault modify 事件，因此保留一个很短的宽限窗口。
-      window.setTimeout(() => this.aiWritingPaths.delete(file.path), 300);
-    }
+    await fn();
   }
 
   stripFrontmatter(content) {
@@ -1019,9 +1053,8 @@ module.exports = class AiMetadataPlugin extends Plugin {
         catalog[tag].files += 1;
       }
     }
+    // 仅更新内存索引。Tag Catalog 可由 Vault 随时重建，不写入 data.json。
     this.state.tagCatalog = catalog;
-    this.state.tagCatalogUpdatedAt = Date.now();
-    this.scheduleStateSave();
     return catalog;
   }
 
@@ -1915,7 +1948,6 @@ module.exports = class AiMetadataPlugin extends Plugin {
         const raw = await this.app.vault.cachedRead(file);
         const fingerprint = this.computeSourceFingerprint(raw, file);
         const record = this.state.files[file.path] || {};
-        record.lastSeenSourceHash = fingerprint;
         if (this.hasNonEmptySummaryShort(file)) record.lastSummaryShortHash = fingerprint;
         else delete record.lastSummaryShortHash;
         if (this.hasNonEmptySummaryLong(file)) record.lastSummaryLongHash = fingerprint;
@@ -1929,8 +1961,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
     }
   }
 
-  markProcessed(file, fingerprint, kindOrKinds, reason, weightedTags) {
-    const now = Date.now();
+  markProcessed(file, fingerprint, kindOrKinds) {
     const record = this.state.files[file.path] || {};
     const kinds = Array.isArray(kindOrKinds)
       ? kindOrKinds
@@ -1939,66 +1970,21 @@ module.exports = class AiMetadataPlugin extends Plugin {
         : [kindOrKinds];
 
     if (this.settings.contentFingerprintEnabled === true) {
-      record.lastSeenSourceHash = fingerprint;
       if (kinds.includes("summary_short")) record.lastSummaryShortHash = fingerprint;
       if (kinds.includes("summary_long")) record.lastSummaryLongHash = fingerprint;
       if (kinds.includes("tags")) record.lastTagsHash = fingerprint;
     } else {
-      delete record.lastSeenSourceHash;
       delete record.lastSummaryHash;
       delete record.lastSummaryShortHash;
       delete record.lastSummaryLongHash;
       delete record.lastTagsHash;
     }
-    record.lastAiUpdatedAt = now;
-    record.lastChangeSource = "ai-plugin";
-    record.lastReason = reason;
+    // 成功后只清理真正会被 UI 使用的错误状态；不再保存审计时间、来源、reason、tag scores 或 updateLog。
     record.lastError = "";
     record.lastErrorType = "";
     record.lastRawModelOutput = "";
-    record.lastSkipReason = "";
-    if (weightedTags) record.lastTagScores = weightedTags;
     this.state.files[file.path] = record;
-    this.recordLog(file.path, "ai-plugin", `${reason}:${kinds.join("+")}`);
     this.scheduleStateSave();
-  }
-
-  async recordObservedChange(file) {
-    try {
-      const raw = await this.app.vault.cachedRead(file);
-      const record = this.state.files[file.path] || {};
-      let source;
-      if (this.aiWritingPaths.has(file.path)) {
-        source = "ai-plugin";
-      } else if (this.settings.contentFingerprintEnabled === true) {
-        const hash = this.computeSourceFingerprint(raw, file);
-        const priorHash = record.lastSeenSourceHash;
-        source = priorHash && priorHash === hash ? "external-metadata" : "external-content";
-        record.lastSeenSourceHash = hash;
-      } else {
-        // 关闭持久化内容指纹识别时，不创建任何 hash 标记。
-        source = "external-change";
-        delete record.lastSeenSourceHash;
-        delete record.lastSummaryHash;
-        delete record.lastSummaryShortHash;
-        delete record.lastSummaryLongHash;
-        delete record.lastTagsHash;
-      }
-
-      record.lastChangeSource = source;
-      record.lastChangedAt = Date.now();
-      this.state.files[file.path] = record;
-      this.recordLog(file.path, source, "modify");
-      this.scheduleStateSave();
-    } catch (error) {
-      console.warn("xyblue135 私人·AI 元数据：判断文件变更来源失败", file.path, error);
-    }
-  }
-
-  recordLog(path, source, detail) {
-    const log = Array.isArray(this.state.updateLog) ? this.state.updateLog : [];
-    log.push({ path, source, detail, at: Date.now() });
-    this.state.updateLog = log.slice(-200);
   }
 
   async setAutoUpdateEnabled(enabled, options = {}) {
@@ -2110,15 +2096,6 @@ module.exports = class AiMetadataPlugin extends Plugin {
       const raw = await this.app.vault.cachedRead(file);
       const fingerprint = this.computeSourceFingerprint(raw, file);
       const record = this.state.files[file.path] || {};
-      if (this.settings.contentFingerprintEnabled === true) record.lastSeenSourceHash = fingerprint;
-      else {
-        delete record.lastSeenSourceHash;
-        delete record.lastSummaryHash;
-        delete record.lastSummaryShortHash;
-        delete record.lastSummaryLongHash;
-        delete record.lastTagsHash;
-      }
-      this.state.files[file.path] = record;
       const body = this.stripFrontmatter(raw).trim();
       const emptyBody = !body;
       const { summaryShortDone, summaryLongDone, tagsDone } = this.getMetadataCompletion(file, fingerprint);
@@ -2276,14 +2253,10 @@ module.exports = class AiMetadataPlugin extends Plugin {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       const record = this.state.files[file.path] || {};
-      record.lastAttemptAt = Date.now();
       if (error && error.code === "EMPTY_BODY") {
-        if (this.settings.contentFingerprintEnabled === true) record.lastSeenSourceHash = error.fingerprint || record.lastSeenSourceHash || "";
-        else delete record.lastSeenSourceHash;
         record.lastError = "";
         record.lastErrorType = "";
         record.lastRawModelOutput = "";
-        record.lastSkipReason = "无可分析正文";
         this.state.files[file.path] = record;
         await this.saveAllData();
         if (showNotice) new Notice(`xyblue135 私人·AI 元数据：跳过 ${file.basename}：无可分析正文`);
@@ -2293,7 +2266,6 @@ module.exports = class AiMetadataPlugin extends Plugin {
       record.lastErrorType = error && error.code ? String(error.code) : "ERROR";
       record.lastRawModelOutput = error && error.rawOutput ? String(error.rawOutput).slice(0, 16000) : "";
       this.state.files[file.path] = record;
-      this.recordLog(file.path, "manual-retry-error", message.slice(0, 160));
       await this.saveAllData();
       if (showNotice) new Notice(`xyblue135 私人·AI 元数据：重试仍失败：${message}`, 7000);
       return { success: false, message, rawOutput: record.lastRawModelOutput };
@@ -2456,21 +2428,16 @@ module.exports = class AiMetadataPlugin extends Plugin {
           const message = error instanceof Error ? error.message : String(error);
           const recordPath = file.path || queued.queuedPath;
           const record = this.state.files[recordPath] || {};
-          record.lastAttemptAt = Date.now();
           if (error && error.code === "EMPTY_BODY") {
-            if (this.settings.contentFingerprintEnabled === true) record.lastSeenSourceHash = error.fingerprint || record.lastSeenSourceHash || "";
-        else delete record.lastSeenSourceHash;
             record.lastError = "";
             record.lastErrorType = "";
             record.lastRawModelOutput = "";
-            record.lastSkipReason = "无可分析正文";
             skippedFiles.push({ path: recordPath, message: "无可分析正文", kind: "empty-body" });
             if (typeof onProgress === "function") onProgress({ phase: "skipped", folder, filePath: recordPath, message: "无可分析正文", ...progress });
           } else {
             record.lastError = message.slice(0, 1000);
             record.lastErrorType = error && error.code ? String(error.code) : "ERROR";
             record.lastRawModelOutput = error && error.rawOutput ? String(error.rawOutput).slice(0, 16000) : "";
-            this.recordLog(recordPath, "folder-sync-error", message.slice(0, 160));
             failedFiles.push({ path: recordPath, message, rawOutput: record.lastRawModelOutput, errorType: record.lastErrorType });
             if (typeof onProgress === "function") onProgress({ phase: "error", folder, filePath: recordPath, message, ...progress });
             this.setRuntimeStatus("error", { filePath: recordPath, progress, message });
@@ -2572,17 +2539,6 @@ module.exports = class AiMetadataPlugin extends Plugin {
         }
         try {
           const prepared = await this.prepareFile(file);
-          const record = this.state.files[file.path] || {};
-          if (this.settings.contentFingerprintEnabled === true) record.lastSeenSourceHash = prepared.fingerprint;
-          else {
-            delete record.lastSeenSourceHash;
-            delete record.lastSummaryHash;
-            delete record.lastSummaryShortHash;
-            delete record.lastSummaryLongHash;
-            delete record.lastTagsHash;
-          }
-          this.state.files[file.path] = record;
-
           const { summaryShortDone, summaryLongDone, tagsDone } = this.getMetadataCompletion(file, prepared.fingerprint);
           if (summaryShortDone && summaryLongDone && tagsDone) {
             skipped += 1;
@@ -2616,29 +2572,21 @@ module.exports = class AiMetadataPlugin extends Plugin {
           }
           const message = error instanceof Error ? error.message : String(error);
           const record = this.state.files[file.path] || {};
-          record.lastAttemptAt = Date.now();
           if (error && error.code === "EMPTY_BODY") {
             skipped += 1;
-            if (this.settings.contentFingerprintEnabled === true) record.lastSeenSourceHash = error.fingerprint || record.lastSeenSourceHash || "";
-        else delete record.lastSeenSourceHash;
             record.lastError = "";
             record.lastErrorType = "";
             record.lastRawModelOutput = "";
-            record.lastSkipReason = "无可分析正文";
-            this.recordLog(file.path, "auto-skip-empty", "无可分析正文");
           } else if (error && error.code === "STATUS_NOT_DONE") {
             skipped += 1;
             record.lastError = "";
             record.lastErrorType = "";
             record.lastRawModelOutput = "";
-            record.lastSkipReason = "status 不是 done";
-            this.recordLog(file.path, "auto-skip-status", "status 不是 done");
           } else {
             failed += 1;
             record.lastError = message.slice(0, 1000);
             record.lastErrorType = error && error.code ? String(error.code) : "ERROR";
             record.lastRawModelOutput = error && error.rawOutput ? String(error.rawOutput).slice(0, 16000) : "";
-            this.recordLog(file.path, "auto-error", message.slice(0, 160));
             this.setRuntimeStatus("error", { filePath: file.path, progress, message });
             console.warn(`xyblue135 私人·AI 元数据 auto update failed: ${file.path}`, error);
           }

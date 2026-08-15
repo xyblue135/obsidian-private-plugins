@@ -4,7 +4,11 @@
     "apiKey": "",
     "model": "auto",
     "whitelistFolder": "Notes",
-    "summaryMaxChars": 300
+    "summaryShortMaxChars": 100,
+    "summaryLongMaxChars": 300,
+    "contentFingerprintEnabled": false
   },
-  "state": {}
+  "state": {
+    "files": {}
+  }
 }

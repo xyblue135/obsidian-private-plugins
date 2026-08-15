@@ -1,6 +1,10 @@
 {
   "recentFiles": [
     {
+      "basename": "安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】",
+      "path": "Notes/02代码/code_编译环境/安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】.md"
+    },
+    {
       "basename": "远端有新的提交_本地无法commit【千万别force push】",
       "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md"
     },
@@ -195,10 +199,6 @@
     {
       "basename": "ollama_同时加载多个模型配置教程",
       "path": "Notes/01运维_0ai相关/ollama系列/ollama_同时加载多个模型配置教程.md"
-    },
-    {
-      "basename": "ollama通过Modelfile解决模型上下文限制",
-      "path": "Notes/01运维_0ai相关/ollama系列/ollama通过Modelfile解决模型上下文限制.md"
     }
   ],
   "omittedPaths": [],

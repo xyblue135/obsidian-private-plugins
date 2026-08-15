@@ -8,6 +8,68 @@
 
 ---
 
+## v0.6.1：精简 data.json，普通编辑不再制造 Git 状态噪声
+
+这一版把插件状态拆成“必须持久化”和“仅运行期缓存”两部分，目标是避免每次编辑 Markdown 都让 Git 判定插件 `data.json` 已修改。
+
+### 持久化结构
+
+`data.json` 只保留：
+
+```text
+settings
+state.files
+  ├─ lastSummaryShortHash   # 仅开启 fingerprint 时
+  ├─ lastSummaryLongHash    # 仅开启 fingerprint 时
+  ├─ lastTagsHash           # 仅开启 fingerprint 时
+  ├─ lastError
+  ├─ lastErrorType
+  └─ lastRawModelOutput
+```
+
+空记录不会写入 `state.files`。关闭 fingerprint 时，三类 hash 会自动从磁盘状态中移除。
+
+### 改为仅内存维护
+
+`tagCatalog` 仍然完整保留，用于：
+
+- Tag 大小写规范化；
+- 优先复用 Vault 中已有 Tag 拼写；
+- 设置页查看本地 Tag 索引。
+
+但它现在只存在于插件运行内存中。Obsidian 启动后会从 Vault 重新扫描建立，因此不再写入 `data.json`。
+
+### 删除的无效持久化状态
+
+旧版以下字段不再保存：
+
+```text
+tagCatalogUpdatedAt
+updateLog
+lastChangedAt
+lastChangeSource
+lastAiUpdatedAt
+lastReason
+lastTagScores
+lastAttemptAt
+lastSkipReason
+lastSeenSourceHash
+```
+
+其中普通 `modify` 事件不再记录审计时间和修改来源，只触发经过 debounce 的内存 Tag Catalog 重建。内容指纹模式也不需要在每次编辑时保存“当前正文 hash”；是否过期直接用当前正文 fingerprint 与上一次成功生成时保存的 `lastSummaryShortHash` / `lastSummaryLongHash` / `lastTagsHash` 比较。
+
+### 减少无意义写盘
+
+`saveAllData()` 增加持久化内容签名比较。若真正需要保存的数据与上一次完全相同，则直接跳过 `saveData()`，进一步减少磁盘写入和 Git 噪声。
+
+### 自动迁移
+
+首次加载 v0.6.1 时会自动清理旧 `data.json` 中上述运行状态字段。第一次启动可能因此出现 **一次** `data.json` 变更；完成这次迁移后，正常编辑 Markdown 不再持续修改它。
+
+> `data.json` 仍可能包含 API Key，因此发布/升级包继续不携带该文件；如 Vault 使用 Git 同步，也仍建议将本地 `data.json` 加入 `.gitignore`。
+
+---
+
 ## v0.6.0：双摘要 summary_short + summary_long
 
 这一版把原来的单一 `summary` 拆成两个用途明确的摘要字段：
