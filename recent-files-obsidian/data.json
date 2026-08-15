@@ -5,6 +5,10 @@
       "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md"
     },
     {
+      "basename": "密码管理",
+      "path": "主页组件/密码管理.md"
+    },
+    {
       "basename": "RUST的介绍",
       "path": "Notes/02代码/代码_RUST【编译噩梦 使用天堂】/RUST的介绍.md"
     },
@@ -195,10 +199,6 @@
     {
       "basename": "ollama通过Modelfile解决模型上下文限制",
       "path": "Notes/01运维_0ai相关/ollama系列/ollama通过Modelfile解决模型上下文限制.md"
-    },
-    {
-      "basename": "常见光模块类型",
-      "path": "Notes/Y_常用小知识_硬件/常见光模块类型.md"
     }
   ],
   "omittedPaths": [],
