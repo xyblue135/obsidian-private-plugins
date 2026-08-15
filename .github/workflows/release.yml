@@ -1,4 +1,4 @@
-name: Release Plugins Snapshot
+name: Release xyblue135 Plugins
 
 on:
   push:
@@ -17,19 +17,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Package plugins directory
+      - name: Package each xyblue135 plugin (exclude data.json)
         run: |
-          TAG="${GITHUB_REF_NAME}"
-          ZIP="obsidian-plugins-${TAG}.zip"
-          # 打包仓库全部内容（即插件目录），排除 .git
-          zip -r "$ZIP" . -x '*.git*'
-          echo "ZIP=$ZIP" >> "$GITHUB_ENV"
-          echo "打包完成: $ZIP"
+          shopt -s nullglob
+          mkdir -p dist
+          for d in 00_xyblue135-*/; do
+            name="${d%/}"
+            # 每个插件单独打包，排除 data.json（含凭据/用户配置）与 .git
+            zip -r "dist/${name}.zip" "$d" -x "${d}data.json" -x "${d}.git/*"
+            echo "打包: ${name}.zip"
+          done
+          ls -la dist/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ env.ZIP }}
+          name: "xyblue135 插件合集 ${{ github.ref_name }}"
+          files: dist/*.zip
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
