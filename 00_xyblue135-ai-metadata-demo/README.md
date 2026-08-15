@@ -1,3 +1,434 @@
+# xyblue135 · AI 元数据
+
+> **开源插件**：xyblue135 维护的开放源代码插件，仓库公开、可自由查看与复用。  
+> **README 当前用途**：暂时作为完整版本变更记录（Changelog）使用；历史版本说明先全部保留，后续再单独迁移/拆分为使用说明、升级指南和 Changelog。  
+> **兼容原则**：插件 ID 保持 `00_xyblue135-ai-metadata-demo`，升级包不携带 `data.json`，覆盖安装时保留用户本地配置、API Key 与历史状态。
+
+维护者：**xyblue135**
+
+---
+
+## v0.6.0：双摘要 summary_short + summary_long
+
+这一版把原来的单一 `summary` 拆成两个用途明确的摘要字段：
+
+```yaml
+summary_short: "用于快速识别主题的短摘要"
+summary_long: "用于理解文章结构的长摘要"
+tags:
+  - ...
+```
+
+### 1. 新增 summary_short
+
+`summary_short` 面向：
+
+- 首页文章卡片；
+- 搜索结果；
+- 悬浮预览；
+- 快速浏览；
+- 只需要迅速知道“这篇文章在讲什么”的场景。
+
+默认最大长度为 **100 字符**，推荐范围约 **70～120 字符**。
+
+Short Harness 的目标不再是简单把正文截短，而是优先保留：
+
+```text
+对象 / 技术主题
+  ↓
+核心问题
+  ↓
+最主要的方案、结论或知识点
+```
+
+同时要求使用正常、自然的中文表达，避免把摘要压成：
+
+```text
+12V3A/5A→1.2W；BAT依赖；XL4016+MOS；NTC待查
+```
+
+这类电报体、参数串或关键词堆砌。
+
+---
+
+### 2. 新增 summary_long
+
+`summary_long` 面向：
+
+- AI 理解整篇文章结构；
+- 技术含量 / 权重判断；
+- 博客文章排序；
+- RAG；
+- 自动分类；
+- 相关文章推荐；
+- 全库文章比较；
+- 需要在不读取全文的情况下尽量恢复文章主要内容的场景。
+
+默认最大长度为 **300 字符**，推荐范围约 **250～320 字符**。
+
+Long Harness 强调尽量恢复完整的信息链：
+
+```text
+背景 / 问题
+  ↓
+排查 / 实验 / 测试依据
+  ↓
+核心判断与因果关系
+  ↓
+技术方案 / 实现方式
+  ↓
+关键参数、模块、接口或工具
+  ↓
+风险 / 限制 / 异常 / 待验证问题
+```
+
+正文信息充足时，默认要求尽量使用字符预算的 **75%～95%**，不再主动把长技术文章压成几十字的“最终结论”。
+
+---
+
+### 3. 双摘要使用完全独立的 Harness
+
+原来的：
+
+```text
+Summary Harness
+```
+
+拆分为：
+
+```text
+Summary Short Harness
+Summary Long Harness
+```
+
+两个 Harness：
+
+- 可以分别启用 / 禁用；
+- 可以分别编辑；
+- 可以分别恢复默认；
+- 分别支持自己的长度变量。
+
+新变量：
+
+```text
+{{summaryShortMaxChars}}
+{{summaryLongMaxChars}}
+```
+
+为了兼容旧的自定义 Prompt，旧：
+
+```text
+{{summaryMaxChars}}
+```
+
+仍可以解析，并默认映射到 `summary_long` 的长度。
+
+---
+
+### 4. 合并请求升级为一次生成三个字段
+
+开启实验性合并请求时，一篇文章如果同时缺少：
+
+```text
+summary_short
+summary_long
+tags
+```
+
+插件默认只发送 **1 次** `/chat/completions`，要求模型返回：
+
+```json
+{
+  "summary_short": "短摘要",
+  "summary_long": "长摘要",
+  "tags": [
+    {"value": "标签", "weight": 0.95}
+  ]
+}
+```
+
+插件会分别解析、校验三个字段，并在全部逻辑结果成功后一次性写入 frontmatter。
+
+如果只缺其中两个字段，例如：
+
+```text
+summary_long + tags
+```
+
+或者：
+
+```text
+summary_short + summary_long
+```
+
+合并请求开启时也会尽量通过 **1 次 API 请求**补齐，而不是固定拆成三次请求。
+
+如果只缺一个字段，则只生成该字段。
+
+---
+
+### 5. Properties 增加三个独立 AI 按钮
+
+新版支持：
+
+```text
+summary_short  ✨
+summary_long   ✨
+tags           ✨
+```
+
+Properties 中的按钮继续遵守 v0.4.6 之后的原则：
+
+> 点击哪个字段，只生成并写入哪个字段。
+
+也就是说：
+
+- `summary_short` 旁 ✨ → 只更新短摘要；
+- `summary_long` 旁 ✨ → 只更新长摘要；
+- `tags` 旁 ✨ → 只更新标签。
+
+不会因为开启合并请求而顺带覆盖另外两个字段。
+
+---
+
+### 6. 新增双摘要命令
+
+命令面板增加 / 调整为：
+
+- 为当前 Notes 笔记生成短摘要 `summary_short`
+- 为当前 Notes 笔记生成长摘要 `summary_long`
+- 为当前 Notes 笔记同时生成短摘要和长摘要
+- 为当前 Notes 笔记生成加权标签
+- 为当前 Notes 笔记生成双摘要和标签
+
+原来的“生成摘要”入口在新版中对应 `summary_long`，因为长摘要承担原 Summary 的“理解文章内容”职责。
+
+---
+
+### 7. 待更新识别改为分别检查三个字段
+
+默认非 fingerprint 模式下：
+
+```text
+summary_short 非空 → Short 已完成
+summary_long  非空 → Long 已完成
+tags          非空 → Tags 已完成
+```
+
+一篇文章只有三个字段都完成，才会被视为元数据完整。
+
+因此可能出现：
+
+```text
+summary_short：已有
+summary_long：缺失
+tags：已有
+```
+
+此时插件只补：
+
+```text
+summary_long
+```
+
+不会覆盖已有 Short 和 Tags。
+
+待更新面板也会分别显示：
+
+```text
+Summary Short
+Summary Long
+Tags
+```
+
+方便直接看出缺哪个字段。
+
+---
+
+### 8. 内容指纹分别追踪两个摘要
+
+开启 fingerprint 后，原来的：
+
+```text
+lastSummaryHash
+lastTagsHash
+```
+
+升级为：
+
+```text
+lastSummaryShortHash
+lastSummaryLongHash
+lastTagsHash
+```
+
+正文指纹计算会忽略 AI 管理的：
+
+```text
+summary
+summary_short
+summary_long
+tags
+position
+```
+
+其中旧 `summary` 也继续忽略，避免历史字段变化导致无意义重跑。
+
+关闭 fingerprint 时，会清理新旧持久化摘要 hash，不把这些内容继续保存在 `data.json`。
+
+---
+
+### 9. 保留旧 summary，不自动迁移正文属性
+
+v0.6.0 **不会在插件启动时自动把整个 Vault 的旧：**
+
+```yaml
+summary:
+```
+
+直接改名或删除。
+
+原因是这种操作会静默批量修改大量 Markdown，不适合作为普通插件升级动作。
+
+因此升级后的策略是：
+
+```text
+旧 summary → 暂时原样保留
+summary_short → 新生成
+summary_long → 新生成
+tags → 继续维护
+```
+
+新版完成状态只依据：
+
+```text
+summary_short
+summary_long
+tags
+```
+
+旧 `summary` 不再作为新版摘要完成条件。
+
+等后续确认整个双摘要体系稳定后，再单独设计旧 `summary` 的迁移 / 清理工具。
+
+---
+
+### 10. 旧设置自动兼容迁移
+
+旧版使用：
+
+```text
+summaryMaxChars
+summaryHarness
+summaryHarnessEnabled
+```
+
+v0.6.0 升级时会转换为：
+
+```text
+summaryShortMaxChars
+summaryLongMaxChars
+
+summaryShortHarness
+summaryLongHarness
+
+summaryShortHarnessEnabled
+summaryLongHarnessEnabled
+```
+
+长度迁移规则：
+
+- 旧 `summaryMaxChars` 在约 40～140 时，优先作为短摘要长度；
+- 旧值 ≥180 时，优先作为长摘要长度；
+- 无有效旧值时使用默认：
+  - Short = 100
+  - Long = 300
+
+旧版 Summary Harness 通常围绕“单句 / 极简摘要”设计，因此不会直接拿来充当新的 Long Harness；两个新 Harness 使用各自新的默认模板，避免把 `summary_long` 再次压成技术速记。
+
+---
+
+### 11. 摘要截断逻辑继续优化
+
+延续 v0.5.7 的改动：
+
+- 不再简单使用 `.slice(maxChars)` 粗暴切断；
+- 超长时优先尝试在：
+  - `。`
+  - `！`
+  - `？`
+  - `；`
+  等句子边界结束；
+- 如果没有合适句子边界，再考虑较靠后的逗号 / 顿号等从句边界；
+- 只有找不到合理自然边界时才使用硬长度上限。
+
+目的是尽量避免：
+
+```text
+……并通过 MOS 理想二极管实现防倒
+```
+
+这种被截在半句话中的摘要。
+
+---
+
+### 12. Summary Markdown 清理继续复用
+
+原 v0.5.4 的：
+
+**Summary 输入 Markdown 清理**
+
+继续保留，并同时作用于：
+
+```text
+summary_short
+summary_long
+```
+
+独立 Tags 请求仍使用原始正文。
+
+合并请求时，因为同一次请求同时生成双摘要和 Tags，目前继续复用摘要清理后的正文，保持现有合并请求逻辑。
+
+---
+
+### 13. 升级包继续不携带 data.json
+
+从 v0.5.7 开始，发布 / 升级包不再附带本地 `data.json`。
+
+这样覆盖安装时不会把用户已有的：
+
+- API Key；
+- Base URL；
+- Model；
+- 自动更新设置；
+- Tag 索引；
+- 更新日志；
+- 错误记录；
+- 其他本地状态
+
+一起覆盖。
+
+升级时应保留当前插件目录中原有的 `data.json`。
+
+---
+
+### 14. 推荐的新 Frontmatter 结构
+
+```yaml
+---
+status: done
+summary_short: ""
+summary_long: ""
+tags: []
+---
+```
+
+这两个摘要字段也无需提前手动创建；生成时插件可以直接写入。
+
+---
+
+---
+
 ## v0.5.7：Summary 从“100 字技术速记”升级为自然内容总览
 
 - 默认 `summaryMaxChars` 从 100 调整为 **300**；首次从旧版升级且仍为 100/120 字以内时自动迁移到 300，一次迁移后不再干涉用户后续自定义。
@@ -11,6 +442,37 @@
 
 ---
 
+---
+
+## v0.5.6
+
+- 默认关闭内容指纹识别。
+- 默认以 Properties 是否有内容判断完成状态：`summary` 非空即完成，`tags` 非空即完成。
+- 当一项已有内容、另一项为空时，批量/自动任务只补缺失项，不覆盖已有项。
+- 新增可选 **内容指纹 fingerprint 识别** 开关；首次开启时以当前已有 Summary/Tags 建立基线，避免全库立即重跑。
+- 关闭 fingerprint 后删除 `lastSeenSourceHash`、`lastSummaryHash`、`lastTagsHash`，不再在 `data.json` 保存这些持久化指纹。
+- 单次 AI 请求期间仍会使用临时内容 hash 防止“请求过程中正文变化却写入旧结果”，该临时校验不会写进数据库。
+
+---
+
+## v0.5.5
+
+- 插件显示名称改为 `xyblue135 · AI 元数据`。
+- 保持插件 ID `00_xyblue135-ai-metadata-demo` 不变，兼容原插件升级。
+- 发布包保留原始 `data.json` 中的其他记录；v0.5.6 会移除旧的持久化文章指纹字段，但保留 Tag 目录、更新日志、标签评分、错误记录等其他状态。
+- 保留 v0.5.4 的可选 Summary Markdown 清理功能。
+
+---
+
+## v0.5.4
+
+- 新增可选的 **Summary 输入 Markdown 清理** 开关（默认关闭）。
+- 开启后去除 `#`、反引号、粗体、引用等展示格式但保留文字。
+- 图片嵌入与链接 URL 会被清理。
+- 超过 500 字符的 fenced 代码块会替换为省略提示，短代码块保留内容。
+- Tags 单独生成仍使用原始正文；实验性 Summary + Tags 合并请求会共用清理后的正文。
+
+---
 
 ## v0.5.3
 
@@ -19,16 +481,7 @@
 - 设置页改为卡片分组布局，并在顶部显示当前扫描模式、自动更新状态和模型。
 - 文件夹识别在排队后、请求过程中和写入前会再次检查 status，避免文章中途从 done 改为 undone 后仍被写入。
 
-# xyblue135 私人 · AI 元数据
-
-> **私人插件**：xyblue135 自用维护版，不作为公共插件发布。
-> **兼容说明**：保留原插件内部 `id` 和 `data.json`，升级覆盖时可继续使用已有配置与记录。
-
-维护者：**xyblue135**
-
-这是一个 Obsidian Desktop 本地插件，用 AI 维护 `/Notes` 中 Markdown 的 `summary` 和 `tags`。
-
-
+---
 
 ## v0.5.2：自动更新硬停止 + 两段式 API 校验
 
@@ -39,6 +492,8 @@
 3. 测试成功时会显示 `/models` 返回的模型数量；若服务返回 `X-Routed-Via`，同时显示实际路由信息。
 
 这套校验尤其适合 FreeLLMAPI 这类 OpenAI-compatible 聚合路由：`/models` 成功只能说明入口和鉴权正常，第二段真实 chat 请求还能继续验证当前上游 provider / 路由是否真的可用。
+
+---
 
 ## v0.5.1：Tag 大小写本地规范化
 
@@ -69,6 +524,8 @@ Vault 已有同名 Tag（忽略大小写）？
 - **整理已有 Tag 大小写冲突**：扫描白名单目录的 frontmatter tags，先预览 `Prometheus ×N / prometheus ×M → Prometheus`，再由用户点击执行统一；不调用 AI。为避免误改正文，只处理 frontmatter tags，不批量改写行内 `#tag`。
 
 Tags / Summary+Tags Prompt 已移除整库 Tag 目录；当前文章自己的现有 tags 仍会作为该文章的小范围上下文发送。
+
+---
 
 ---
 
@@ -106,6 +563,8 @@ Tags / Summary+Tags Prompt 已移除整库 Tag 目录；当前文章自己的现
 - 如果识别过程中关闭了面板，再次打开“待更新笔记 / 文件夹识别”时，顶部仍会显示“停止当前识别”，不会因为关闭面板而失去停止入口。
 
 停止后的结果面板会明确显示“最近同步（已停止）”以及成功 / 失败 / 跳过 / 剩余数量。
+
+---
 
 ---
 
@@ -151,6 +610,7 @@ Tags / Summary+Tags Prompt 已移除整库 Tag 目录；当前文章自己的现
 
 ---
 
+---
 
 ## v0.4.8：兼容 Tags 顶层 JSON 数组
 
@@ -192,6 +652,7 @@ Tags / Summary+Tags Prompt 已移除整库 Tag 目录；当前文章自己的现
 
 ---
 
+---
 
 ## v0.4.7：Tags 数量改为“上限”，不足不再报错
 
@@ -222,6 +683,8 @@ Tags / Summary+Tags Prompt 已移除整库 Tag 目录；当前文章自己的现
 ```
 
 在 v0.4.7 中不会再因为“6/7”本身失败。
+
+---
 
 ---
 
@@ -272,6 +735,7 @@ Notes
 
 ---
 
+---
 
 ## v0.4.5：结构化 JSON 容错与失败诊断
 
@@ -302,6 +766,8 @@ JSON mode
 ### 空正文不再算红色失败
 
 只有 YAML/frontmatter、或去掉 frontmatter 后没有可分析正文的 Markdown，会显示为黄色 **“无正文”**，归类为“跳过”，不计入失败。默认非指纹模式下，后续只要 Summary/Tags 对应字段仍为空，就会继续作为待补全项；开启 fingerprint 后则按内容指纹判断是否过期。
+
+---
 
 ## v0.4.4：按文件夹查看并同步待更新 Markdown
 
@@ -350,6 +816,8 @@ JSON mode
 
 定时 **自动触发更新** 功能仍然保留；这里只替换了手动消化大量新笔记的交互。
 
+---
+
 ## v0.4.3：固定数量、技术优先标签（历史行为）
 
 - v0.4.3 当时默认 `Tags 数量 = 7`，并把数量作为固定目标，要求模型返回指定数量的合法、唯一、带 weight 标签。
@@ -358,6 +826,8 @@ JSON mode
 - 例如：`FFmpeg≈0.98 > 视频转码≈0.72 > 格式转换≈0.45`。
 - 标签目录复用频率只是同等质量时的次级因素。
 - **该“必须凑满 N 个”的行为已在 v0.4.7 取消；当前 N 仅表示上限。**
+
+---
 
 ## v0.4.2：标签合法性双层防线
 
@@ -369,6 +839,8 @@ JSON mode
 - Tags 目录重建时同样过滤非法 value。自 v0.5.1 起该目录仅作为本地 Tag 索引，不再放进 Prompt。
 - Tag Value Safety Harness 属于机器输出安全协议，即使关闭可编辑 Tags Harness 也仍然生效；设置页可直接查看固定规则，本地 validator 始终生效。
 
+---
+
 ## v0.4.1：修复 Properties 图标的实验合并行为（历史行为）
 
 > 此处记录 v0.4.1 当时的行为；从 v0.4.6 起，Properties 中的 `summary` / `tags` 按钮已恢复为各自单字段请求。
@@ -377,6 +849,8 @@ JSON mode
 - 一次 `/chat/completions` 同时生成并原子写入 `summary + tags`，两个图标会一起显示 loading / success / error 状态。
 - 关闭实验开关时，两个图标仍分别只更新自己的字段。
 - 命令面板中的单字段命令仍保持原行为；只有 Properties 图标在实验模式下被提升为“双字段刷新”。
+
+---
 
 ## v0.4.0：实验性合并请求
 
@@ -500,10 +974,10 @@ Combined Metadata API
 
 ## 安装
 
-插件目录使用 `xyblue135-` 前缀：
+插件目录使用 `00_xyblue135-` 前缀：
 
 ```text
-<Vault>/.obsidian/plugins/xyblue135-ai-metadata-demo/
+<Vault>/.obsidian/plugins/00_xyblue135-ai-metadata-demo/
 ```
 
 至少包含：
@@ -517,16 +991,16 @@ styles.css
 然后：
 
 ```text
-设置 -> 第三方插件 -> xyblue135-AI-Metadata -> 启用
+设置 -> 第三方插件 -> xyblue135 · AI 元数据 -> 启用
 ```
 
 `manifest.json` 中的插件 ID 也已同步改为：
 
 ```text
-xyblue135-ai-metadata-demo
+00_xyblue135-ai-metadata-demo
 ```
 
-如果安装包包含 `data.json`，其中可能保存 API Key，只应放在你自己的 Vault 中，不要公开提交。
+本仓库为公开仓库，`data.json` 可能保存 API Key 等本地敏感配置，请勿提交进仓库；发布 / 升级包也不携带 `data.json`，覆盖安装时保留你自己的本地配置。
 
 ## API
 
@@ -544,29 +1018,3 @@ POST {Base URL}/chat/completions
 ```
 
 为了实现真正可中断的硬超时与关闭时取消请求，插件使用 Obsidian Desktop 环境的 Node.js `http` / `https`，因此 manifest 标记为 Desktop Only。
-
-## v0.5.4
-
-- 新增可选的 **Summary 输入 Markdown 清理** 开关（默认关闭）。
-- 开启后去除 `#`、反引号、粗体、引用等展示格式但保留文字。
-- 图片嵌入与链接 URL 会被清理。
-- 超过 500 字符的 fenced 代码块会替换为省略提示，短代码块保留内容。
-- Tags 单独生成仍使用原始正文；实验性 Summary + Tags 合并请求会共用清理后的正文。
-
-
-## v0.5.5
-
-- 插件显示名称改为 `xyblue135-AI-Metadata`。
-- 保持插件 ID `xyblue135-ai-metadata-demo` 不变，兼容原插件升级。
-- 发布包保留原始 `data.json` 中的其他记录；v0.5.6 会移除旧的持久化文章指纹字段，但保留 Tag 目录、更新日志、标签评分、错误记录等其他状态。
-- 保留 v0.5.4 的可选 Summary Markdown 清理功能。
-
-
-## v0.5.6
-
-- 默认关闭内容指纹识别。
-- 默认以 Properties 是否有内容判断完成状态：`summary` 非空即完成，`tags` 非空即完成。
-- 当一项已有内容、另一项为空时，批量/自动任务只补缺失项，不覆盖已有项。
-- 新增可选 **内容指纹 fingerprint 识别** 开关；首次开启时以当前已有 Summary/Tags 建立基线，避免全库立即重跑。
-- 关闭 fingerprint 后删除 `lastSeenSourceHash`、`lastSummaryHash`、`lastTagsHash`，不再在 `data.json` 保存这些持久化指纹。
-- 单次 AI 请求期间仍会使用临时内容 hash 防止“请求过程中正文变化却写入旧结果”，该临时校验不会写进数据库。

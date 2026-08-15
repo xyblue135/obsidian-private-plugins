@@ -1,9 +1,9 @@
 {
   "id": "00_xyblue135-local-image-hover-zoom",
-  "name": "xyblue135 私人 · 图片缩放与相框",
+  "name": "xyblue135 · 图片缩放与相框",
   "version": "1.4.1",
   "minAppVersion": "1.5.0",
-  "description": "【xyblue135 私人插件】使用 Shift + 滚轮临时调整正文图片尺寸，并为标准 Markdown 图片提供可配置相框；不修改 Markdown 或图片文件。",
+  "description": "【xyblue135 开源插件】使用 Shift + 滚轮临时调整正文图片尺寸，并为标准 Markdown 图片提供可配置相框；不修改 Markdown 或图片文件。",
   "author": "xyblue135",
   "isDesktopOnly": true
 }

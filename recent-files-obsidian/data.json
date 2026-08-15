@@ -1,12 +1,192 @@
 {
   "recentFiles": [
     {
-      "basename": "戴睿T30免电池供电改造_超详细博客",
-      "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md"
+      "basename": "鼠标透传盒子",
+      "path": "Notes/Z_娱乐_game/00_游戏外设/鼠标透传盒子.md"
+    },
+    {
+      "basename": "使用ps3手柄玩pc游戏并放到电视上且多人游玩",
+      "path": "Notes/Z_娱乐_game/00_游戏外设/使用ps3手柄玩pc游戏并放到电视上且多人游玩.md"
+    },
+    {
+      "basename": "关于罗技鼠标的板载模式",
+      "path": "Notes/Z_娱乐_game/00_游戏外设/关于罗技鼠标的板载模式.md"
+    },
+    {
+      "basename": "Flash兼容浏览器横向实测汇总",
+      "path": "Notes/Z_娱乐_game/00_游戏驱动/Flash兼容浏览器横向实测汇总.md"
+    },
+    {
+      "basename": "虚幻引擎ue曝光参数修改",
+      "path": "Notes/Z_娱乐_game/00_游戏驱动/虚幻引擎ue曝光参数修改.md"
+    },
+    {
+      "basename": "三角洲AZ3点位",
+      "path": "Notes/Z_娱乐_game/00_三角洲/三角洲AZ3点位.md"
+    },
+    {
+      "basename": "三角洲虚拟化报错处理",
+      "path": "Notes/Z_娱乐_game/00_三角洲/三角洲虚拟化报错处理.md"
+    },
+    {
+      "basename": "三角洲200t可能的解决方案",
+      "path": "Notes/Z_娱乐_game/00_三角洲/三角洲200t可能的解决方案.md"
+    },
+    {
+      "basename": "巴克什逆天点位",
+      "path": "Notes/Z_娱乐_game/00_三角洲/巴克什逆天点位.md"
+    },
+    {
+      "basename": "巴别塔面包位置",
+      "path": "Notes/Z_娱乐_game/00_三角洲/巴别塔面包位置.md"
+    },
+    {
+      "basename": "Docker部署帕鲁服务器",
+      "path": "Notes/Z_娱乐_game/00_其他游戏/Docker部署帕鲁服务器.md"
+    },
+    {
+      "basename": "怪物猎人steam存档迁移学习版",
+      "path": "Notes/Z_娱乐_game/00_其他游戏/怪物猎人steam存档迁移学习版.md"
+    },
+    {
+      "basename": "给怪物猎人添加mod",
+      "path": "Notes/Z_娱乐_game/00_其他游戏/给怪物猎人添加mod.md"
+    },
+    {
+      "basename": "关于BOM头的介绍和使用",
+      "path": "Notes/Y_office/关于BOM头的介绍和使用.md"
+    },
+    {
+      "basename": "Office永久激活",
+      "path": "Notes/Y_office/Office永久激活.md"
+    },
+    {
+      "basename": "excel数据格式",
+      "path": "Notes/Y_office/excel数据格式.md"
+    },
+    {
+      "basename": "kail破解密码",
+      "path": "Notes/Y_破解和攻击类/kail破解密码.md"
+    },
+    {
+      "basename": "arp协议和arp攻击",
+      "path": "Notes/Y_破解和攻击类/arp协议和arp攻击.md"
+    },
+    {
+      "basename": "使用hashcat工具且显卡加速进行一定的暴力破解",
+      "path": "Notes/Y_破解和攻击类/使用hashcat工具且显卡加速进行一定的暴力破解.md"
+    },
+    {
+      "basename": "linux的救援模式以及对grub访问设置加密",
+      "path": "Notes/运维_驱动-重做系统-引导/救援类/linux的救援模式以及对grub访问设置加密.md"
+    },
+    {
+      "basename": "IPMI是服务器失联后的远程救援通道",
+      "path": "Notes/运维_驱动-重做系统-引导/救援类/IPMI是服务器失联后的远程救援通道.md"
+    },
+    {
+      "basename": "gz压缩速度较慢",
+      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/gz压缩速度较慢.md"
+    },
+    {
+      "basename": "如何拍摄系统快照和备份",
+      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/如何拍摄系统快照和备份.md"
+    },
+    {
+      "basename": "如何规避rm-rf的风险",
+      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/如何规避rm-rf的风险.md"
+    },
+    {
+      "basename": "检查硬盘smart健康情况",
+      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/检查硬盘smart健康情况.md"
+    },
+    {
+      "basename": "关于win磁盘io的不真实性",
+      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/关于win磁盘io的不真实性.md"
+    },
+    {
+      "basename": "关于虚拟硬盘的格式",
+      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/关于虚拟硬盘的格式.md"
+    },
+    {
+      "basename": "关于gh-github-cli",
+      "path": "Notes/01_CICD/工具/关于gh-github-cli.md"
+    },
+    {
+      "basename": "Nacos_集群冷启动时_CP_JRaft_启动竞态：原因、排障与_systemd_治理",
+      "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/Nacos_集群冷启动时_CP_JRaft_启动竞态：原因、排障与_systemd_治理.md"
+    },
+    {
+      "basename": "编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
+      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
+    },
+    {
+      "basename": "编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
+      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
     },
     {
       "basename": "RUST的介绍",
       "path": "Notes/02代码/代码_RUST【编译噩梦 使用天堂】/RUST的介绍.md"
+    },
+    {
+      "basename": "【Git】分支详细",
+      "path": "Notes/01_CICD/git/【Git】分支详细.md"
+    },
+    {
+      "basename": "安装vs环境",
+      "path": "Notes/02代码/代码_c/安装vs环境.md"
+    },
+    {
+      "basename": "指针+数组运算就是C语言高效的根源",
+      "path": "Notes/02代码/代码_c/指针+数组运算就是C语言高效的根源.md"
+    },
+    {
+      "basename": "c语言的指针内存处理对比python内存处理",
+      "path": "Notes/02代码/代码_c/c语言的指针内存处理对比python内存处理.md"
+    },
+    {
+      "basename": "编译java程序【gradle】",
+      "path": "Notes/02代码/代码_java/编译java程序【gradle】.md"
+    },
+    {
+      "basename": "部署apache_http和apache_tomcat_修正",
+      "path": "Notes/02代码/代码_java/部署apache_http和apache_tomcat_修正.md"
+    },
+    {
+      "basename": "obsidian目前附件规范标准",
+      "path": "Notes/0_obsidian/obsidian目前附件规范标准.md"
+    },
+    {
+      "basename": "Mermaid语法介绍",
+      "path": "Notes/0_obsidian/Mermaid语法介绍.md"
+    },
+    {
+      "basename": "戴睿T30免电池供电改造_超详细博客",
+      "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md"
+    },
+    {
+      "basename": "00_ollama常用命令",
+      "path": "Notes/01运维_0ai相关/ollama系列/00_ollama常用命令.md"
+    },
+    {
+      "basename": "ollama的11434端口的v1参数",
+      "path": "Notes/01运维_0ai相关/ollama系列/ollama的11434端口的v1参数.md"
+    },
+    {
+      "basename": "ollama不再依赖于WSL",
+      "path": "Notes/01运维_0ai相关/ollama系列/ollama不再依赖于WSL.md"
+    },
+    {
+      "basename": "ollama前端ui和服务端的关系",
+      "path": "Notes/01运维_0ai相关/ollama系列/ollama前端ui和服务端的关系.md"
+    },
+    {
+      "basename": "ollama_同时加载多个模型配置教程",
+      "path": "Notes/01运维_0ai相关/ollama系列/ollama_同时加载多个模型配置教程.md"
+    },
+    {
+      "basename": "ollama通过Modelfile解决模型上下文限制",
+      "path": "Notes/01运维_0ai相关/ollama系列/ollama通过Modelfile解决模型上下文限制.md"
     },
     {
       "basename": "常见光模块类型",
@@ -19,182 +199,6 @@
     {
       "basename": "监测电池电源情况",
       "path": "Notes/01运维_0linux/00_硬件/电源/监测电池电源情况.md"
-    },
-    {
-      "basename": "【Git】分支详细",
-      "path": "Notes/01_CICD/运维_git/【Git】分支详细.md"
-    },
-    {
-      "basename": "安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】",
-      "path": "Notes/02代码/code_编译环境/安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】.md"
-    },
-    {
-      "basename": "编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
-      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
-    },
-    {
-      "basename": "编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
-      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
-    },
-    {
-      "basename": "Windows不是所有版本默认开启长路径",
-      "path": "Notes/Y_常用小知识_软件/Windows不是所有版本默认开启长路径.md"
-    },
-    {
-      "basename": "win的winget",
-      "path": "Notes/Y_常用小知识_软件/win的winget.md"
-    },
-    {
-      "basename": "关于win的winutil工具",
-      "path": "Notes/Y_常用小知识_软件/关于win的winutil工具.md"
-    },
-    {
-      "basename": "关于gh-github-cli",
-      "path": "Notes/01_CICD/关于gh-github-cli.md"
-    },
-    {
-      "basename": "PyTorch 与 ONNX Runtime 的 CUDA 环境对齐的故障排除",
-      "path": "Notes/01运维_0ai相关/图像识别/PyTorch 与 ONNX Runtime 的 CUDA 环境对齐的故障排除.md"
-    },
-    {
-      "basename": "ffmpeg的命令使用",
-      "path": "Notes/04音视频/音视频_ffmpeg/ffmpeg的命令使用.md"
-    },
-    {
-      "basename": "年度活跃",
-      "path": "主页组件/年度活跃.md"
-    },
-    {
-      "basename": "附件资源健康检查_稳定展开可复制版 (1)",
-      "path": "主页组件/附件资源健康检查_稳定展开可复制版 (1).md"
-    },
-    {
-      "basename": "密码管理",
-      "path": "主页组件/密码管理.md"
-    },
-    {
-      "basename": "附件资源健康检查-Mirror-Attachments-v1.6.6",
-      "path": "主页组件/附件资源健康检查-Mirror-Attachments-v1.6.6.md"
-    },
-    {
-      "basename": "【git】git常见分支命名_发布版本",
-      "path": "Notes/01_CICD/运维_git/【git】git常见分支命名_发布版本.md"
-    },
-    {
-      "basename": "ollama的11434端口的v1参数",
-      "path": "Notes/01运维_0ai相关/ollama系列/ollama的11434端口的v1参数.md"
-    },
-    {
-      "basename": "ffmpeg使用py批量压制hevc格式",
-      "path": "Notes/04音视频/音视频_ffmpeg/ffmpeg使用py批量压制hevc格式.md"
-    },
-    {
-      "basename": "FFmpeg添加ffplay和DLL模块",
-      "path": "Notes/04音视频/音视频_ffmpeg/FFmpeg添加ffplay和DLL模块.md"
-    },
-    {
-      "basename": "win和linux下安装编译版本ffmpeg",
-      "path": "Notes/04音视频/音视频_ffmpeg/win和linux下安装编译版本ffmpeg.md"
-    },
-    {
-      "basename": "ultralytics偷偷安装onnxruntime【坏处】",
-      "path": "Notes/01运维_0ai相关/图像识别/ultralytics【一站式开源 Python 库】/ultralytics偷偷安装onnxruntime【坏处】.md"
-    },
-    {
-      "basename": "00_介绍pytorch和一些常见的误区",
-      "path": "Notes/01运维_0ai相关/图像识别/PyTorch是训练 + 推理框架/00_介绍pytorch和一些常见的误区.md"
-    },
-    {
-      "basename": "使用kmbox进行键盘透传",
-      "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/效率处理/使用kmbox进行键盘透传.md"
-    },
-    {
-      "basename": "为什么Ultralytics能避开部署大坑【好处】",
-      "path": "Notes/01运维_0ai相关/图像识别/ultralytics【一站式开源 Python 库】/为什么Ultralytics能避开部署大坑【好处】.md"
-    },
-    {
-      "basename": "ultralytics简单介绍",
-      "path": "Notes/01运维_0ai相关/图像识别/ultralytics【一站式开源 Python 库】/ultralytics简单介绍.md"
-    },
-    {
-      "basename": "00视觉工具生态关系图",
-      "path": "Notes/01运维_0ai相关/图像识别/00视觉工具生态关系图.md"
-    },
-    {
-      "basename": "onnx的安装",
-      "path": "Notes/01运维_0ai相关/图像识别/onnx是推理/onnx的安装.md"
-    },
-    {
-      "basename": "onnx是什么",
-      "path": "Notes/01运维_0ai相关/图像识别/onnx是推理/onnx是什么.md"
-    },
-    {
-      "basename": "1",
-      "path": "Notes/01运维_0ai相关/图像识别/tensort/1.md"
-    },
-    {
-      "basename": "pip中安装TensorRT运行时",
-      "path": "Notes/01运维_0ai相关/图像识别/tensort/pip中安装TensorRT运行时.md"
-    },
-    {
-      "basename": "ONNX_→_TensorRT_模型转换_Web_管理工具",
-      "path": "Notes/01运维_0ai相关/图像识别/ONNX_→_TensorRT_模型转换_Web_管理工具.md"
-    },
-    {
-      "basename": "01_安装cpu和gpu版本的pytorch【不会带onnx的runtime】",
-      "path": "Notes/01运维_0ai相关/图像识别/PyTorch是训练 + 推理框架/01_安装cpu和gpu版本的pytorch【不会带onnx的runtime】.md"
-    },
-    {
-      "basename": "1",
-      "path": "Notes/01运维_0ai相关/图像识别/opencv/1.md"
-    },
-    {
-      "basename": "CUDA Toolkit是什么",
-      "path": "Notes/Z_nvidia/n卡加速类/CUDA Toolkit是什么.md"
-    },
-    {
-      "basename": "安装n卡的cuda以及codec_sdk",
-      "path": "Notes/Z_nvidia/n卡加速类/安装n卡的cuda以及codec_sdk.md"
-    },
-    {
-      "basename": "opencv对比yolo",
-      "path": "Notes/01运维_0ai相关/图像识别/opencv/opencv对比yolo.md"
-    },
-    {
-      "basename": "介绍opencv",
-      "path": "Notes/01运维_0ai相关/图像识别/opencv/介绍opencv.md"
-    },
-    {
-      "basename": "数据标注工具X-AnyLabeling",
-      "path": "Notes/01运维_0ai相关/图像识别/标注工具/数据标注工具X-AnyLabeling.md"
-    },
-    {
-      "basename": "yolo全版本对比",
-      "path": "Notes/01运维_0ai相关/图像识别/yolo全版本对比.md"
-    },
-    {
-      "basename": "通过opencv预处理图片促进yolo推理速度和质量",
-      "path": "Notes/01运维_0ai相关/图像识别/opencv/通过opencv预处理图片促进yolo推理速度和质量.md"
-    },
-    {
-      "basename": "修复freellm的bug",
-      "path": "Notes/01运维_0ai相关/网关/freellmapi/修复freellm的bug.md"
-    },
-    {
-      "basename": "scrcpy 虚拟显示器使用教程",
-      "path": "Notes/02代码/code_android/adb相关/scrcpy 虚拟显示器使用教程.md"
-    },
-    {
-      "basename": "自VMware公开免费下载之后放迷路步骤",
-      "path": "Notes/01运维_0linux/运维_虚拟机/01_VMware/自VMware公开免费下载之后放迷路步骤.md"
-    },
-    {
-      "basename": "kail破解密码",
-      "path": "Notes/Y_破解和攻击类/kail破解密码.md"
-    },
-    {
-      "basename": "添加开始菜单搜索",
-      "path": "Notes/Y_常用小知识_软件/添加开始菜单搜索.md"
     }
   ],
   "omittedPaths": [],

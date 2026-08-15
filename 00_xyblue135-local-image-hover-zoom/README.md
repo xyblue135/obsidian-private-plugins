@@ -1,20 +1,14 @@
-# xyblue135 私人 · 图片缩放与相框
+# xyblue135 · 图片缩放与相框
 
-> **私人插件**：xyblue135 自用维护版，不作为公共插件发布。
-> **兼容说明**：保留原插件内部 `id` 和 `data.json`，升级覆盖时可继续使用已有配置与记录。
+> **开源插件**：xyblue135 维护的开放源代码插件，仓库公开、可自由查看与复用。
+> **兼容原则**：插件 ID 保持 `00_xyblue135-local-image-hover-zoom`，升级包不携带 `data.json`，覆盖安装时保留用户本地配置与历史状态。
 
-维护者：**xyblue135**  
-版本：**1.4.0**
+维护者：**xyblue135**
+版本：**1.4.1**
+
+---
 
 Obsidian 正文图片增强插件：使用 `Shift + 鼠标滚轮` 临时改变图片真实布局尺寸，同时给**标准 Markdown `![]()` 图片**提供可切换的高级相框主题。所有变化都只存在于当前 Obsidian DOM，不写回 Markdown。
-
-## v1.4.1 关键修正
-
-- 相框严格只作用于标准 Markdown 图片：`![alt](path)` / `![](path)`。
-- 不给 `#`、`##` 等标题加相框。
-- 不给 Obsidian Wiki 图片 `![[image.png]]` 加相框。
-- 不给 Callout 图标、Obsidian UI 图片、HTML `<img>` 自动加相框。
-- 使用 Obsidian 元数据中的 `embed.original` 二次核对原始语法，避免仅凭 DOM 的 `img` 标签误判。
 
 ## 图片缩放
 
@@ -39,10 +33,10 @@ Obsidian 正文图片增强插件：使用 `Shift + 鼠标滚轮` 临时改变�
 
 ## 安装
 
-把 `local-image-hover-zoom` 文件夹复制到：
+把 `00_xyblue135-local-image-hover-zoom` 文件夹复制到：
 
 ```text
-你的Vault/.obsidian/plugins/local-image-hover-zoom/
+你的Vault/.obsidian/plugins/00_xyblue135-local-image-hover-zoom/
 ```
 
 确保至少包含：
@@ -53,8 +47,17 @@ manifest.json
 styles.css
 ```
 
-然后在 Obsidian → 设置 → 第三方插件中启用 **xyblue135 私人 · 图片缩放与相框**。
+然后在 Obsidian → 设置 → 第三方插件中启用 **xyblue135 · 图片缩放与相框**。
 
+升级覆盖时保留当前插件目录中的 `data.json`，不要提交到公开仓库。
+
+## v1.4.1 关键修正
+
+- 相框严格只作用于标准 Markdown 图片：`![alt](path)` / `![](path)`。
+- 不给 `#`、`##` 等标题加相框。
+- 不给 Obsidian Wiki 图片 `![[image.png]]` 加相框。
+- 不给 Callout 图标、Obsidian UI 图片、HTML `<img>` 自动加相框。
+- 使用 Obsidian 元数据中的 `embed.original` 二次核对原始语法，避免仅凭 DOM 的 `img` 标签误判。
 
 ## v1.4.1 修复
 

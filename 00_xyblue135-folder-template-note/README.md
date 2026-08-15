@@ -1,7 +1,11 @@
-# xyblue135 私人 · 文件夹模板笔记
+# xyblue135 · 文件夹模板笔记
 
-> **私人插件**：xyblue135 自用维护版，不作为公共插件发布。
-> **兼容说明**：保留内部 `id=xyblue135-folder-template-note` 与现有 `data.json`，覆盖升级不会主动重置模板配置。
+> **开源插件**：xyblue135 维护的开放源代码插件，仓库公开、可自由查看与复用。
+> **兼容原则**：插件 ID 保持 `00_xyblue135-folder-template-note`，升级包不携带 `data.json`，覆盖安装时保留用户本地配置与历史状态。
+
+维护者：**xyblue135**
+
+---
 
 ## 功能
 
@@ -13,4 +17,6 @@
 
 ## 安装
 
-保持插件目录名 `xyblue135-folder-template-note`，复制到 Vault 的 `.obsidian/plugins/` 下后，在第三方插件中启用 **xyblue135 私人 · 文件夹模板笔记**。
+保持插件目录名 `00_xyblue135-folder-template-note`，复制到 Vault 的 `.obsidian/plugins/` 下后，在第三方插件中启用 **xyblue135 · 文件夹模板笔记**。
+
+升级覆盖时保留当前插件目录中的 `data.json`，不要提交到公开仓库。

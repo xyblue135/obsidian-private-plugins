@@ -15,13 +15,14 @@ const {
 
 const DEFAULT_SETTINGS = {
   notesRoot: "Notes",
-  attachmentsRoot: "Attachments",
+  attachmentsRoot: "z_attachments",
   structureMode: "note",
   fileNameMode: "smart",
   handlePaste: true,
   handleDrop: true,
   syncOnNoteRename: true,
-  deleteAttachmentsWithNote: true
+  deleteAttachmentsWithNote: true,
+  recycleHistory: []
 };
 
 const IMAGE_EXTENSIONS = new Set([
@@ -35,28 +36,28 @@ const EMBED_EXTENSIONS = new Set([...IMAGE_EXTENSIONS, "pdf"]);
 module.exports = class MirrorAttachmentsPlugin extends Plugin {
   async onload() {
     await this.loadSettings();
+    await this.migrateLegacyFlatAttachmentRootIfNeeded();
     this.addSettingTab(new MirrorAttachmentsSettingTab(this.app, this));
 
-    // v1.5：按文章模式下维护严格的一对一目录关系。
-    // 插件加载完成后，即使 Markdown 没有任何附件，也会补建对应空目录。
+    // v2.0：附件改为单层共享结构：z_attachments/<Markdown 文件名>/。
+    // 不再镜像 Notes 的父目录；不同目录下的同名 Markdown 明确共享同一个附件目录。
     this.app.workspace.onLayoutReady(() => {
       void this.ensureAllNoteFolders().catch((err) => {
         console.error("[xyblue135 私人·附件镜像] initial folder sync failed:", err);
-        new Notice("xyblue135 私人·附件镜像：初始化一对一附件目录失败，请查看控制台。");
+        new Notice("xyblue135 私人·附件镜像：初始化共享附件目录失败，请查看控制台。");
       });
     });
 
-    // 新建 Markdown 时立即建立对应空附件目录。
+    // 新建 Markdown 时建立/复用单层附件目录。
+    // 如果别的目录已经存在同名 Markdown，则明确提示“共享”，而不是创建第二份附件目录。
     this.registerEvent(
       this.app.vault.on("create", (file) => {
         if (!(file instanceof TFile) || file.extension !== "md") return;
         if (!this.isManagedNotePath(file.path)) return;
-        if (this.settings.structureMode !== "note") return;
 
-        const folderPath = this.getAttachmentFolderForNotePath(file.path);
-        void this.ensureFolder(folderPath).catch((err) => {
-          console.error("[xyblue135 私人·附件镜像] create folder sync failed:", err);
-          new Notice(`xyblue135 私人·附件镜像：无法建立对应附件目录：${folderPath}`);
+        void this.ensureSharedAttachmentFolderForNote(file, { notifyDuplicate: true }).catch((err) => {
+          console.error("[xyblue135 私人·附件镜像] create shared folder failed:", err);
+          new Notice(`xyblue135 私人·附件镜像：无法建立/复用附件目录：${this.getAttachmentFolderForNotePath(file.path)}`);
         });
       })
     );
@@ -109,9 +110,9 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
       })
     );
 
-    // Markdown 改名或移动时，同步“按文章建立附件目录”。
-    // 文件夹改名时，Obsidian 可能连续触发多个 Markdown rename；
-    // 用队列串行处理，避免并发创建/迁移目录，并在每次迁移后清理旧的空父目录。
+    // Markdown 仅在“文件名本身发生变化”时处理附件目录。
+    // 单纯移动父目录、重命名 Notes 根目录不会改变 z_attachments/<文件名>/，因此不搬附件。
+    // 仍使用串行队列，避免批量重命名时发生并发冲突。
     this.renameSyncQueue = Promise.resolve();
     this.registerEvent(
       this.app.vault.on("rename", (file, oldPath) => {
@@ -129,8 +130,9 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
       })
     );
 
-    // Markdown 删除时，同步移入回收站对应的“按文章附件目录”。
-    // 使用 FileManager.trashFile，遵循 Obsidian 自己的回收站设置，避免永久删除。
+    // Markdown 真正删除时按“同名引用计数”决定是否回收附件。
+    // 只要 Vault 中仍有另一篇同名 Markdown，z_attachments/<文件名>/ 就继续保留。
+    // 只有最后一个同名 Markdown 被删除时，才进入插件自己的可恢复垃圾桶。
     this.registerEvent(
       this.app.vault.on("delete", (file) => {
         if (!this.settings.deleteAttachmentsWithNote) return;
@@ -161,10 +163,16 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const loaded = (await this.loadData()) || {};
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, loaded);
 
-    // v1.6 起固定使用“每篇 Markdown 一个独立附件目录”。
-    // v1.6.6 起采用智能命名：可嵌入资源使用时间戳，普通附件保留原名。
+    // v2.0.1：新安装统一使用 z_attachments。
+    // 若 data.json 来自 v2.0.0 且仍是 attachment，则交给安全迁移函数处理；
+    // 不直接改路径，避免旧目录尚未搬迁时先创建一套新的空目录。
+    this.legacyFlatRootMigrationNeeded = this.cleanRoot(loaded.attachmentsRoot || "") === "attachment";
+
+    // v2.0：固定使用“单层文件名共享附件目录”：z_attachments/<basename>/。
+    // 同名 Markdown 共享目录；附件命名继续沿用智能规则。
     let migrated = false;
     if (this.settings.structureMode !== "note") {
       this.settings.structureMode = "note";
@@ -174,8 +182,8 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
       this.settings.syncOnNoteRename = true;
       migrated = true;
     }
-    if (this.settings.deleteAttachmentsWithNote !== true) {
-      this.settings.deleteAttachmentsWithNote = true;
+    if (!Array.isArray(this.settings.recycleHistory)) {
+      this.settings.recycleHistory = [];
       migrated = true;
     }
     if (this.settings.fileNameMode !== "smart") {
@@ -183,9 +191,52 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
       migrated = true;
     }
 
-    if (migrated) {
-      await this.saveData(this.settings);
+    if (migrated) await this.saveData(this.settings);
+  }
+
+  async migrateLegacyFlatAttachmentRootIfNeeded() {
+    if (!this.legacyFlatRootMigrationNeeded) return;
+
+    const oldRoot = normalizePath("attachment");
+    const newRoot = normalizePath("z_attachments");
+    const oldNode = this.app.vault.getAbstractFileByPath(oldRoot);
+    const newNode = this.app.vault.getAbstractFileByPath(newRoot);
+
+    // 两个目录同时存在时绝不自动合并，也不自动删除任何一边。
+    // 继续保留旧配置，并提示用户手动确认，避免覆盖或误归并附件。
+    if (oldNode && newNode) {
+      new Notice(
+        "xyblue135 私人·附件镜像：同时检测到 attachment 与 z_attachments，已停止自动迁移。请先手动确认数据，再把附件根目录改为 z_attachments。",
+        10000
+      );
+      return;
     }
+
+    // 旧 v2.0.0 单层目录存在、新目录不存在：整体安全改名。
+    // 使用 FileManager，让 Obsidian 有机会同步 Vault 内相关链接。
+    if (oldNode && !newNode) {
+      if (!(oldNode instanceof TFolder)) {
+        new Notice("xyblue135 私人·附件镜像：Vault 根目录存在名为 attachment 的非文件夹对象，无法自动迁移。", 10000);
+        return;
+      }
+
+      try {
+        await this.app.fileManager.renameFile(oldNode, newRoot);
+        this.settings.attachmentsRoot = newRoot;
+        this.legacyFlatRootMigrationNeeded = false;
+        await this.saveSettings();
+        new Notice("xyblue135 私人·附件镜像：已将旧 attachment 安全迁移为 z_attachments。", 7000);
+      } catch (err) {
+        console.error("[xyblue135 私人·附件镜像] migrate attachment -> z_attachments failed:", err);
+        new Notice("xyblue135 私人·附件镜像：attachment → z_attachments 自动迁移失败，已保留旧配置和数据。", 10000);
+      }
+      return;
+    }
+
+    // 旧目录不存在（或新目录已经存在而旧目录不存在），只更新配置即可。
+    this.settings.attachmentsRoot = newRoot;
+    this.legacyFlatRootMigrationNeeded = false;
+    await this.saveSettings();
   }
 
   async saveSettings() {
@@ -196,6 +247,65 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
     return this.app.vault
       .getMarkdownFiles()
       .filter((file) => this.isManagedNotePath(file.path));
+  }
+
+  getNoteBasenameFromPath(notePath) {
+    const normalized = normalizePath(notePath || "");
+    const fileName = normalized.split("/").pop() || "";
+    return this.stripExtension(fileName);
+  }
+
+  getNotesByBasename(basename, excludePath = "") {
+    const excluded = excludePath ? normalizePath(excludePath) : "";
+    return this.getManagedMarkdownFiles().filter((file) =>
+      file.basename === basename && (!excluded || normalizePath(file.path) !== excluded)
+    );
+  }
+
+  getDuplicateNoteGroups() {
+    const groups = new Map();
+    for (const note of this.getManagedMarkdownFiles()) {
+      if (!groups.has(note.basename)) groups.set(note.basename, []);
+      groups.get(note.basename).push(note.path);
+    }
+
+    return Array.from(groups.entries())
+      .filter(([, paths]) => paths.length > 1)
+      .map(([basename, paths]) => ({
+        basename,
+        count: paths.length,
+        notePaths: paths.sort((a, b) => a.localeCompare(b, "zh-CN")),
+        folderPath: this.getAttachmentFolderForBasename(basename)
+      }))
+      .sort((a, b) => b.count - a.count || a.basename.localeCompare(b.basename, "zh-CN"));
+  }
+
+  getAttachmentFolderForBasename(basename) {
+    const attachmentRoot = this.cleanRoot(this.settings.attachmentsRoot) || "z_attachments";
+    return normalizePath(`${attachmentRoot}/${basename}`);
+  }
+
+  async ensureSharedAttachmentFolderForNote(note, options = {}) {
+    const folderPath = this.getAttachmentFolderForNotePath(note.path);
+    const existing = this.app.vault.getAbstractFileByPath(folderPath);
+    const peers = this.getNotesByBasename(note.basename, note.path);
+
+    if (existing && !(existing instanceof TFolder)) {
+      throw new Error(`无法创建目录：${folderPath} 已存在同名文件`);
+    }
+
+    if (!(existing instanceof TFolder)) await this.ensureFolder(folderPath);
+
+    if (options.notifyDuplicate && peers.length) {
+      const preview = peers.slice(0, 3).map((file) => file.path).join("\n");
+      const more = peers.length > 3 ? `\n另有 ${peers.length - 3} 篇同名笔记` : "";
+      new Notice(
+        `xyblue135 私人·附件镜像：检测到同名笔记「${note.basename}」\n不会重复创建附件目录，将共享：${folderPath}\n${preview}${more}`,
+        8000
+      );
+    }
+
+    return { folderPath, sharedWith: peers.length };
   }
 
   async ensureAllNoteFolders() {
@@ -275,81 +385,60 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
   }
 
   async auditFolderConsistency() {
-    const attachmentRoot =
-      this.cleanRoot(this.settings.attachmentsRoot) || "Attachments";
-
-    if (this.settings.structureMode !== "note") {
-      return {
-        supported: false,
-        notesCount: 0,
-        expectedCount: 0,
-        missing: [],
-        extra: [],
-        conflicts: [],
-        attachmentRoot
-      };
-    }
-
+    const attachmentRoot = this.cleanRoot(this.settings.attachmentsRoot) || "z_attachments";
     const notes = this.getManagedMarkdownFiles();
-    const expected = new Map();
+    const groups = new Map();
 
     for (const note of notes) {
-      expected.set(
-        this.getAttachmentFolderForNotePath(note.path),
-        note.path
-      );
+      if (!groups.has(note.basename)) groups.set(note.basename, []);
+      groups.get(note.basename).push(note.path);
+    }
+
+    const expected = new Map();
+    for (const [basename, notePaths] of groups.entries()) {
+      expected.set(this.getAttachmentFolderForBasename(basename), { basename, notePaths });
     }
 
     const missing = [];
     const conflicts = [];
-
-    for (const [folderPath, notePath] of expected.entries()) {
+    for (const [folderPath, group] of expected.entries()) {
       const existing = this.app.vault.getAbstractFileByPath(folderPath);
       if (existing instanceof TFolder) continue;
-
       if (existing) {
         conflicts.push({
-          notePath,
+          notePath: group.notePaths.join(" | "),
           folderPath,
-          reason: "应为文件夹，但当前位置存在同名文件"
+          reason: "应为共享附件文件夹，但当前位置存在同名文件"
         });
       } else {
-        missing.push({ notePath, folderPath });
+        missing.push({
+          basename: group.basename,
+          notePaths: group.notePaths,
+          folderPath
+        });
       }
     }
 
-    // 分类父目录只是容器，不属于“多余”。
-    // 只标记第一个脱离期望树的目录，这样自动纠错时可一次回收整个孤立子树，
-    // 不会把同一棵孤立目录的父子层级重复列出。
+    // 单层模式只把 z_attachments 根目录的直接子目录当作“文章附件目录”。
+    // 文章附件目录内部的子文件夹属于附件内容，不参与结构校验。
     const expectedPaths = new Set(expected.keys());
-    const requiredPaths = this.getRequiredAttachmentPaths(
-      expectedPaths,
-      attachmentRoot
-    );
-    const existingFolders = this.getFoldersUnderRoot(attachmentRoot);
+    const rootFolder = this.app.vault.getAbstractFileByPath(normalizePath(attachmentRoot));
     const extra = [];
-
-    for (const folder of existingFolders) {
-      const path = normalizePath(folder.path);
-      if (requiredPaths.has(path)) continue;
-
-      // 已经进入某篇文章自己的附件目录后，内部子目录属于该文章的附件内容，
-      // 不能把这些子目录误判成“多余的一对一映射目录”。
-      const insideExpectedFolder = Array.from(expectedPaths).some(
-        (expectedPath) => path.startsWith(normalizePath(expectedPath) + "/")
-      );
-      if (insideExpectedFolder) continue;
-
-      const parent = this.parentPath(path);
-      if (requiredPaths.has(parent)) {
-        extra.push({ folderPath: path });
+    if (rootFolder instanceof TFolder) {
+      for (const child of rootFolder.children || []) {
+        if (!(child instanceof TFolder)) continue;
+        const path = normalizePath(child.path);
+        if (this.isRecyclePath(path)) continue;
+        if (!expectedPaths.has(path)) extra.push({ folderPath: path });
       }
     }
 
+    const duplicates = this.getDuplicateNoteGroups();
     return {
       supported: true,
       notesCount: notes.length,
       expectedCount: expected.size,
+      duplicateGroups: duplicates,
       missing,
       extra,
       conflicts,
@@ -359,51 +448,25 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
 
   async repairFolderConsistency(auditResult = null) {
     const audit = auditResult || await this.auditFolderConsistency();
-    if (!audit.supported) {
-      return { created: 0, trashed: 0, conflicts: audit.conflicts || [] };
-    }
-
     let created = 0;
-    let trashed = 0;
     const conflicts = [...(audit.conflicts || [])];
 
-    for (const item of audit.missing) {
+    for (const item of audit.missing || []) {
       try {
         await this.ensureFolder(item.folderPath);
         created += 1;
       } catch (err) {
         conflicts.push({
-          notePath: item.notePath,
+          notePath: (item.notePaths || []).join(" | "),
           folderPath: item.folderPath,
           reason: err && err.message ? err.message : String(err)
         });
       }
     }
 
-    // 多余目录不永久删除，统一按 Obsidian 当前回收站设置处理。
-    for (const item of audit.extra) {
-      const folder = this.app.vault.getAbstractFileByPath(item.folderPath);
-      if (!(folder instanceof TFolder)) continue;
-
-      try {
-        if (
-          this.app.fileManager &&
-          typeof this.app.fileManager.trashFile === "function"
-        ) {
-          await this.app.fileManager.trashFile(folder);
-        } else {
-          await this.app.vault.trash(folder, false);
-        }
-        trashed += 1;
-      } catch (err) {
-        conflicts.push({
-          folderPath: item.folderPath,
-          reason: err && err.message ? err.message : String(err)
-        });
-      }
-    }
-
-    return { created, trashed, conflicts };
+    // v2.0 安全原则：不自动回收“多余”目录。
+    // 它们可能是旧镜像结构、历史绝对链接仍在引用的目录，或用户手工保存的数据。
+    return { created, preservedExtra: (audit.extra || []).length, conflicts };
   }
 
   cleanRoot(path) {
@@ -415,10 +478,10 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
     const normalized = normalizePath(notePath);
     const notesRoot = this.cleanRoot(this.settings.notesRoot);
     const attachmentRoot =
-      this.cleanRoot(this.settings.attachmentsRoot) || "Attachments";
+      this.cleanRoot(this.settings.attachmentsRoot) || "z_attachments";
 
     // 配置了 Notes 根目录时，只管理该目录下的 Markdown，
-    // 防止删除 Attachments 中的 .md 附件时发生误关联。
+    // 防止删除附件根目录中的 .md 附件时发生误关联。
     if (notesRoot) {
       return normalized.startsWith(notesRoot + "/");
     }
@@ -454,22 +517,8 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
   }
 
   getAttachmentFolderForNotePath(notePath) {
-    const attachmentRoot =
-      this.cleanRoot(this.settings.attachmentsRoot) || "Attachments";
-
-    const relative = this.getRelativeNotePath(notePath);
-    const relativeNoExt = this.stripExtension(relative);
-
-    let subPath;
-    if (this.settings.structureMode === "folder") {
-      subPath = this.parentPath(relativeNoExt);
-    } else {
-      subPath = relativeNoExt;
-    }
-
-    return normalizePath(
-      subPath ? `${attachmentRoot}/${subPath}` : attachmentRoot
-    );
+    const basename = this.getNoteBasenameFromPath(notePath);
+    return this.getAttachmentFolderForBasename(basename);
   }
 
   async ensureFolder(path) {
@@ -498,6 +547,133 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
     }
   }
 
+  getRecycleRoot() {
+    const attachmentRoot =
+      this.cleanRoot(this.settings.attachmentsRoot) || "z_attachments";
+    return normalizePath(`${attachmentRoot}/_MirrorAttachmentsTrash`);
+  }
+
+  isRecyclePath(path) {
+    const normalized = normalizePath(path || "");
+    const recycleRoot = this.getRecycleRoot();
+    return normalized === recycleRoot || normalized.startsWith(recycleRoot + "/");
+  }
+
+  getRecycleRelativePath(originalPath) {
+    const attachmentRoot = normalizePath(
+      this.cleanRoot(this.settings.attachmentsRoot) || "z_attachments"
+    );
+    const normalized = normalizePath(originalPath || "");
+    if (normalized.startsWith(attachmentRoot + "/")) {
+      return normalized.slice(attachmentRoot.length + 1);
+    }
+    return normalized.replace(/^\/+/, "");
+  }
+
+  makeRecycleRecordId() {
+    return `${this.formatTimestamp(Date.now())}-${Math.random().toString(36).slice(2, 8)}`;
+  }
+
+  async moveFolderToPluginRecycle(folder, meta = {}) {
+    if (!(folder instanceof TFolder)) return null;
+
+    const originalPath = normalizePath(folder.path);
+    const attachmentRoot = normalizePath(
+      this.cleanRoot(this.settings.attachmentsRoot) || "z_attachments"
+    );
+
+    if (originalPath === attachmentRoot || this.isRecyclePath(originalPath)) {
+      throw new Error(`拒绝回收受保护目录：${originalPath}`);
+    }
+
+    const id = this.makeRecycleRecordId();
+    const relativePath = this.getRecycleRelativePath(originalPath);
+    const recyclePath = normalizePath(`${this.getRecycleRoot()}/${id}/${relativePath}`);
+
+    await this.ensureFolder(this.parentPath(recyclePath));
+
+    // 使用 Vault.rename 而不是 FileManager.renameFile：
+    // 回收期间不要把仍存在的 Markdown 链接自动改写成垃圾桶路径。
+    await this.app.vault.rename(folder, recyclePath);
+
+    const record = {
+      id,
+      deletedAt: new Date().toISOString(),
+      originalPath,
+      recyclePath,
+      reason: meta.reason || "unknown",
+      notePath: meta.notePath || ""
+    };
+
+    this.settings.recycleHistory = [
+      record,
+      ...(Array.isArray(this.settings.recycleHistory) ? this.settings.recycleHistory : [])
+        .filter((item) => item && item.id !== id)
+    ].slice(0, 1000);
+    await this.saveSettings();
+    return record;
+  }
+
+  getRecycleRecords() {
+    return (Array.isArray(this.settings.recycleHistory) ? this.settings.recycleHistory : [])
+      .filter((item) => item && item.id && item.originalPath && item.recyclePath);
+  }
+
+  async restoreRecycleRecord(id) {
+    const record = this.getRecycleRecords().find((item) => item.id === id);
+    if (!record) return { restored: false, reason: "恢复记录不存在" };
+
+    const source = this.app.vault.getAbstractFileByPath(record.recyclePath);
+    if (!(source instanceof TFolder)) {
+      return { restored: false, reason: "垃圾桶中的源目录已经不存在" };
+    }
+
+    const target = this.app.vault.getAbstractFileByPath(record.originalPath);
+    if (target) {
+      return { restored: false, reason: "原路径已有文件或目录，拒绝覆盖" };
+    }
+
+    await this.ensureFolder(this.parentPath(record.originalPath));
+    await this.app.vault.rename(source, record.originalPath);
+
+    this.settings.recycleHistory = this.getRecycleRecords()
+      .filter((item) => item.id !== id);
+    await this.saveSettings();
+    await this.cleanupEmptyRecycleParents(this.parentPath(record.recyclePath));
+    return { restored: true, record };
+  }
+
+  async restoreAllRecycleRecords() {
+    let restored = 0;
+    const conflicts = [];
+    for (const record of [...this.getRecycleRecords()].reverse()) {
+      try {
+        const result = await this.restoreRecycleRecord(record.id);
+        if (result.restored) restored += 1;
+        else conflicts.push({ record, reason: result.reason });
+      } catch (err) {
+        conflicts.push({
+          record,
+          reason: err && err.message ? err.message : String(err)
+        });
+      }
+    }
+    return { restored, conflicts };
+  }
+
+  async cleanupEmptyRecycleParents(startPath) {
+    const recycleRoot = this.getRecycleRoot();
+    let current = normalizePath(startPath || "");
+    while (current && current !== recycleRoot && current.startsWith(recycleRoot + "/")) {
+      const folder = this.app.vault.getAbstractFileByPath(current);
+      if (!(folder instanceof TFolder) || (folder.children || []).length !== 0) break;
+      const parent = this.parentPath(current);
+      await this.app.vault.delete(folder, true);
+      current = parent;
+    }
+  }
+
+
   async trashFolderSafely(folder) {
     if (!(folder instanceof TFolder)) return false;
 
@@ -515,13 +691,13 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
 
   async cleanupEmptyAttachmentParents(startPath) {
     const attachmentRoot = normalizePath(
-      this.cleanRoot(this.settings.attachmentsRoot) || "Attachments"
+      this.cleanRoot(this.settings.attachmentsRoot) || "z_attachments"
     );
 
     let current = normalizePath(startPath || "");
     let cleaned = 0;
 
-    // 只允许清理 Attachments 根目录之下，根目录自身永远保留。
+    // 只允许清理附件根目录之下，根目录自身永远保留。
     while (
       current &&
       current !== attachmentRoot &&
@@ -766,7 +942,7 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
 
   makeMarkdownLink(createdFile, sourceNote) {
     // 使用以 Obsidian 仓库根目录为基准的绝对路径。
-    // 例如：Attachments/A/B/image.png -> /Attachments/A/B/image.png
+    // 例如：z_attachments/test/image.png -> /z_attachments/test/image.png
     const vaultAbsolutePath = `/${normalizePath(createdFile.path).replace(/^\/+/, "")}`;
     const safePath = this.markdownSafePath(vaultAbsolutePath);
     const description = this.escapeAltText(
@@ -778,7 +954,7 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
 
     if (shouldEmbed) {
       // 可直接预览的附件（图片 / PDF）使用嵌入语法。
-      // alt 固定为空，保持笔记正文简洁：![](/Attachments/.../file.ext)
+      // alt 固定为空，保持笔记正文简洁：![](/z_attachments/test/file.ext)
       return `![](${safePath})`;
     }
 
@@ -908,130 +1084,116 @@ module.exports = class MirrorAttachmentsPlugin extends Plugin {
   }
 
   async trashAttachmentFolderAfterNoteDelete(notePath) {
-    // “按分类目录”会被多篇文章共享，绝对不能因为删除一篇文章就删整个分类目录。
-    if (this.settings.structureMode === "folder") {
+    const basename = this.getNoteBasenameFromPath(notePath);
+    const remainingNotes = this.getNotesByBasename(basename, notePath);
+    const folderPath = this.getAttachmentFolderForBasename(basename);
+    const attachmentRoot = this.cleanRoot(this.settings.attachmentsRoot) || "z_attachments";
+
+    // 共享引用仍存在：只更新“引用关系”，绝不碰附件目录。
+    if (remainingNotes.length > 0) {
+      const preview = remainingNotes.slice(0, 3).map((file) => file.path).join("\n");
+      const more = remainingNotes.length > 3 ? `\n另有 ${remainingNotes.length - 3} 篇` : "";
+      new Notice(
+        `xyblue135 私人·附件镜像：已删除一篇「${basename}」，但仍有 ${remainingNotes.length} 篇同名笔记共享附件。\n附件保持不动：${folderPath}\n${preview}${more}`,
+        8000
+      );
       return;
     }
 
-    const folderPath = this.getAttachmentFolderForNotePath(notePath);
-    const attachmentRoot =
-      this.cleanRoot(this.settings.attachmentsRoot) || "Attachments";
-
-    // 双重保险：任何情况下都不允许把附件根目录本身送入回收站。
-    if (normalizePath(folderPath) === normalizePath(attachmentRoot)) {
-      return;
-    }
+    if (normalizePath(folderPath) === normalizePath(attachmentRoot)) return;
 
     const folder = this.app.vault.getAbstractFileByPath(folderPath);
     if (!(folder instanceof TFolder)) return;
 
-    await this.trashFolderSafely(folder);
-    await this.cleanupEmptyAttachmentParents(this.parentPath(folderPath));
+    await this.moveFolderToPluginRecycle(folder, {
+      reason: "last-shared-note-delete",
+      notePath
+    });
 
     new Notice(
-      `xyblue135 私人·附件镜像：已随文章移入回收站\n${folderPath}`,
-      5000
+      `xyblue135 私人·附件镜像：这是最后一篇「${basename}」，共享附件已移入插件垃圾桶\n${folderPath}`,
+      6000
     );
   }
 
   async syncAttachmentFolderAfterRename(newNotePath, oldPath) {
-    // “按分类目录”是多个笔记共享目录，一篇 MD 移动时不能搬走整个分类目录。
-    if (this.settings.structureMode === "folder") {
-      return;
-    }
-
     const oldManaged = this.isManagedNotePath(oldPath);
     const newManaged = this.isManagedNotePath(newNotePath);
-
-    // Notes 管理范围外的 Markdown 不参与一对一附件目录。
     if (!oldManaged && !newManaged) return;
 
-    // 从管理范围外移入 Notes：直接建立新的空目录。
+    const oldBasename = this.getNoteBasenameFromPath(oldPath);
+    const newBasename = this.getNoteBasenameFromPath(newNotePath);
+    const oldFolder = this.getAttachmentFolderForBasename(oldBasename);
+    const newFolder = this.getAttachmentFolderForBasename(newBasename);
+
+    // 从管理范围外移入：加入当前文件名对应的共享附件组。
     if (!oldManaged && newManaged) {
-      await this.ensureFolder(
-        this.getAttachmentFolderForNotePath(newNotePath)
-      );
+      const note = this.app.vault.getAbstractFileByPath(newNotePath);
+      if (note instanceof TFile) await this.ensureSharedAttachmentFolderForNote(note, { notifyDuplicate: true });
       return;
     }
 
-    // 从 Notes 移出管理范围：旧的一对一附件目录已经失去对应 Markdown，
-    // 按一对一规则将其安全移入 Obsidian 回收站。
+    // 从管理范围移出：附件绝不删除。根目录误改名也只会走到这里。
     if (oldManaged && !newManaged) {
-      const oldFolder = this.getAttachmentFolderForNotePath(oldPath);
-      const oldAbstract = this.app.vault.getAbstractFileByPath(oldFolder);
-      if (!(oldAbstract instanceof TFolder)) return;
-
-      await this.trashFolderSafely(oldAbstract);
-      await this.cleanupEmptyAttachmentParents(this.parentPath(oldFolder));
-
       new Notice(
-        `xyblue135 私人·附件镜像：文章已移出 Notes，原附件目录已移入回收站\n${oldFolder}`,
-        6000
-      );
-      return;
-    }
-
-    const oldFolder =
-      this.getAttachmentFolderForNotePath(oldPath);
-
-    const newFolder =
-      this.getAttachmentFolderForNotePath(newNotePath);
-
-    if (oldFolder === newFolder) return;
-
-    const oldAbstract =
-      this.app.vault.getAbstractFileByPath(oldFolder);
-
-    // 原文章还没有附件目录时，也必须为新文章路径补一个空目录，
-    // 保证“每个 Markdown 始终有一对一目录”。
-    if (!(oldAbstract instanceof TFolder)) {
-      await this.ensureFolder(newFolder);
-      await this.cleanupEmptyAttachmentParents(this.parentPath(oldFolder));
-      return;
-    }
-
-    const newAbstract =
-      this.app.vault.getAbstractFileByPath(newFolder);
-
-    // 按你的要求：目标存在就停止，不合并、不覆盖、不改名。
-    if (newAbstract) {
-      new Notice(
-        `xyblue135 私人·附件镜像：目标位置已存在同名附件目录：${newFolder}。未移动、未合并、未改名。`,
+        `xyblue135 私人·附件镜像：文章移出管理根目录，附件保持不动\n${oldPath}\n→ ${newNotePath}\n${oldFolder}`,
         7000
       );
       return;
     }
 
-    await this.ensureFolder(this.parentPath(newFolder));
+    // 仅移动父目录时 basename 不变，所以单层附件结构完全无需处理。
+    if (oldBasename === newBasename) return;
 
-    // 使用 Obsidian FileManager，让 Obsidian 自己参与链接更新。
-    if (
-      this.app.fileManager &&
-      typeof this.app.fileManager.renameFile === "function"
-    ) {
-      await this.app.fileManager.renameFile(
-        oldAbstract,
-        newFolder
+    const oldRemaining = this.getNotesByBasename(oldBasename, oldPath);
+    const newPeers = this.getNotesByBasename(newBasename, newNotePath);
+    const oldAbstract = this.app.vault.getAbstractFileByPath(oldFolder);
+    const newAbstract = this.app.vault.getAbstractFileByPath(newFolder);
+
+    // 旧名字仍被其他笔记引用：旧共享目录必须留下。新名字建立/加入另一共享目录。
+    if (oldRemaining.length > 0) {
+      if (newAbstract && !(newAbstract instanceof TFolder)) {
+        new Notice(`xyblue135 私人·附件镜像：新附件路径存在同名文件，无法建立目录：${newFolder}`, 7000);
+        return;
+      }
+      if (!(newAbstract instanceof TFolder)) await this.ensureFolder(newFolder);
+
+      new Notice(
+        `xyblue135 私人·附件镜像：笔记已改名，但「${oldBasename}」仍有 ${oldRemaining.length} 篇笔记共享旧附件，因此不搬动旧目录。\n新笔记今后使用：${newFolder}` +
+          (newPeers.length ? `\n「${newBasename}」已有 ${newPeers.length} 篇同名笔记，将共享新目录。` : "") +
+          `\n原正文中的旧附件链接保持有效。`,
+        9000
       );
-    } else {
-      await this.app.vault.rename(
-        oldAbstract,
-        newFolder
-      );
+      return;
     }
 
-    // 关键修复：例如 Notes/旧分类 -> Notes/新分类 后，
-    // Attachments/旧分类/文章 已迁走，此时把旧分类等空壳父目录逐级回收。
-    const cleanedParents = await this.cleanupEmptyAttachmentParents(
-      this.parentPath(oldFolder)
-    );
+    // 旧名字已经没有其他引用。如果新目录不存在，可以安全把整目录随“文件名”迁移。
+    if (oldAbstract instanceof TFolder && !newAbstract) {
+      await this.ensureFolder(this.parentPath(newFolder));
+      if (this.app.fileManager && typeof this.app.fileManager.renameFile === "function") {
+        await this.app.fileManager.renameFile(oldAbstract, newFolder);
+      } else {
+        await this.app.vault.rename(oldAbstract, newFolder);
+      }
+      new Notice(`xyblue135 私人·附件镜像：附件目录已随笔记文件名更新\n${oldFolder}\n→ ${newFolder}`, 6000);
+      return;
+    }
 
-    new Notice(
-      `xyblue135 私人·附件镜像：附件目录已同步\n${oldFolder}\n→ ${newFolder}` +
-        (cleanedParents ? `\n并清理 ${cleanedParents} 个旧空目录` : ""),
-      5000
-    );
+    // 新名字已经有共享目录时不做自动合并。保留旧目录，避免误覆盖或打乱旧链接。
+    if (newAbstract instanceof TFolder) {
+      new Notice(
+        `xyblue135 私人·附件镜像：新文件名「${newBasename}」已有附件目录，将加入共享。\n为避免自动合并造成数据损失，旧目录保留：${oldFolder}\n今后新附件保存到：${newFolder}`,
+        9000
+      );
+      return;
+    }
+
+    // 原来没有附件目录时，只需为新名字补建。
+    if (!(oldAbstract instanceof TFolder)) {
+      await this.ensureFolder(newFolder);
+    }
   }
+
 };
 
 class MirrorAttachmentsSettingTab extends PluginSettingTab {
@@ -1059,17 +1221,17 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
     });
     heroText.createEl("p", {
       text:
-        "让 Notes 与 Attachments 保持一对一镜像关系，并统一接管附件的保存、命名和 Markdown 插入格式。"
+        "使用单层附件结构：不同目录下的同名 Markdown 共享同一个附件文件夹，并通过实时引用计数保护共享附件。"
     });
     heroTop.createEl("span", {
       cls: "mirror-attachments-version-badge",
-      text: "v1.6.6"
+      text: "v2.0.1"
     });
 
     const badges = hero.createDiv({
       cls: "mirror-attachments-badges"
     });
-    ["一对一目录", "智能命名", "仓库绝对路径"].forEach((label) => {
+    ["单层结构", "同名共享", "引用计数"].forEach((label) => {
       badges.createEl("span", {
         cls: "mirror-attachments-badge",
         text: label
@@ -1079,7 +1241,7 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
     this.createSectionTitle(
       containerEl,
       "1. 存储结构",
-      "先确定笔记和附件的根目录。每篇 Markdown 都拥有唯一对应的附件目录。"
+      "附件不再镜像 Notes 父目录，只按 Markdown 文件名建立一层文件夹；同名笔记主动共享。"
     );
 
     new Setting(containerEl)
@@ -1097,10 +1259,10 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("附件根目录")
-      .setDesc("与笔记目录镜像对应的附件根目录，例如 Attachments。")
+      .setDesc("单层共享附件根目录，建议使用 z_attachments。")
       .addText((text) =>
         text
-          .setPlaceholder("Attachments")
+          .setPlaceholder("z_attachments")
           .setValue(this.plugin.settings.attachmentsRoot)
           .onChange(async (value) => {
             this.plugin.settings.attachmentsRoot = value.trim();
@@ -1113,26 +1275,26 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
     });
     structureCard.createEl("div", {
       cls: "mirror-attachments-info-title",
-      text: "固定映射规则"
+      text: "单层共享映射规则"
     });
     structureCard.createEl("code", {
-      text: "Notes/A/B/文章.md  ↔  Attachments/A/B/文章/"
+      text: "Notes/A/test.md + Notes/B/test.md  ↔  z_attachments/test/"
     });
     structureCard.createEl("p", {
       text:
-        "即使文章暂时没有附件，也会保留对应空目录。嵌入式资源使用时间戳，普通附件保留原文件名。"
+        "父目录完全解耦；移动 Notes 子目录不会搬附件。同名文件名视为同一个共享附件组。"
     });
 
     this.createSectionTitle(
       containerEl,
       "2. 导入行为",
-      "控制系统文件复制粘贴与拖入。ZIP 等普通文件同样会被识别并保存。"
+      "控制系统文件复制粘贴与拖入。附件统一保存到当前 Markdown 文件名对应的共享目录。"
     );
 
     new Setting(containerEl)
       .setName("接管 Ctrl+V 附件")
       .setDesc(
-        "检测到剪贴板中的系统文件时，阻止 Obsidian 默认处理并保存到当前笔记的专属附件目录。"
+        "检测到剪贴板中的系统文件时，阻止 Obsidian 默认处理并保存到当前文件名对应的共享附件目录。"
       )
       .addToggle((toggle) =>
         toggle
@@ -1179,7 +1341,7 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
       title: "嵌入式资源",
       tag: "时间戳 + ![]()",
       extensions: "PNG / JPG / JPEG / GIF / WebP / BMP / SVG / AVIF / PDF",
-      example: "![](/Attachments/A/B/文章/20260812151230001.png)",
+      example: "![](/z_attachments/test/20260812151230001.png)",
       description: "图片和 PDF 使用毫秒级时间戳保存并直接嵌入正文，避免截图类文件名大量重复。",
       className: "is-embed"
     });
@@ -1188,7 +1350,7 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
       title: "非嵌入式附件",
       tag: "原文件名 + []()",
       extensions: "ZIP / RAR / 7Z / DOC / DOCX / XLS / XLSX / PPT / PPTX / 其他文件",
-      example: "[项目源码.zip](/Attachments/A/B/文章/项目源码.zip)",
+      example: "[项目源码.zip](/z_attachments/test/项目源码.zip)",
       description: "压缩包、Office 等保留可读原名；重名自动变为 (1)、(2)…，正文显示完整文件名和扩展名。",
       className: "is-link"
     });
@@ -1214,18 +1376,18 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
     });
     linkNote.createEl("strong", { text: "路径规则：" });
     linkNote.appendText(
-      "所有链接均从 Vault 根目录开始，例如 /Attachments/...，不会随着笔记层级变化生成 ../。"
+      "所有链接均从 Vault 根目录开始，例如 /z_attachments/test/...；移动 Markdown 父目录不会改变附件路径。"
     );
 
     this.createSectionTitle(
       containerEl,
-      "4. 目录一致性",
-      "检查 Notes 与 Attachments 是否仍保持一对一；可自动修复缺失目录和确定无用的孤立目录。"
+      "4. 共享关系与重名检查",
+      "检查每个文件名对应的共享附件目录，并列出所有同名 Markdown。孤立目录只报告，不自动删除。"
     );
 
     const auditActions = new Setting(containerEl)
-      .setName("一对一目录校错")
-      .setDesc("重新扫描当前库，或自动修复能够安全确定的问题。");
+      .setName("共享附件结构校验")
+      .setDesc("重新扫描共享关系；自动操作只补建缺失目录，不会删除任何孤立目录。");
 
     const auditPanel = containerEl.createDiv({
       cls: "mirror-attachments-audit-panel"
@@ -1246,7 +1408,7 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
 
     auditActions.addButton((button) =>
       button
-        .setButtonText("自动纠错")
+        .setButtonText("补建缺失目录")
         .setCta()
         .onClick(async () => {
           button.setDisabled(true);
@@ -1258,7 +1420,7 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
               : "";
 
             new Notice(
-              `xyblue135 私人·附件镜像：已补建 ${result.created} 个目录，回收 ${result.trashed} 个多余目录${conflictText}`,
+              `xyblue135 私人·附件镜像：已补建 ${result.created} 个缺失目录；${result.preservedExtra} 个孤立目录仅报告、未删除${conflictText}`,
               7000
             );
             await this.refreshAuditPanel(auditPanel);
@@ -1273,9 +1435,89 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
 
     void this.refreshAuditPanel(auditPanel);
 
+    const duplicateActions = new Setting(containerEl)
+      .setName("同名 Markdown 检查")
+      .setDesc("列出不同目录下文件名完全相同的 Markdown；这些笔记会共享同一个附件目录。");
+
+    const duplicatePanel = containerEl.createDiv({
+      cls: "mirror-attachments-audit-panel"
+    });
+
+    duplicateActions.addButton((button) =>
+      button
+        .setButtonText("检查重名")
+        .onClick(async () => {
+          button.setDisabled(true);
+          try {
+            this.refreshDuplicatePanel(duplicatePanel);
+          } finally {
+            button.setDisabled(false);
+          }
+        })
+    );
+
+    this.refreshDuplicatePanel(duplicatePanel);
+
     this.createSectionTitle(
       containerEl,
-      "5. 快捷操作",
+      "5. 删除保护与垃圾桶恢复",
+      "删除时先检查同名 Markdown 引用数；只有最后一个引用消失时，才把共享附件目录放入插件垃圾桶。"
+    );
+
+    new Setting(containerEl)
+      .setName("删除文章时同步回收附件")
+      .setDesc("开启后，删除 Markdown 会实时统计同名笔记；仍有同名笔记时附件不动，最后一篇删除时才回收。")
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.deleteAttachmentsWithNote)
+          .onChange(async (value) => {
+            this.plugin.settings.deleteAttachmentsWithNote = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+    const recycleActions = new Setting(containerEl)
+      .setName("插件垃圾桶")
+      .setDesc("恢复插件新版本回收的附件目录。恢复时绝不覆盖已有文件或目录。");
+
+    const recyclePanel = containerEl.createDiv({
+      cls: "mirror-attachments-audit-panel"
+    });
+
+    recycleActions.addButton((button) =>
+      button
+        .setButtonText("刷新列表")
+        .onClick(async () => {
+          await this.refreshRecyclePanel(recyclePanel);
+        })
+    );
+
+    recycleActions.addButton((button) =>
+      button
+        .setButtonText("恢复全部")
+        .setCta()
+        .onClick(async () => {
+          button.setDisabled(true);
+          try {
+            const result = await this.plugin.restoreAllRecycleRecords();
+            new Notice(
+              `xyblue135 私人·附件镜像：恢复 ${result.restored} 个目录` +
+                (result.conflicts.length ? `，${result.conflicts.length} 个冲突未覆盖` : ""),
+              7000
+            );
+            await this.refreshRecyclePanel(recyclePanel);
+            await this.refreshAuditPanel(auditPanel);
+          } finally {
+            button.setDisabled(false);
+          }
+        })
+    );
+
+    void this.refreshRecyclePanel(recyclePanel);
+
+    this.createSectionTitle(
+      containerEl,
+      "6. 快捷操作",
       "减少手动查找附件目录的步骤。"
     );
 
@@ -1288,7 +1530,7 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
     });
     shortcutCard.createEl("p", {
       text:
-        "在左侧文件树右键任意受管理的 Markdown，选择“📂 打开对应附件目录”，即可定位到它的一对一附件文件夹。"
+        "在左侧文件树右键任意受管理的 Markdown，选择“📂 打开对应附件目录”，即可定位到它按文件名共享的附件文件夹。"
     });
   }
 
@@ -1326,6 +1568,80 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
     });
   }
 
+  async refreshRecyclePanel(panelEl) {
+    panelEl.empty();
+    const records = this.plugin.getRecycleRecords();
+
+    if (!records.length) {
+      panelEl.createEl("div", {
+        cls: "mirror-attachments-audit-summary is-ok",
+        text: "插件垃圾桶为空。"
+      });
+      return;
+    }
+
+    panelEl.createEl("div", {
+      cls: "mirror-attachments-audit-summary is-warning",
+      text: `当前有 ${records.length} 个可恢复目录。`
+    });
+
+    const list = panelEl.createDiv({ cls: "mirror-attachments-recycle-list" });
+    for (const record of records.slice(0, 100)) {
+      const row = list.createDiv({ cls: "mirror-attachments-recycle-row" });
+      const text = row.createDiv({ cls: "mirror-attachments-recycle-text" });
+      text.createEl("strong", { text: record.originalPath });
+      text.createEl("div", {
+        text: `${record.deletedAt || "未知时间"} · ${record.reason || "unknown"}`
+      });
+      const button = row.createEl("button", { text: "恢复" });
+      button.addEventListener("click", async () => {
+        button.disabled = true;
+        try {
+          const result = await this.plugin.restoreRecycleRecord(record.id);
+          if (result.restored) {
+            new Notice(`xyblue135 私人·附件镜像：已恢复\n${record.originalPath}`, 5000);
+          } else {
+            new Notice(`xyblue135 私人·附件镜像：未恢复：${result.reason}`, 7000);
+          }
+          await this.refreshRecyclePanel(panelEl);
+        } catch (err) {
+          console.error("[xyblue135 私人·附件镜像] restore failed:", err);
+          new Notice("xyblue135 私人·附件镜像：恢复失败，请查看控制台。", 7000);
+        } finally {
+          button.disabled = false;
+        }
+      });
+    }
+  }
+
+  refreshDuplicatePanel(panelEl) {
+    panelEl.empty();
+    const groups = this.plugin.getDuplicateNoteGroups();
+
+    if (!groups.length) {
+      panelEl.createEl("div", {
+        cls: "mirror-attachments-audit-summary is-ok",
+        text: "没有发现同名 Markdown。"
+      });
+      return;
+    }
+
+    panelEl.createEl("div", {
+      cls: "mirror-attachments-audit-summary is-warning",
+      text: `发现 ${groups.length} 组同名 Markdown。它们会按文件名共享附件目录。`
+    });
+
+    for (const group of groups) {
+      const box = panelEl.createDiv({ cls: "mirror-attachments-audit-group is-conflict" });
+      box.createEl("div", {
+        cls: "mirror-attachments-audit-group-title",
+        text: `${group.basename} · ${group.count} 篇 · 共享 ${group.folderPath}`
+      });
+      const list = box.createEl("ul");
+      for (const path of group.notePaths) list.createEl("li", { text: path });
+    }
+  }
+
   async refreshAuditPanel(panelEl) {
     panelEl.empty();
     panelEl.createEl("div", {
@@ -1356,16 +1672,13 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
       return;
     }
 
-    const issueCount =
-      audit.missing.length + audit.extra.length + audit.conflicts.length;
+    const issueCount = audit.missing.length + audit.extra.length + audit.conflicts.length;
 
     panelEl.createEl("div", {
-      cls:
-        "mirror-attachments-audit-summary " +
-        (issueCount ? "is-warning" : "is-ok"),
+      cls: "mirror-attachments-audit-summary " + (issueCount ? "is-warning" : "is-ok"),
       text: issueCount
-        ? `发现 ${issueCount} 个问题：缺失 ${audit.missing.length}，多余 ${audit.extra.length}，冲突 ${audit.conflicts.length}。`
-        : `校验正常：${audit.notesCount} 个 Markdown 与 ${audit.expectedCount} 个附件目录一一对应。`
+        ? `发现 ${issueCount} 项需关注：缺失 ${audit.missing.length}，孤立 ${audit.extra.length}，冲突 ${audit.conflicts.length}。当前 ${audit.notesCount} 篇 Markdown 对应 ${audit.expectedCount} 个共享附件目录。`
+        : `校验正常：${audit.notesCount} 篇 Markdown 对应 ${audit.expectedCount} 个共享附件目录；其中 ${audit.duplicateGroups.length} 组为同名共享。`
     });
 
     if (audit.missing.length) {
@@ -1373,7 +1686,7 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
         panelEl,
         "缺失目录",
         audit.missing.map(
-          (item) => `${item.notePath}  →  ${item.folderPath}`
+          (item) => `${item.notePaths.join(" | ")}  →  ${item.folderPath}`
         ),
         "is-missing"
       );
@@ -1382,7 +1695,7 @@ class MirrorAttachmentsSettingTab extends PluginSettingTab {
     if (audit.extra.length) {
       this.renderAuditGroup(
         panelEl,
-        "多余目录",
+        "孤立目录（仅报告，不自动删除）",
         audit.extra.map((item) => item.folderPath),
         "is-extra"
       );

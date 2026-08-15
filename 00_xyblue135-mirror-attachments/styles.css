@@ -319,3 +319,11 @@
 .mirror-attachments-rule-card code {
   scrollbar-width: thin;
 }
+
+
+/* v1.7.0 垃圾桶恢复列表 */
+.mirror-attachments-recycle-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.mirror-attachments-recycle-row { display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1px solid var(--background-modifier-border); border-radius: 8px; }
+.mirror-attachments-recycle-text { min-width: 0; flex: 1; }
+.mirror-attachments-recycle-text strong, .mirror-attachments-recycle-text div { display: block; overflow-wrap: anywhere; }
+.mirror-attachments-recycle-text div { margin-top: 3px; color: var(--text-muted); font-size: var(--font-ui-smaller); }

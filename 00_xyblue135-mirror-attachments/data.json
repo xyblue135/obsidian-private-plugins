@@ -1,0 +1,20 @@
+{
+  "notesRoot": "Notes",
+  "attachmentsRoot": "z_attachments",
+  "structureMode": "note",
+  "fileNameMode": "smart",
+  "handlePaste": true,
+  "handleDrop": true,
+  "syncOnNoteRename": true,
+  "deleteAttachmentsWithNote": true,
+  "recycleHistory": [
+    {
+      "id": "20260816001027951-j2iz9t",
+      "deletedAt": "2026-08-15T16:10:28.070Z",
+      "originalPath": "z_attachments/测试test",
+      "recyclePath": "z_attachments/_MirrorAttachmentsTrash/20260816001027951-j2iz9t/测试test",
+      "reason": "last-shared-note-delete",
+      "notePath": "Notes/测试test.md"
+    }
+  ]
+}

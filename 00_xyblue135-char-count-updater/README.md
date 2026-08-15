@@ -1,7 +1,11 @@
-# xyblue135 私人 · 字数与 Token 统计
+# xyblue135 · 字数与 Token 统计
 
-> **私人插件**：xyblue135 自用维护版，不作为公共插件发布。
-> **兼容说明**：保留原插件内部 `id` 和 `data.json`，升级覆盖时可继续使用已有配置与记录。
+> **开源插件**：xyblue135 维护的开放源代码插件，仓库公开、可自由查看与复用。
+> **兼容原则**：插件 ID 保持 `00_xyblue135-char-count-updater`，升级包不携带 `data.json`，覆盖安装时保留用户本地配置与历史状态。
+
+维护者：**xyblue135**
+
+---
 
 自动更新 Obsidian Markdown 文件 YAML frontmatter 中已经存在的统计字段。
 
@@ -73,10 +77,20 @@ Token 估算只适合粗略筛选和预算，不等于特定模型 tokenizer 的
 
 ## 安装
 
-将整个 `xyblue135-char-count-updater` 文件夹复制到：
+将整个插件目录复制到你的 Vault 插件目录：
 
 ```text
-<Vault>/.obsidian/plugins/xyblue135-char-count-updater/
+<Vault>/.obsidian/plugins/00_xyblue135-char-count-updater/
 ```
 
-然后重新加载 Obsidian，并在第三方插件中启用 **xyblue135 私人 · 字数与 Token 统计**。
+至少包含：
+
+```text
+manifest.json
+main.js
+styles.css
+```
+
+然后重新加载 Obsidian，并在第三方插件中启用 **xyblue135 · 字数与 Token 统计**。
+
+升级覆盖时保留当前插件目录中的 `data.json`，不要提交到公开仓库。

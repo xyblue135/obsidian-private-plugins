@@ -1,9 +1,9 @@
 {
   "id": "00_xyblue135-folder-template-note",
-  "name": "xyblue135 私人 · 文件夹模板笔记",
+  "name": "xyblue135 · 文件夹模板笔记",
   "version": "1.2.0",
   "minAppVersion": "1.0.0",
-  "description": "【xyblue135 私人插件】右键文件夹快速创建模板笔记；支持自定义菜单图标、元数据模板和常用时间/路径变量。",
+  "description": "【xyblue135 开源插件】右键文件夹快速创建模板笔记；支持自定义菜单图标、元数据模板和常用时间/路径变量。",
   "author": "xyblue135",
   "isDesktopOnly": false
 }

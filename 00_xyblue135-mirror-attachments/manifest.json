@@ -1,9 +1,9 @@
 {
   "id": "00_xyblue135-mirror-attachments",
   "name": "xyblue135 私人 · 附件镜像",
-  "version": "1.6.6",
+  "version": "2.0.1",
   "minAppVersion": "1.5.0",
-  "description": "【xyblue135 私人插件】让 Notes 与 Attachments 保持一对一镜像目录，并统一处理附件保存、命名、重名与 Markdown 链接。",
+  "description": "【xyblue135 私人插件】单层共享附件结构：同名 Markdown 共享 z_attachments/<文件名>/，使用实时引用计数保护删除，并保留插件垃圾桶。",
   "author": "xyblue135",
   "isDesktopOnly": false
 }

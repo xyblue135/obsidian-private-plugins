@@ -6,10 +6,10 @@
 /*
  * xyblue135-AI-Metadata for Obsidian
  * Author: xyblue135
- * v0.5.7
+ * v0.6.0
  *
  * Features:
- * - Inline AI buttons beside summary/tags only for the root /Notes whitelist.
+ * - Inline AI buttons beside summary_short / summary_long / tags only for the root /Notes whitelist.
  * - Up to N technically weighted tags (default cap 7), values only (no hierarchy); fewer valid tags are accepted.
  * - Maintains a local-only tag catalog from Markdown files under Notes/ (never sent to AI).
  * - Canonicalizes tag casing locally: existing Vault spelling first, built-in/editable technical spellings as fallback.
@@ -39,17 +39,28 @@ const LEGACY_SUMMARY_HARNESS_V056 = [
   "摘要长度不得超过 {{summaryMaxChars}} 个字符。",
 ].join("\n");
 
-const DEFAULT_SUMMARY_HARNESS = [
+const DEFAULT_SUMMARY_SHORT_HARNESS = [
   "语言：中文。",
-  "形式：输出一段自然、完整、连贯的内容摘要，通常使用 2～3 个完整句子，但保持为单段，不换行。",
-  "目标：生成文章内容总览，而不是最终结论、技术速记或参数清单；仅阅读摘要时，也应能大致知道背景问题、关键排查/分析过程、主要判断、技术方案，以及重要限制或待验证项。",
-  "正文中存在时，优先覆盖：①核心对象/问题或场景；②关键测试、数据、实验或判断依据；③证据如何导向核心判断；④最终方法/方案；⑤有技术辨识度的型号、参数、组件、接口、协议、算法、工具或实现方式；⑥重要风险、限制、异常或待验证问题。",
-  "不要只写‘问题 + 最终方案’；如果正文包含排查、测试、选型、实现、注意事项等多个阶段，应尽量保留这些阶段的覆盖范围。",
-  "优先保留具体信息和因果关系，不要用‘进行了相关测试’‘采用某些方法’等模糊措辞替代正文中的关键技术信息。",
-  "表达必须像正常中文文章摘要，不要写成电报体、日志体、参数串或关键词堆叠；不要为了省字大量使用 /、+、→ 代替自然语言关系（技术名称或必要公式中的符号除外）。",
-  "不要使用‘本文介绍了’‘这篇文章讲了’‘这篇笔记主要是’等空泛开场；可以使用‘针对……’‘通过……发现……’‘进一步……’‘同时……’等自然连接方式。",
-  "长度：不得超过 {{summaryMaxChars}} 个字符；正文信息充足时，尽量使用字符预算的 75%～95%，宁可压缩重复和修饰词，也不要无故删除关键技术阶段。",
-  "不要 Markdown、不要标题、不要引号、不要前后解释，只输出摘要正文。",
+  "用途：生成 summary_short，用于文章列表、搜索结果、悬浮预览和快速识别主题。",
+  "形式：只输出一个自然、完整的单句摘要，不换行。",
+  "内容：优先保留核心对象或技术主题、核心问题，以及最主要的解决方案、结论或知识点；保留最有辨识度的技术名词和关键参数，但不要展开完整排查过程。",
+  "表达：必须是自然中文，不要写成电报体、日志体、参数串或关键词堆砌；不要为了压缩大量使用 /、+、→ 等符号代替正常语言关系。",
+  "不要使用‘本文介绍了’、‘这篇文章讲了’、‘这篇笔记主要是’等套话；不要 Markdown、标题、引号或前后解释。",
+  "长度：不得超过 {{summaryShortMaxChars}} 个字符；正文信息充足时，尽量使用上限的 70%～90%，但不要为了凑长度加入重复信息。",
+].join("\n");
+
+const DEFAULT_SUMMARY_LONG_HARNESS = [
+  "语言：中文。",
+  "用途：生成 summary_long，用于理解整篇文章结构，并服务于 AI 分类、技术含量判断、搜索、相关文章推荐、RAG 和文章排序。",
+  "形式：输出一段自然、完整的内容摘要，可使用 2～3 个完整句子，但不要换行。",
+  "目标：生成‘文章内容总览’，而不是最终结论、技术速记或参数清单；读者只阅读摘要，就应大致知道文章的背景问题、关键排查或分析过程、主要技术方案、涉及的重要技术点，以及最终结论、限制或待验证问题。",
+  "内容要求：正文中存在时，应尽可能覆盖核心对象/背景问题、关键实验或测试数据、判断依据与因果关系、最终技术方案、关键参数/组件/接口/算法/工具，以及重要注意事项、风险、限制、异常现象或待验证问题。",
+  "不要只写‘问题 + 最终方案’；如果正文包含排查、测试、选型、实现和风险分析，应尽量把这些阶段都压缩进摘要。",
+  "优先保留具有检索价值和技术辨识度的具体信息，例如型号、技术名词、接口名称、关键数值、测试结果、核心模块和异常现象；不要用‘进行了测试’‘采用相关方法’等模糊概括替代具体内容。",
+  "表达：使用自然、完整、连贯的中文叙述，不要写成电报体、日志体、关键词堆叠或参数串；避免大量使用 /、+、→ 等符号代替正常语言关系。允许使用‘针对……’‘通过……发现……’‘进一步……’‘同时……’等连接方式。",
+  "不要使用‘本文介绍了’、‘这篇文章介绍了’、‘这篇笔记讲了’等空泛开场；不要 Markdown、标题、引号或前后解释。",
+  "长度：不得超过 {{summaryLongMaxChars}} 个字符；正文信息充足时，尽量使用上限的 75%～95%；如果内容过多，优先压缩措辞，而不是删除关键技术阶段。",
+  "禁止输出类似‘设备故障，测试A/B得出结论；使用模块X、Y完成改造，信号Z待验证’这种高度压缩的技术速记，必须改写成自然的文章概述。",
 ].join("\n");
 
 const TAG_VALUE_SAFETY_PROTOCOL = [
@@ -165,7 +176,8 @@ const DEFAULT_SETTINGS = {
   apiKey: "",
   model: "auto",
   whitelistFolder: "Notes",
-  summaryMaxChars: 300,
+  summaryShortMaxChars: 100,
+  summaryLongMaxChars: 300,
   summaryMarkdownCleanupEnabled: false,
   contentFingerprintEnabled: false,
   maxTags: 7,
@@ -178,12 +190,13 @@ const DEFAULT_SETTINGS = {
   structuredJsonModeEnabled: true,
   jsonRepairEnabled: true,
   statusBarEnabled: true,
-  summaryHarnessEnabled: true,
+  summaryShortHarnessEnabled: true,
+  summaryLongHarnessEnabled: true,
   tagsHarnessEnabled: true,
   tagCaseNormalizationEnabled: true,
   technicalTagCanonicalList: DEFAULT_TECHNICAL_TAG_CANONICAL_LIST,
-  summaryHarness: DEFAULT_SUMMARY_HARNESS,
-  summaryNaturalOverviewMigratedV057: true,
+  summaryShortHarness: DEFAULT_SUMMARY_SHORT_HARNESS,
+  summaryLongHarness: DEFAULT_SUMMARY_LONG_HARNESS,
   tagsHarness: DEFAULT_TAGS_HARNESS,
 };
 
@@ -241,6 +254,32 @@ module.exports = class AiMetadataPlugin extends Plugin {
     const savedSettings = saved.settings || saved;
     const savedState = saved.state || {};
     this.settings = Object.assign({}, DEFAULT_SETTINGS, savedSettings);
+
+    // v0.6.0：从单 summary 升级为 summary_short + summary_long。
+    // 旧 summaryMaxChars <= 140 时视为“短摘要长度”；>= 180 时视为“长摘要长度”。
+    // 不自动改写 Vault 内原有 summary 字段，避免升级时静默批量改笔记；新流程会维护两个新字段。
+    const legacySummaryMaxChars = Number(savedSettings.summaryMaxChars);
+    if (savedSettings.summaryShortMaxChars === undefined) {
+      this.settings.summaryShortMaxChars = Number.isFinite(legacySummaryMaxChars) && legacySummaryMaxChars >= 40 && legacySummaryMaxChars <= 140
+        ? legacySummaryMaxChars
+        : DEFAULT_SETTINGS.summaryShortMaxChars;
+    }
+    if (savedSettings.summaryLongMaxChars === undefined) {
+      this.settings.summaryLongMaxChars = Number.isFinite(legacySummaryMaxChars) && legacySummaryMaxChars >= 180
+        ? Math.min(1000, legacySummaryMaxChars)
+        : DEFAULT_SETTINGS.summaryLongMaxChars;
+    }
+    if (savedSettings.summaryShortHarnessEnabled === undefined) {
+      this.settings.summaryShortHarnessEnabled = savedSettings.summaryHarnessEnabled !== false;
+    }
+    if (savedSettings.summaryLongHarnessEnabled === undefined) {
+      this.settings.summaryLongHarnessEnabled = savedSettings.summaryHarnessEnabled !== false;
+    }
+    if (!savedSettings.summaryShortHarness) this.settings.summaryShortHarness = DEFAULT_SUMMARY_SHORT_HARNESS;
+    if (!savedSettings.summaryLongHarness) this.settings.summaryLongHarness = DEFAULT_SUMMARY_LONG_HARNESS;
+    delete this.settings.summaryMaxChars;
+    delete this.settings.summaryHarness;
+    delete this.settings.summaryHarnessEnabled;
     // v0.4.4 移除旧版“手动批量数量”数值控制项。
     delete this.settings.manualBatchSize;
     // 仅升级仍保持 v0.4.2 默认值的 Harness；如果用户已自定义，则原样保留。
@@ -252,40 +291,22 @@ module.exports = class AiMetadataPlugin extends Plugin {
     if (!savedSettings.technicalTagCanonicalList) {
       this.settings.technicalTagCanonicalList = DEFAULT_TECHNICAL_TAG_CANONICAL_LIST;
     }
-
-    // v0.5.7：摘要从“100 字单句速记”迁移为“约 300 字自然内容总览”。
-    // 只在首次升级时执行一次，之后用户仍可自行改回任意长度或自定义 Harness。
-    let summaryV057MigrationChanged = false;
-    if (savedSettings.summaryNaturalOverviewMigratedV057 !== true) {
-      const savedMaxChars = Number(savedSettings.summaryMaxChars);
-      if (!Number.isFinite(savedMaxChars) || savedMaxChars <= 120) {
-        this.settings.summaryMaxChars = 300;
-        summaryV057MigrationChanged = true;
-      }
-      const savedSummaryHarness = String(savedSettings.summaryHarness || "");
-      const looksLikeLegacySingleSentence = !savedSummaryHarness
-        || savedSummaryHarness === LEGACY_SUMMARY_HARNESS_V056
-        || savedSummaryHarness.includes("形式：只输出一个完整的单句摘要")
-        || savedSummaryHarness.includes("形式：单句摘要");
-      if (looksLikeLegacySingleSentence) {
-        this.settings.summaryHarness = DEFAULT_SUMMARY_HARNESS;
-        summaryV057MigrationChanged = true;
-      }
-      this.settings.summaryNaturalOverviewMigratedV057 = true;
-      summaryV057MigrationChanged = true;
-    }
     this.state = Object.assign({}, DEFAULT_STATE, savedState);
     this.state.files = Object.assign({}, DEFAULT_STATE.files, savedState.files || {});
     this.state.tagCatalog = Object.assign({}, DEFAULT_STATE.tagCatalog, savedState.tagCatalog || {});
     this.state.updateLog = Array.isArray(savedState.updateLog) ? savedState.updateLog : [];
+
+    // v0.6.0：旧版 lastSummaryHash 不再代表两个新摘要字段，统一移除，避免把旧 summary 误判为双摘要均已完成。
+    for (const record of Object.values(this.state.files)) {
+      if (!record || typeof record !== "object") continue;
+      delete record.lastSummaryHash;
+    }
 
     // v0.5.6：内容指纹识别改为可选功能。关闭时删除旧版持久化 hash 标记，
     // 让数据库不再依赖内容指纹。
     if (this.settings.contentFingerprintEnabled !== true) {
       this.clearPersistentFingerprintMarkers();
       // 迁移结果立即写回磁盘，确保旧 hash 字段真正从 data.json 删除，而不是只在内存中忽略。
-      await this.saveAllData();
-    } else if (summaryV057MigrationChanged) {
       await this.saveAllData();
     }
 
@@ -324,8 +345,18 @@ module.exports = class AiMetadataPlugin extends Plugin {
 
     this.addCommand({
       id: "generate-summary",
-      name: "为当前 Notes 笔记生成摘要",
-      callback: () => void this.generateForActiveFile("summary"),
+      name: "为当前 Notes 笔记生成长摘要 summary_long",
+      callback: () => void this.generateForActiveFile("summary_long"),
+    });
+    this.addCommand({
+      id: "generate-summary-short",
+      name: "为当前 Notes 笔记生成短摘要 summary_short",
+      callback: () => void this.generateForActiveFile("summary_short"),
+    });
+    this.addCommand({
+      id: "generate-both-summaries",
+      name: "为当前 Notes 笔记同时生成短摘要和长摘要",
+      callback: () => void this.generateForActiveFile("summaries"),
     });
     this.addCommand({
       id: "generate-tags",
@@ -334,7 +365,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
     });
     this.addCommand({
       id: "generate-summary-and-tags",
-      name: "为当前 Notes 笔记生成摘要和标签",
+      name: "为当前 Notes 笔记生成双摘要和标签",
       callback: () => void this.generateForActiveFile("all"),
     });
     this.addCommand({
@@ -654,7 +685,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
         button.remove();
       }
     });
-    ["summary", "tags"].forEach((kind) => {
+    ["summary_short", "summary_long", "tags"].forEach((kind) => {
       const rows = this.findPropertyRows(kind, scope);
       rows.forEach((row) => {
         if (row.querySelector(`.ai-metadata-property-button[data-ai-kind="${kind}"]`)) return;
@@ -663,7 +694,11 @@ module.exports = class AiMetadataPlugin extends Plugin {
         const button = row.createEl("button", {
           cls: "ai-metadata-property-button clickable-icon",
           attr: {
-            "aria-label": kind === "summary" ? "AI 只生成 summary" : "AI 只生成 weighted tags",
+            "aria-label": kind === "summary_short"
+              ? "AI 只生成 summary_short"
+              : kind === "summary_long"
+                ? "AI 只生成 summary_long"
+                : "AI 只生成 weighted tags",
             "data-ai-kind": kind,
             type: "button",
           },
@@ -720,10 +755,14 @@ module.exports = class AiMetadataPlugin extends Plugin {
     try {
       if (effectiveKind === "all") {
         const result = await this.generateAllForFile(file, "manual");
-        new Notice(`xyblue135 私人·AI 元数据：summary + ${result.tags.length} 个 tags 已更新`);
+        new Notice(`xyblue135 私人·AI 元数据：summary_short + summary_long + ${result.tags.length} 个 tags 已更新`);
+      } else if (effectiveKind === "summaries") {
+        await this.generateSelectedForFile(file, ["summary_short", "summary_long"], "manual");
+        new Notice("xyblue135 私人·AI 元数据：summary_short + summary_long 已更新");
       } else {
         const result = await this.generateSingleForFile(file, effectiveKind, "manual");
-        if (effectiveKind === "summary") new Notice("xyblue135 私人·AI 元数据：summary 已更新");
+        if (effectiveKind === "summary_short") new Notice("xyblue135 私人·AI 元数据：summary_short 已更新");
+        else if (effectiveKind === "summary_long") new Notice("xyblue135 私人·AI 元数据：summary_long 已更新");
         else new Notice(`xyblue135 私人·AI 元数据：已写入 ${result.tags.length} 个 tags`);
       }
       setStateForButtons("success");
@@ -774,21 +813,51 @@ module.exports = class AiMetadataPlugin extends Plugin {
   }
 
   async generateSingleForFile(file, kind, reason, progress = null, taskContext = {}) {
+    return this.generateSelectedForFile(file, [kind], reason, progress, taskContext);
+  }
+
+  async generateAllForFile(file, reason, progress = null, taskContext = {}) {
+    return this.generateSelectedForFile(file, ["summary_short", "summary_long", "tags"], reason, progress, taskContext);
+  }
+
+  async generateSelectedForFile(file, kinds, reason, progress = null, taskContext = {}) {
+    const requested = Array.from(new Set((Array.isArray(kinds) ? kinds : [kinds]).filter((kind) =>
+      ["summary_short", "summary_long", "tags"].includes(kind))));
+    if (!requested.length) throw new Error("没有可生成的元数据字段");
+
     const abortSignal = taskContext.abortSignal || null;
     const scopeFolder = taskContext.scopeFolder || "";
     const respectStatusFilter = taskContext.respectStatusFilter === true;
     this.ensureTaskActive(abortSignal);
     if (scopeFolder) this.assertFileStillInFolder(file, scopeFolder);
     if (respectStatusFilter) this.assertRecognitionEligible(file);
+
     const prepared = await this.prepareFile(file);
+    const currentTags = this.readCurrentTags(file);
     const context = { filePath: file.path, reason, progress, abortSignal };
-    let result;
-    if (kind === "summary") {
-      result = { summary: await this.generateSummary(prepared.body, file.basename, context) };
+    let result = {};
+
+    if (requested.length >= 2 && this.settings.experimentalCombinedRequestEnabled === true) {
+      result = await this.generateMetadataBundle(prepared.body, file.basename, currentTags, requested, context);
     } else {
-      const currentTags = this.readCurrentTags(file);
-      const weightedTags = await this.generateTags(prepared.body, file.basename, currentTags, context);
-      result = { tags: weightedTags.map((item) => item.value), weightedTags };
+      // 关闭合并请求时严格串行；只有全部逻辑结果生成成功后才统一写入，避免半更新。
+      if (requested.includes("summary_short")) {
+        result.summaryShort = await this.generateSummaryShort(prepared.body, file.basename, context);
+        this.ensureTaskActive(abortSignal);
+      }
+      if (requested.includes("summary_long")) {
+        result.summaryLong = await this.generateSummaryLong(prepared.body, file.basename, context);
+        this.ensureTaskActive(abortSignal);
+      }
+      if (requested.includes("tags")) {
+        result.weightedTags = await this.generateTags(prepared.body, file.basename, currentTags, context);
+        result.tags = result.weightedTags.map((item) => item.value);
+      }
+    }
+
+    if (requested.includes("tags") && !result.tags) {
+      result.weightedTags = Array.isArray(result.weightedTags) ? result.weightedTags : [];
+      result.tags = result.weightedTags.map((item) => item.value);
     }
 
     this.ensureLifecycleActive();
@@ -796,74 +865,24 @@ module.exports = class AiMetadataPlugin extends Plugin {
     if (scopeFolder) this.assertFileStillInFolder(file, scopeFolder);
     if (respectStatusFilter) this.assertRecognitionEligible(file);
     await this.assertSourceUnchanged(file, prepared.fingerprint);
-    this.setRuntimeStatus("writing", { ...context, phase: kind });
+
+    const phase = requested.join(" + ");
+    this.setRuntimeStatus("writing", { ...context, phase });
     await this.withAiWrite(file, async () => {
       this.ensureLifecycleActive();
       this.ensureTaskActive(abortSignal);
       if (scopeFolder) this.assertFileStillInFolder(file, scopeFolder);
       if (respectStatusFilter) this.assertRecognitionEligible(file);
       await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
-        if (kind === "summary") frontmatter.summary = result.summary;
-        else frontmatter.tags = result.tags;
+        if (requested.includes("summary_short")) frontmatter.summary_short = result.summaryShort;
+        if (requested.includes("summary_long")) frontmatter.summary_long = result.summaryLong;
+        if (requested.includes("tags")) frontmatter.tags = result.tags;
       });
     });
 
-    this.markProcessed(file, prepared.fingerprint, kind, reason, result.weightedTags || null);
-    this.scheduleTagCatalogRebuild(700);
+    this.markProcessed(file, prepared.fingerprint, requested, reason, result.weightedTags || null);
+    if (requested.includes("tags")) this.scheduleTagCatalogRebuild(700);
     return result;
-  }
-
-  async generateAllForFile(file, reason, progress = null, taskContext = {}) {
-    const abortSignal = taskContext.abortSignal || null;
-    const scopeFolder = taskContext.scopeFolder || "";
-    const respectStatusFilter = taskContext.respectStatusFilter === true;
-    this.ensureTaskActive(abortSignal);
-    if (scopeFolder) this.assertFileStillInFolder(file, scopeFolder);
-    if (respectStatusFilter) this.assertRecognitionEligible(file);
-    const prepared = await this.prepareFile(file);
-    const currentTags = this.readCurrentTags(file);
-    const context = { filePath: file.path, reason, progress, abortSignal };
-
-    let summary;
-    let weightedTags;
-    if (this.settings.experimentalCombinedRequestEnabled) {
-      ({ summary, weightedTags } = await this.generateCombinedMetadata(
-        prepared.body,
-        file.basename,
-        currentTags,
-        context,
-      ));
-    } else {
-      // 稳定模式：刻意串行执行。全局 API 队列会在 Summary 完成后，
-      // 按配置的请求间隔等待，再开始 Tags。
-      summary = await this.generateSummary(prepared.body, file.basename, context);
-      this.ensureTaskActive(abortSignal);
-      if (scopeFolder) this.assertFileStillInFolder(file, scopeFolder);
-      if (respectStatusFilter) this.assertRecognitionEligible(file);
-      weightedTags = await this.generateTags(prepared.body, file.basename, currentTags, context);
-    }
-    const tags = weightedTags.map((item) => item.value);
-
-    // 只有两个逻辑结果都准备好后才写入任一属性，确保 summary/tags 在
-    // 双请求模式和实验性单请求模式下都尽量保持原子性。
-    this.ensureTaskActive(abortSignal);
-    if (scopeFolder) this.assertFileStillInFolder(file, scopeFolder);
-    if (respectStatusFilter) this.assertRecognitionEligible(file);
-    await this.assertSourceUnchanged(file, prepared.fingerprint);
-    this.setRuntimeStatus("writing", { ...context, phase: "summary + tags" });
-    await this.withAiWrite(file, async () => {
-      this.ensureTaskActive(abortSignal);
-      if (scopeFolder) this.assertFileStillInFolder(file, scopeFolder);
-      if (respectStatusFilter) this.assertRecognitionEligible(file);
-      await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
-        frontmatter.summary = summary;
-        frontmatter.tags = tags;
-      });
-    });
-
-    this.markProcessed(file, prepared.fingerprint, "all", reason, weightedTags);
-    this.scheduleTagCatalogRebuild(700);
-    return { summary, tags, weightedTags };
   }
 
   async assertSourceUnchanged(file, expectedFingerprint) {
@@ -896,13 +915,13 @@ module.exports = class AiMetadataPlugin extends Plugin {
     return match ? match[1] : "";
   }
 
-  // 内容指纹会忽略由 AI 管理的 summary/tags 行，因此插件自身写入不会造成循环更新。
+  // 内容指纹会忽略由 AI 管理的 legacy summary、summary_short、summary_long、tags 行，因此插件自身写入不会造成循环更新。
   computeSourceFingerprint(raw, file) {
     const body = this.stripFrontmatter(raw).replace(/\r\n/g, "\n").trim();
     const fm = this.app.metadataCache.getFileCache(file)?.frontmatter || {};
     const sanitized = {};
     Object.keys(fm)
-      .filter((key) => !["summary", "tags", "position"].includes(key))
+      .filter((key) => !["summary", "summary_short", "summary_long", "tags", "position"].includes(key))
       .sort()
       .forEach((key) => {
         sanitized[key] = this.stableClone(fm[key]);
@@ -1158,39 +1177,12 @@ module.exports = class AiMetadataPlugin extends Plugin {
 
   renderHarness(template) {
     return String(template || "")
-      .replaceAll("{{summaryMaxChars}}", String(this.settings.summaryMaxChars))
+      .replaceAll("{{summaryShortMaxChars}}", String(this.settings.summaryShortMaxChars))
+      .replaceAll("{{summaryLongMaxChars}}", String(this.settings.summaryLongMaxChars))
+      // 兼容用户旧 Harness 中尚未改掉的占位符：默认映射到长摘要长度。
+      .replaceAll("{{summaryMaxChars}}", String(this.settings.summaryLongMaxChars))
       .replaceAll("{{maxTags}}", String(this.settings.maxTags))
       .replaceAll("{{whitelistFolder}}", this.normalizeWhitelistFolder());
-  }
-
-  getSummaryLengthTargets() {
-    const maxChars = Math.max(20, Number(this.settings.summaryMaxChars) || 300);
-    return {
-      maxChars,
-      targetMin: Math.max(20, Math.floor(maxChars * 0.75)),
-      targetIdeal: Math.max(20, Math.floor(maxChars * 0.88)),
-      targetMax: Math.max(20, Math.floor(maxChars * 0.95)),
-    };
-  }
-
-  normalizeSummaryOutput(text) {
-    const { maxChars } = this.getSummaryLengthTargets();
-    let summary = String(text || "")
-      .replace(/^[\"'“”]+|[\"'“”]+$/g, "")
-      .replace(/\s*\n+\s*/g, " ")
-      .replace(/[ \t]{2,}/g, " ")
-      .trim();
-    if (!summary || summary.length <= maxChars) return summary;
-
-    // 避免旧版 slice(maxChars) 把摘要直接切断在半句话中。
-    const clipped = summary.slice(0, maxChars);
-    const minimumUsefulCut = Math.floor(maxChars * 0.65);
-    let cutAt = -1;
-    for (const punctuation of ["。", "！", "？", "；"]) {
-      cutAt = Math.max(cutAt, clipped.lastIndexOf(punctuation));
-    }
-    if (cutAt >= minimumUsefulCut) return clipped.slice(0, cutAt + 1).trim();
-    return `${clipped.slice(0, Math.max(1, maxChars - 1)).trimEnd()}…`;
   }
 
   cleanMarkdownForSummary(body) {
@@ -1230,25 +1222,70 @@ module.exports = class AiMetadataPlugin extends Plugin {
     return text;
   }
 
-  async generateSummary(body, title, context = {}) {
+  normalizeSummaryText(text, maxChars, fallbackMax = 100) {
+    const limit = Math.max(20, Number(maxChars) || fallbackMax);
+    let summary = String(text ?? "")
+      .replace(/^[\"'“”]+|[\"'“”]+$/g, "")
+      .replace(/\s*\n+\s*/g, " ")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+    if (!summary) return "";
+    if (summary.length <= limit) return summary;
+
+    const clipped = summary.slice(0, limit).trimEnd();
+    const sentenceFloor = Math.floor(limit * 0.42);
+    const clauseFloor = Math.floor(limit * 0.68);
+    let sentenceCut = -1;
+    for (const mark of ["。", "！", "？", "；"]) {
+      sentenceCut = Math.max(sentenceCut, clipped.lastIndexOf(mark));
+    }
+    if (sentenceCut >= sentenceFloor) return clipped.slice(0, sentenceCut + 1).trim();
+
+    let clauseCut = -1;
+    for (const mark of ["，", ",", ";", "、"]) {
+      clauseCut = Math.max(clauseCut, clipped.lastIndexOf(mark));
+    }
+    if (clauseCut >= clauseFloor) return clipped.slice(0, clauseCut + 1).trim();
+    return clipped;
+  }
+
+  async generateSummaryShort(body, title, context = {}) {
     const summaryBody = this.cleanMarkdownForSummary(body);
-    const { maxChars, targetMin, targetIdeal, targetMax } = this.getSummaryLengthTargets();
-    const harness = this.settings.summaryHarnessEnabled
-      ? `\n\nHarness 约束：\n${this.renderHarness(this.settings.summaryHarness)}`
+    const harness = this.settings.summaryShortHarnessEnabled !== false
+      ? `\n\n[Summary Short Harness]\n${this.renderHarness(this.settings.summaryShortHarness)}`
       : "";
     const system = `你是 Obsidian 知识库的元数据整理助手。${harness}`;
     const prompt = [
       `笔记标题：${title}`,
-      `摘要硬上限：${maxChars} 字符。`,
-      `正文信息充足时，目标长度约 ${targetIdeal} 字符，建议落在 ${targetMin}～${targetMax} 字符；不要为了简短只写最终结论。`,
-      "请生成自然、完整的内容概览，通常 2～3 句、保持单段不换行；避免电报体、参数串和关键词堆叠。只输出 summary 文本本身。",
+      `summary_short 最大字符数：${this.settings.summaryShortMaxChars}`,
+      "请根据以下正文生成 summary_short。只输出摘要正文，不要输出字段名。",
       "",
       summaryBody,
     ].join("\n");
 
-    const text = await this.chat(system, prompt, { ...context, phase: "Summary" });
-    const summary = this.normalizeSummaryOutput(text);
-    if (!summary) throw new Error("AI 返回了空 summary");
+    const raw = await this.chat(system, prompt, { ...context, phase: "Summary Short" });
+    const summary = this.normalizeSummaryText(raw, this.settings.summaryShortMaxChars, 100);
+    if (!summary) throw new Error("AI 返回了空 summary_short");
+    return summary;
+  }
+
+  async generateSummaryLong(body, title, context = {}) {
+    const summaryBody = this.cleanMarkdownForSummary(body);
+    const harness = this.settings.summaryLongHarnessEnabled !== false
+      ? `\n\n[Summary Long Harness]\n${this.renderHarness(this.settings.summaryLongHarness)}`
+      : "";
+    const system = `你是 Obsidian 知识库的元数据整理助手。${harness}`;
+    const prompt = [
+      `笔记标题：${title}`,
+      `summary_long 最大字符数：${this.settings.summaryLongMaxChars}`,
+      "请根据以下正文生成 summary_long。只输出摘要正文，不要输出字段名。",
+      "",
+      summaryBody,
+    ].join("\n");
+
+    const raw = await this.chat(system, prompt, { ...context, phase: "Summary Long" });
+    const summary = this.normalizeSummaryText(raw, this.settings.summaryLongMaxChars, 300);
+    if (!summary) throw new Error("AI 返回了空 summary_long");
     return summary;
   }
 
@@ -1296,65 +1333,134 @@ module.exports = class AiMetadataPlugin extends Plugin {
     throw new StructuredOutputError("Tags 结构化输出失败", rawAttempts.join("\n\n"));
   }
 
-  async generateCombinedMetadata(body, title, currentTags, context = {}) {
+  async generateMetadataBundle(body, title, currentTags, requestedKinds, context = {}) {
+    const requested = Array.from(new Set(requestedKinds || []));
+    const wantShort = requested.includes("summary_short");
+    const wantLong = requested.includes("summary_long");
+    const wantTags = requested.includes("tags");
     const combinedBody = this.cleanMarkdownForSummary(body);
     const maxTags = Math.max(1, Number(this.settings.maxTags) || 7);
-    const { maxChars: summaryMaxChars, targetMin: summaryTargetMin, targetIdeal: summaryTargetIdeal, targetMax: summaryTargetMax } = this.getSummaryLengthTargets();
-    const summaryHarness = this.settings.summaryHarnessEnabled
-      ? `\n[Summary Harness]\n${this.renderHarness(this.settings.summaryHarness)}`
+
+    const shortHarness = wantShort && this.settings.summaryShortHarnessEnabled !== false
+      ? `\n[Summary Short Harness]\n${this.renderHarness(this.settings.summaryShortHarness)}`
       : "";
-    const tagsHarness = this.settings.tagsHarnessEnabled
+    const longHarness = wantLong && this.settings.summaryLongHarnessEnabled !== false
+      ? `\n[Summary Long Harness]\n${this.renderHarness(this.settings.summaryLongHarness)}`
+      : "";
+    const tagsHarness = wantTags && this.settings.tagsHarnessEnabled
       ? `\n[Tags Harness]\n${this.renderHarness(this.settings.tagsHarness)}`
       : "";
+
     const system = [
-      "你是 Obsidian 知识库的元数据整理助手。一次请求需要同时完成 summary 与带 weight 的 tags 两个彼此独立的任务。",
+      "你是 Obsidian 知识库的元数据整理助手。一次请求需要完成指定的多个元数据任务；各字段用途不同，不能互相复制或混淆。",
       "必须严格遵守输出 JSON 协议；不要输出 Markdown 代码块、解释、前言或后记。",
-      "[标签合法性协议｜始终生效]",
-      TAG_VALUE_SAFETY_PROTOCOL,
-      summaryHarness,
+      wantTags ? "[标签合法性协议｜始终生效]" : "",
+      wantTags ? TAG_VALUE_SAFETY_PROTOCOL : "",
+      shortHarness,
+      longHarness,
       tagsHarness,
     ].filter(Boolean).join("\n");
+
+    const taskLines = [];
+    const schema = {};
+    if (wantShort) {
+      taskLines.push(`- summary_short：生成用于快速识别主题的短摘要，最大 ${this.settings.summaryShortMaxChars} 字符。`);
+      schema.summary_short = "短摘要文本";
+    }
+    if (wantLong) {
+      taskLines.push(`- summary_long：生成用于理解文章结构的长摘要，最大 ${this.settings.summaryLongMaxChars} 字符。`);
+      schema.summary_long = "长摘要文本";
+    }
+    if (wantTags) {
+      taskLines.push(`- tags：生成最多 ${maxTags} 个互不重复、合法的标签并给出 0~1 的 weight；优先质量，不要求凑满。`);
+      schema.tags = [{ value: "标签", weight: 0.0 }];
+    }
+
     const basePrompt = [
       `笔记标题：${title}`,
-      `Summary 硬上限：${summaryMaxChars} 字符；正文信息充足时目标约 ${summaryTargetIdeal} 字符，建议 ${summaryTargetMin}～${summaryTargetMax} 字符。`,
-      `当前 tags（已转为 value）：${currentTags.length ? currentTags.join("、") : "无"}`,
-      "同时完成以下两个结果：",
-      "1. summary：生成自然、完整的文章内容概览，通常 2～3 个完整句子、保持单段不换行；不要只写最终结论，不要写成电报体、参数串或关键词堆叠。",
-      `2. tags：生成最多 ${maxTags} 个互不重复、合法的标签，并按 Harness 的技术优先规则给 weight；优先质量，不要求凑满。`,
+      wantShort ? `summary_short 最大字符数：${this.settings.summaryShortMaxChars}` : "",
+      wantLong ? `summary_long 最大字符数：${this.settings.summaryLongMaxChars}` : "",
+      wantTags ? `当前 tags（已转为 value）：${currentTags.length ? currentTags.join("、") : "无"}` : "",
+      "请同时完成以下字段：",
+      ...taskLines,
       "",
       "唯一允许的返回结构：",
-      '{"summary":"摘要文本","tags":[{"value":"标签","weight":0.0}]}',
-      "首选字段名为 summary 和 tags；tags 必须是 JSON 数组；每项必须包含 value 与 weight；weight 使用 0~1。插件会兼容少量常见字段别名，但请不要主动改名。",
-      `插件会在本地过滤非法 tags、去重并按 weight 排序，最终最多保留 ${maxTags} 个；少于 ${maxTags} 个也属于有效结果。`,
-      "不要把 summary 放进 tags，也不要把 tags 拼进 summary。",
+      JSON.stringify(schema),
+      "只返回上面要求的字段，不要增加解释字段。",
+      wantShort && wantLong ? "summary_short 负责快速识别主题；summary_long 负责还原文章结构，两者必须明显区分信息密度，不能只是同一句话改写长度。" : "",
+      wantTags ? `插件会在本地过滤非法 tags、去重并按 weight 排序，最终最多保留 ${maxTags} 个。` : "",
       "",
       "笔记正文：",
       combinedBody,
-    ].join("\n");
+    ].filter((line) => line !== "").join("\n");
 
     const rawAttempts = [];
     for (let attempt = 1; attempt <= 2; attempt += 1) {
       const retryHint = attempt === 1 ? "" : "\n\n上一次结构化输出未通过解析或校验。这是自动重试，只返回完全合法的 JSON 对象，不要添加任何其他文字。";
-      const text = await this.chat(
+      const raw = await this.chat(
         system,
         `${basePrompt}${retryHint}`,
-        { ...context, phase: attempt === 1 ? "Summary + Tags（实验合并）" : "Summary + Tags（结构重试 1/1）" },
+        { ...context, phase: attempt === 1 ? `合并：${requested.join(" + ")}` : `合并结构重试：${requested.join(" + ")}` },
         { jsonMode: true },
       );
-      rawAttempts.push(text);
+      rawAttempts.push(raw);
       try {
-        const parsed = this.parseCombinedMetadata(text);
-        const summary = this.normalizeSummaryOutput(parsed.summary ?? "");
-        if (!summary) throw new StructuredOutputError("合并请求没有返回可用 summary", text);
-        const weightedTags = this.rankWeightedTags(parsed.tags);
-        return { summary, weightedTags };
+        const parsed = this.parseMetadataBundle(raw, { wantShort, wantLong, wantTags });
+        const result = {};
+        if (wantShort) {
+          result.summaryShort = this.normalizeSummaryText(parsed.summaryShort, this.settings.summaryShortMaxChars, 100);
+          if (!result.summaryShort) throw new StructuredOutputError("合并请求没有返回可用 summary_short", raw);
+        }
+        if (wantLong) {
+          result.summaryLong = this.normalizeSummaryText(parsed.summaryLong, this.settings.summaryLongMaxChars, 300);
+          if (!result.summaryLong) throw new StructuredOutputError("合并请求没有返回可用 summary_long", raw);
+        }
+        if (wantTags) {
+          result.weightedTags = this.rankWeightedTags(parsed.tags);
+          result.tags = result.weightedTags.map((item) => item.value);
+        }
+        return result;
       } catch (error) {
-        const structured = this.asStructuredOutputError(error, text, rawAttempts);
+        const structured = this.asStructuredOutputError(error, raw, rawAttempts);
         if (attempt >= 2) throw structured;
         console.warn(`[xyblue135 私人·AI 元数据] 合并结构化输出失败，自动重试 1 次：${context.filePath || title}`, structured);
       }
     }
     throw new StructuredOutputError("合并结构化输出失败", rawAttempts.join("\n\n"));
+  }
+
+  parseMetadataBundle(text, expected = {}) {
+    const value = this.parseJsonObjectWithRepair(text, "合并请求");
+    const out = {};
+
+    if (expected.wantShort) {
+      const field = this.firstStringField(value, ["summary_short", "summaryShort", "short_summary", "shortSummary"]);
+      if (field.value === null) {
+        throw new StructuredOutputError("合并请求缺少 summary_short 字符串", text);
+      }
+      out.summaryShort = field.value;
+    }
+
+    if (expected.wantLong) {
+      const aliases = expected.wantShort
+        ? ["summary_long", "summaryLong", "long_summary", "longSummary"]
+        : ["summary_long", "summaryLong", "long_summary", "longSummary", "summary", "summary_text", "summaryText"];
+      const field = this.firstStringField(value, aliases);
+      if (field.value === null) {
+        throw new StructuredOutputError("合并请求缺少 summary_long 字符串", text);
+      }
+      out.summaryLong = field.value;
+    }
+
+    if (expected.wantTags) {
+      const field = this.firstArrayField(value, ["tags", "weighted_tags", "weightedTags", "tag_list", "tagList"]);
+      if (field.value === null) {
+        throw new StructuredOutputError("合并请求缺少 tags 数组", text);
+      }
+      out.tags = field.value;
+    }
+
+    return out;
   }
 
   rankWeightedTags(candidates) {
@@ -1602,30 +1708,6 @@ module.exports = class AiMetadataPlugin extends Plugin {
     return { value: null, key: null };
   }
 
-  parseCombinedMetadata(text) {
-    const value = this.parseJsonObjectWithRepair(text, "合并请求");
-    if (!value || typeof value !== "object" || Array.isArray(value)) {
-      throw new StructuredOutputError("合并请求返回格式不是 JSON 对象", text);
-    }
-
-    // 某些 OpenAI 兼容后端/模型虽然遵循语义，却会改写字段名（如 weighted_tags、summary_text）。
-    // 对常见别名做归一化，避免仅因字段名不同就丢弃可用结果并额外重试。
-    const summaryField = this.firstStringField(value, ["summary", "summary_text", "summaryText"]);
-    const tagsField = this.firstArrayField(value, ["tags", "weighted_tags", "weightedTags", "tag_list", "tagList"]);
-
-    if (summaryField.value === null) {
-      throw new StructuredOutputError("合并请求缺少 summary 字符串（兼容 summary / summary_text / summaryText）", text);
-    }
-    if (tagsField.value === null) {
-      throw new StructuredOutputError("合并请求缺少 tags 数组（兼容 tags / weighted_tags / weightedTags / tag_list / tagList）", text);
-    }
-
-    if (summaryField.key !== "summary" || tagsField.key !== "tags") {
-      console.info(`[xyblue135 私人·AI 元数据] 合并请求字段别名已归一化：${summaryField.key} → summary，${tagsField.key} → tags。`);
-    }
-    return { summary: summaryField.value, tags: tagsField.value };
-  }
-
   parseTagsEnvelope(text) {
     const value = this.parseJsonValueWithRepair(text, "Tags 请求");
 
@@ -1774,12 +1856,20 @@ module.exports = class AiMetadataPlugin extends Plugin {
     }, context);
   }
 
-  hasNonEmptySummary(file) {
+  hasNonEmptyFrontmatterField(file, key) {
     const fm = this.app.metadataCache.getFileCache(file)?.frontmatter || {};
-    const value = fm.summary;
+    const value = fm[key];
     if (value === null || value === undefined) return false;
     if (typeof value === "string") return value.trim().length > 0;
     return String(value).trim().length > 0;
+  }
+
+  hasNonEmptySummaryShort(file) {
+    return this.hasNonEmptyFrontmatterField(file, "summary_short");
+  }
+
+  hasNonEmptySummaryLong(file) {
+    return this.hasNonEmptyFrontmatterField(file, "summary_long");
   }
 
   hasNonEmptyTags(file) {
@@ -1794,12 +1884,14 @@ module.exports = class AiMetadataPlugin extends Plugin {
     const record = this.state.files[file.path] || {};
     if (this.settings.contentFingerprintEnabled === true) {
       return {
-        summaryDone: Boolean(fingerprint) && record.lastSummaryHash === fingerprint,
+        summaryShortDone: Boolean(fingerprint) && record.lastSummaryShortHash === fingerprint,
+        summaryLongDone: Boolean(fingerprint) && record.lastSummaryLongHash === fingerprint,
         tagsDone: Boolean(fingerprint) && record.lastTagsHash === fingerprint,
       };
     }
     return {
-      summaryDone: this.hasNonEmptySummary(file),
+      summaryShortDone: this.hasNonEmptySummaryShort(file),
+      summaryLongDone: this.hasNonEmptySummaryLong(file),
       tagsDone: this.hasNonEmptyTags(file),
     };
   }
@@ -1810,6 +1902,8 @@ module.exports = class AiMetadataPlugin extends Plugin {
       if (!record || typeof record !== "object") continue;
       delete record.lastSeenSourceHash;
       delete record.lastSummaryHash;
+      delete record.lastSummaryShortHash;
+      delete record.lastSummaryLongHash;
       delete record.lastTagsHash;
     }
   }
@@ -1822,8 +1916,10 @@ module.exports = class AiMetadataPlugin extends Plugin {
         const fingerprint = this.computeSourceFingerprint(raw, file);
         const record = this.state.files[file.path] || {};
         record.lastSeenSourceHash = fingerprint;
-        if (this.hasNonEmptySummary(file)) record.lastSummaryHash = fingerprint;
-        else delete record.lastSummaryHash;
+        if (this.hasNonEmptySummaryShort(file)) record.lastSummaryShortHash = fingerprint;
+        else delete record.lastSummaryShortHash;
+        if (this.hasNonEmptySummaryLong(file)) record.lastSummaryLongHash = fingerprint;
+        else delete record.lastSummaryLongHash;
         if (this.hasNonEmptyTags(file)) record.lastTagsHash = fingerprint;
         else delete record.lastTagsHash;
         this.state.files[file.path] = record;
@@ -1833,16 +1929,25 @@ module.exports = class AiMetadataPlugin extends Plugin {
     }
   }
 
-  markProcessed(file, fingerprint, kind, reason, weightedTags) {
+  markProcessed(file, fingerprint, kindOrKinds, reason, weightedTags) {
     const now = Date.now();
     const record = this.state.files[file.path] || {};
+    const kinds = Array.isArray(kindOrKinds)
+      ? kindOrKinds
+      : kindOrKinds === "all"
+        ? ["summary_short", "summary_long", "tags"]
+        : [kindOrKinds];
+
     if (this.settings.contentFingerprintEnabled === true) {
       record.lastSeenSourceHash = fingerprint;
-      if (kind === "summary" || kind === "all") record.lastSummaryHash = fingerprint;
-      if (kind === "tags" || kind === "all") record.lastTagsHash = fingerprint;
+      if (kinds.includes("summary_short")) record.lastSummaryShortHash = fingerprint;
+      if (kinds.includes("summary_long")) record.lastSummaryLongHash = fingerprint;
+      if (kinds.includes("tags")) record.lastTagsHash = fingerprint;
     } else {
       delete record.lastSeenSourceHash;
       delete record.lastSummaryHash;
+      delete record.lastSummaryShortHash;
+      delete record.lastSummaryLongHash;
       delete record.lastTagsHash;
     }
     record.lastAiUpdatedAt = now;
@@ -1854,7 +1959,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
     record.lastSkipReason = "";
     if (weightedTags) record.lastTagScores = weightedTags;
     this.state.files[file.path] = record;
-    this.recordLog(file.path, "ai-plugin", `${reason}:${kind}`);
+    this.recordLog(file.path, "ai-plugin", `${reason}:${kinds.join("+")}`);
     this.scheduleStateSave();
   }
 
@@ -1875,6 +1980,8 @@ module.exports = class AiMetadataPlugin extends Plugin {
         source = "external-change";
         delete record.lastSeenSourceHash;
         delete record.lastSummaryHash;
+        delete record.lastSummaryShortHash;
+        delete record.lastSummaryLongHash;
         delete record.lastTagsHash;
       }
 
@@ -2007,20 +2114,23 @@ module.exports = class AiMetadataPlugin extends Plugin {
       else {
         delete record.lastSeenSourceHash;
         delete record.lastSummaryHash;
+        delete record.lastSummaryShortHash;
+        delete record.lastSummaryLongHash;
         delete record.lastTagsHash;
       }
       this.state.files[file.path] = record;
       const body = this.stripFrontmatter(raw).trim();
       const emptyBody = !body;
-      const { summaryDone, tagsDone } = this.getMetadataCompletion(file, fingerprint);
+      const { summaryShortDone, summaryLongDone, tagsDone } = this.getMetadataCompletion(file, fingerprint);
       return {
         file,
         folder: this.getFolderPathForFile(file),
         fingerprint,
-        summaryDone,
+        summaryShortDone,
+        summaryLongDone,
         tagsDone,
         emptyBody,
-        pending: !emptyBody && (!summaryDone || !tagsDone),
+        pending: !emptyBody && (!summaryShortDone || !summaryLongDone || !tagsDone),
         preview: includePreview ? (emptyBody ? "（无可分析正文）" : this.makeNotePreview(raw)) : "",
         lastError: emptyBody ? "" : (record.lastError || ""),
         lastErrorType: record.lastErrorType || "",
@@ -2032,7 +2142,8 @@ module.exports = class AiMetadataPlugin extends Plugin {
         file,
         folder: this.getFolderPathForFile(file),
         fingerprint: "",
-        summaryDone: false,
+        summaryShortDone: false,
+        summaryLongDone: false,
         tagsDone: false,
         pending: true,
         preview: "读取预览失败",
@@ -2242,7 +2353,8 @@ module.exports = class AiMetadataPlugin extends Plugin {
           pendingFiles.push({
             file,
             queuedPath: file.path,
-            summaryDone: info.summaryDone,
+            summaryShortDone: info.summaryShortDone,
+            summaryLongDone: info.summaryLongDone,
             tagsDone: info.tagsDone,
           });
         }
@@ -2307,14 +2419,14 @@ module.exports = class AiMetadataPlugin extends Plugin {
             scopeFolder: folder,
             respectStatusFilter: true,
           };
-          if (!queued.summaryDone && !queued.tagsDone) {
-            await this.generateAllForFile(file, "manual-folder", progress, taskContext);
-          } else if (!queued.summaryDone) {
-            await this.generateSingleForFile(file, "summary", "manual-folder", progress, taskContext);
-          } else if (!queued.tagsDone) {
-            await this.generateSingleForFile(file, "tags", "manual-folder", progress, taskContext);
+          const missingKinds = [];
+          if (!queued.summaryShortDone) missingKinds.push("summary_short");
+          if (!queued.summaryLongDone) missingKinds.push("summary_long");
+          if (!queued.tagsDone) missingKinds.push("tags");
+          if (missingKinds.length) {
+            await this.generateSelectedForFile(file, missingKinds, "manual-folder", progress, taskContext);
           } else {
-            skippedFiles.push({ path: file.path, message: "Summary/Tags 已有内容", kind: "already-complete" });
+            skippedFiles.push({ path: file.path, message: "summary_short / summary_long / tags 已有内容", kind: "already-complete" });
             continue;
           }
           processedFiles.push(file.path);
@@ -2465,12 +2577,14 @@ module.exports = class AiMetadataPlugin extends Plugin {
           else {
             delete record.lastSeenSourceHash;
             delete record.lastSummaryHash;
+            delete record.lastSummaryShortHash;
+            delete record.lastSummaryLongHash;
             delete record.lastTagsHash;
           }
           this.state.files[file.path] = record;
 
-          const { summaryDone, tagsDone } = this.getMetadataCompletion(file, prepared.fingerprint);
-          if (summaryDone && tagsDone) {
+          const { summaryShortDone, summaryLongDone, tagsDone } = this.getMetadataCompletion(file, prepared.fingerprint);
+          if (summaryShortDone && summaryLongDone && tagsDone) {
             skipped += 1;
             continue;
           }
@@ -2481,12 +2595,12 @@ module.exports = class AiMetadataPlugin extends Plugin {
               abortSignal: controller.signal,
               respectStatusFilter: true,
             };
-            if (!summaryDone && !tagsDone) {
-              await this.generateAllForFile(file, "auto", progress, taskContext);
-            } else if (!summaryDone) {
-              await this.generateSingleForFile(file, "summary", "auto", progress, taskContext);
-            } else if (!tagsDone) {
-              await this.generateSingleForFile(file, "tags", "auto", progress, taskContext);
+            const missingKinds = [];
+            if (!summaryShortDone) missingKinds.push("summary_short");
+            if (!summaryLongDone) missingKinds.push("summary_long");
+            if (!tagsDone) missingKinds.push("tags");
+            if (missingKinds.length) {
+              await this.generateSelectedForFile(file, missingKinds, "auto", progress, taskContext);
             } else {
               skipped += 1;
               continue;
@@ -2542,7 +2656,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
       this.cycleMode = null;
       if (!this.unloading) {
         this.setRuntimeStatus("idle");
-        // 关键调度规则：只有整个周期（summary + 间隔 + tags + 写入）完全结束后，才从这里开始计算下一次间隔。
+        // 关键调度规则：只有整个周期（summary_short + summary_long + tags + 写入）完全结束后，才从这里开始计算下一次间隔。
         if (this.settings.autoUpdateEnabled) this.scheduleNextAutoRun();
         else this.refreshStatusBar();
       }
@@ -2596,7 +2710,8 @@ module.exports = class AiMetadataPlugin extends Plugin {
     } else {
       setIcon(button, "sparkles");
       const kind = button.getAttribute("data-ai-kind") || "metadata";
-      if (kind === "summary") button.setAttribute("aria-label", "AI 只生成 summary");
+      if (kind === "summary_short") button.setAttribute("aria-label", "AI 只生成 summary_short");
+      else if (kind === "summary_long") button.setAttribute("aria-label", "AI 只生成 summary_long");
       else if (kind === "tags") button.setAttribute("aria-label", "AI 只生成 weighted tags");
       else button.setAttribute("aria-label", `AI 生成 ${kind}`);
     }
@@ -2765,7 +2880,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("实验性：批量合并 Summary + Tags 请求")
-      .setDesc("默认开启。只作用于“同时生成 summary + tags”、文件夹识别/同步和自动更新：同一篇笔记用一次 /chat/completions 同时得到两个字段。文章 Properties 中 summary / tags 旁的 ✨ 按钮永远只生成当前字段，不会顺带改另一个字段。关闭后批量流程恢复为 Summary、Tags 两次串行请求。")
+      .setDesc("默认开启。只作用于“同时生成双摘要 + tags”、文件夹识别/同步和自动更新：同一篇笔记用一次 /chat/completions 同时得到 summary_short、summary_long 与 tags；若只缺其中两个字段，也会尽量一次请求补齐。文章 Properties 中 summary_short / summary_long / tags 旁的 ✨ 按钮永远只生成当前字段，不会顺带改其他字段。关闭后批量流程恢复为 Summary Short、Summary Long、Tags 三次串行请求。")
       .addToggle((toggle) => toggle.setValue(this.plugin.settings.experimentalCombinedRequestEnabled === true).onChange(async (value) => {
         this.plugin.settings.experimentalCombinedRequestEnabled = value;
         await this.plugin.saveAllData();
@@ -2792,7 +2907,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("结构化输出自动重试")
-      .setDesc("固定开启 1 次：仅在 JSON 解析、summary 字段或 tags 数量/合法性校验失败时重试；网络错误、HTTP 错误和超时不会因为这个分支额外重试。")
+      .setDesc("固定开启 1 次：仅在 JSON 解析、summary_short / summary_long 字段或 tags 数量/合法性校验失败时重试；网络错误、HTTP 错误和超时不会因为这个分支额外重试。")
       .addButton((button) => button.setButtonText("固定：1 次").setDisabled(true));
 
     new Setting(containerEl)
@@ -2817,14 +2932,14 @@ class AiMetadataSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("内容指纹 fingerprint 识别")
-      .setDesc("默认关闭。关闭时只按 Properties 是否已有内容判断：summary 非空即视为已完成，tags 非空即视为已完成，正文后来修改也不会自动判为过期。开启后记录正文内容指纹；正文或其他非 summary/tags/position 属性变化时，相应 Summary/Tags 会重新进入待更新。首次开启会把当前已有非空 Summary/Tags 建立为当前基线，不会立即把全部文章重新生成。关闭时会删除数据库中的持久化指纹标记。")
+      .setDesc("默认关闭。关闭时只按 Properties 是否已有内容判断：summary_short、summary_long、tags 各自非空才视为对应字段已完成，正文后来修改也不会自动判为过期。开启后记录正文内容指纹；正文或其他非 summary/summary_short/summary_long/tags/position 属性变化时，相应双摘要/Tags 会重新进入待更新。首次开启会把当前已有非空 summary_short / summary_long / tags 建立为当前基线，不会立即把全部文章重新生成。关闭时会删除数据库中的持久化指纹标记。")
       .addToggle((toggle) => toggle.setValue(this.plugin.settings.contentFingerprintEnabled === true).onChange(async (value) => {
         toggle.setDisabled(true);
         try {
           this.plugin.settings.contentFingerprintEnabled = value === true;
           if (value === true) {
             await this.plugin.initializeFingerprintBaseline();
-            new Notice("xyblue135 私人·AI 元数据：已开启内容指纹识别，并以当前 Summary/Tags 建立基线");
+            new Notice("xyblue135 私人·AI 元数据：已开启内容指纹识别，并以当前 双摘要/Tags 建立基线");
           } else {
             this.plugin.clearPersistentFingerprintMarkers();
             new Notice("xyblue135 私人·AI 元数据：已关闭内容指纹识别，数据库中的指纹标记已删除");
@@ -2927,7 +3042,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
     containerEl.createEl("h3", { text: "界面状态" });
     new Setting(containerEl)
       .setName("显示 AI 状态")
-      .setDesc("在 Obsidian 底部状态栏显示当前 Summary/Tags 请求、请求间隔等待倒计时、写入阶段和下一次自动检查倒计时。")
+      .setDesc("在 Obsidian 底部状态栏显示当前 双摘要/Tags 请求、请求间隔等待倒计时、写入阶段和下一次自动检查倒计时。")
       .addToggle((toggle) => toggle.setValue(this.plugin.settings.statusBarEnabled !== false).onChange(async (value) => {
         this.plugin.settings.statusBarEnabled = value;
         await this.plugin.saveAllData();
@@ -2989,30 +3104,54 @@ class AiMetadataSettingTab extends PluginSettingTab {
     provenance.createEl("summary", { text: "更新来源识别规则" });
     provenance.createEl("div", {
       cls: "setting-item-description",
-      text: "默认关闭内容指纹识别：summary/tags 只要已有非空内容就视为完成，不再因为正文变化自动判为过期；此模式不会在数据库保存 hash 指纹。开启 fingerprint 后，插件才会持久化去除 summary/tags/position 后的源指纹，并用它识别正文变化。插件自身写入仍记录为 ai-plugin。",
+      text: "默认关闭内容指纹识别：summary_short/summary_long/tags 只要已有非空内容就视为完成，不再因为正文变化自动判为过期；此模式不会在数据库保存 hash 指纹。开启 fingerprint 后，插件才会持久化去除 summary/summary_short/summary_long/tags/position 后的源指纹，并用它识别正文变化。插件自身写入仍记录为 ai-plugin。",
     });
 
     containerEl.createEl("h3", { text: "高级输出约束" });
     new Setting(containerEl)
-      .setName("摘要语义约束（Summary Harness）")
-      .setDesc("关闭后不附加下面的语义约束，但仍保留最小输出协议。v0.5.7 默认改为自然内容总览（通常 2～3 句、单段）。支持 {{summaryMaxChars}}。")
-      .addToggle((toggle) => toggle.setValue(this.plugin.settings.summaryHarnessEnabled).onChange(async (value) => {
-        this.plugin.settings.summaryHarnessEnabled = value;
+      .setName("短摘要语义约束（Summary Short Harness）")
+      .setDesc("控制 summary_short 的语义与写作风格。支持 {{summaryShortMaxChars}}。")
+      .addToggle((toggle) => toggle.setValue(this.plugin.settings.summaryShortHarnessEnabled !== false).onChange(async (value) => {
+        this.plugin.settings.summaryShortHarnessEnabled = value;
         await this.plugin.saveAllData();
       }));
 
     new Setting(containerEl)
-      .setName("摘要语义约束内容")
+      .setName("短摘要语义约束内容")
       .addTextArea((area) => {
-        area.inputEl.rows = 7;
+        area.inputEl.rows = 8;
         area.inputEl.addClass("ai-metadata-harness-textarea");
-        area.setValue(this.plugin.settings.summaryHarness).onChange(async (value) => {
-          this.plugin.settings.summaryHarness = value;
+        area.setValue(this.plugin.settings.summaryShortHarness).onChange(async (value) => {
+          this.plugin.settings.summaryShortHarness = value;
           await this.plugin.saveAllData();
         });
       })
       .addButton((button) => button.setButtonText("恢复默认").onClick(async () => {
-        this.plugin.settings.summaryHarness = DEFAULT_SUMMARY_HARNESS;
+        this.plugin.settings.summaryShortHarness = DEFAULT_SUMMARY_SHORT_HARNESS;
+        await this.plugin.saveAllData();
+        this.display();
+      }));
+
+    new Setting(containerEl)
+      .setName("长摘要语义约束（Summary Long Harness）")
+      .setDesc("控制 summary_long 的文章结构概览。支持 {{summaryLongMaxChars}}；默认强调背景→排查/依据→判断→方案→风险/限制。")
+      .addToggle((toggle) => toggle.setValue(this.plugin.settings.summaryLongHarnessEnabled !== false).onChange(async (value) => {
+        this.plugin.settings.summaryLongHarnessEnabled = value;
+        await this.plugin.saveAllData();
+      }));
+
+    new Setting(containerEl)
+      .setName("长摘要语义约束内容")
+      .addTextArea((area) => {
+        area.inputEl.rows = 13;
+        area.inputEl.addClass("ai-metadata-harness-textarea");
+        area.setValue(this.plugin.settings.summaryLongHarness).onChange(async (value) => {
+          this.plugin.settings.summaryLongHarness = value;
+          await this.plugin.saveAllData();
+        });
+      })
+      .addButton((button) => button.setButtonText("恢复默认").onClick(async () => {
+        this.plugin.settings.summaryLongHarness = DEFAULT_SUMMARY_LONG_HARNESS;
         await this.plugin.saveAllData();
         this.display();
       }));
@@ -3050,14 +3189,28 @@ class AiMetadataSettingTab extends PluginSettingTab {
 
     containerEl.createEl("h3", { text: "摘要参数" });
     new Setting(containerEl)
-      .setName("摘要最大字符数（Summary）")
-      .setDesc("推荐 250～320；v0.5.7 默认 300。正文信息充足时，Prompt 会引导模型使用约 75%～95% 的字符预算，而不是只写几十字结论。")
+      .setName("短摘要最大字符数（summary_short）")
+      .setDesc("默认 100。推荐 70～120，用于文章列表、搜索结果和快速预览。")
       .addText((text) => {
         text.inputEl.type = "number";
-        text.setValue(String(this.plugin.settings.summaryMaxChars)).onChange(async (value) => {
+        text.setValue(String(this.plugin.settings.summaryShortMaxChars)).onChange(async (value) => {
           const next = Number.parseInt(value, 10);
-          if (Number.isFinite(next) && next >= 20 && next <= 500) {
-            this.plugin.settings.summaryMaxChars = next;
+          if (Number.isFinite(next) && next >= 30 && next <= 300) {
+            this.plugin.settings.summaryShortMaxChars = next;
+            await this.plugin.saveAllData();
+          }
+        });
+      });
+
+    new Setting(containerEl)
+      .setName("长摘要最大字符数（summary_long）")
+      .setDesc("默认 300。推荐 250～320，用于理解文章结构、AI 排序、RAG 和技术含量判断。")
+      .addText((text) => {
+        text.inputEl.type = "number";
+        text.setValue(String(this.plugin.settings.summaryLongMaxChars)).onChange(async (value) => {
+          const next = Number.parseInt(value, 10);
+          if (Number.isFinite(next) && next >= 100 && next <= 1000) {
+            this.plugin.settings.summaryLongMaxChars = next;
             await this.plugin.saveAllData();
           }
         });
@@ -3400,7 +3553,8 @@ class PendingNotesDashboardModal extends Modal {
     const badges = head.createDiv({ cls: "ai-metadata-file-badges" });
     if (info.emptyBody) badges.createSpan({ text: "无正文", cls: "ai-metadata-pending-badge is-skipped" });
     else {
-      if (!info.summaryDone) badges.createSpan({ text: "Summary", cls: "ai-metadata-pending-badge" });
+      if (!info.summaryShortDone) badges.createSpan({ text: "Summary Short", cls: "ai-metadata-pending-badge" });
+      if (!info.summaryLongDone) badges.createSpan({ text: "Summary Long", cls: "ai-metadata-pending-badge" });
       if (!info.tagsDone) badges.createSpan({ text: "Tags", cls: "ai-metadata-pending-badge" });
     }
     row.createDiv({ cls: "ai-metadata-file-path", text: info.file.path });
