@@ -13257,7 +13257,7 @@
       },
       "Notes/Z_娱乐_game/00_游戏外设/鼠标透传盒子.md": {
         "lastAiUpdatedAt": 1786320012897,
-        "lastChangeSource": "ai-plugin",
+        "lastChangeSource": "external-change",
         "lastReason": "auto",
         "lastError": "",
         "lastErrorType": "",
@@ -13293,7 +13293,7 @@
             "weight": 0.65
           }
         ],
-        "lastChangedAt": 1786320012900
+        "lastChangedAt": 1786814014364
       },
       "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/gz压缩速度较慢.md": {
         "lastAiUpdatedAt": 1786310667174,
@@ -25568,6 +25568,14 @@
           }
         ],
         "lastChangedAt": 1786785872359
+      },
+      "Notes/01_CICD/github客户端/简单介绍github客户端.md": {
+        "lastChangeSource": "external-change",
+        "lastChangedAt": 1786813174824
+      },
+      "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md": {
+        "lastChangeSource": "external-change",
+        "lastChangedAt": 1786814309454
       }
     },
     "tagCatalog": {
@@ -31144,236 +31152,8 @@
         "files": 1
       }
     },
-    "tagCatalogUpdatedAt": 1786811944457,
+    "tagCatalogUpdatedAt": 1786814310469,
     "updateLog": [
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/03_Exporter采集/【监控】Prometheus采集win数据.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289617
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/03_Exporter采集/【监控】用pushgateway推Prometheus.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289617
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/05_Grafana可视化/grafana的数据显示原理.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289618
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/05_Grafana可视化/【监控】grafana下拉列表可为空的配置.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289619
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/05_Grafana可视化/【监控】Grafana自定义下拉列表.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289620
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/05_Grafana可视化/【监控】Grafana解决下滑问题.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289621
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/05_Grafana可视化/【监控】Grafana部署和连接Prometheus.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289622
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/05_Grafana可视化/【监控】Prometheus连接Grafana自建数据源仪表盘.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289623
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/04_存储与联邦/【监控】Prometheus的本地存储和远端存储VictoriaMetrics.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289624
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/04_存储与联邦/【监控】Prometheus的联邦模式.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289624
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/06_告警/【监控】Prometheus告警通知-alertmanager.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289625
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/07_排错/【监控排错】关于Node-Exporter的docker容器未采集网卡数据.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289626
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/07_排错/【监控排错】关于异常天气数据的处理.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289627
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/07_排错/【监控过滤】过滤单一网卡流量.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289628
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_prometheus/08_实践案例/【监控】采集天气数据可视化.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289628
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_虚拟机/01_VMware/VMware和VirtualBox的三种网络区别.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289629
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_虚拟机/01_VMware/vmware开启跨屏传输.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289630
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_虚拟机/01_VMware/自VMware公开免费下载之后放迷路步骤.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289631
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_虚拟机/02_VirtualBox/VirtualBox5.2+eNSP_遇_Docker：Hyper-V_冲突的坑与解决.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289632
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_虚拟机/04_QEMU【跑嵌入式架构】/关于qemu模拟器.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289633
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_虚拟机/03_WSL/win上的wsl的常用命令.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289633
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_虚拟机/03_WSL/关于WSL虚拟机的使用和扩展.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289634
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_虚拟机/03_WSL/卸载wsl子系统并且重装.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289635
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/counsul大类/【监控】Prometheus基于consul网络的动态发现.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289636
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/counsul大类/【监控】Prometheus的基于文档的自动发现.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289637
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/counsul大类/部署注册中心Consul.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289637
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/springcloud大类/springcloudalibaba主要功能.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289638
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/springcloud大类/springcloud和spring-cloud-alibaba.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289639
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/springcloud大类/springcloud是否被淘汰.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289640
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/zookeeper大类/zookeeper最主要优势分布式锁.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289641
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/Nacos_集群冷启动时_CP_JRaft_启动竞态：原因、排障与_systemd_治理.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289642
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/Nacos全链路部署实战教程.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289643
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/nacos的优势是ap模式【介绍ap和cp模式】.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289643
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/为nacos增加数据库管理.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289644
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/为nacos建立集群cluster高可用.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289645
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/关于nacos3.x版本的ai化.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289646
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/关于nacos的web页面8848端口.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289647
-      },
-      {
-        "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/第01章-认识nacos.md",
-        "source": "external-content",
-        "detail": "created",
-        "at": 1786810289647
-      },
       {
         "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/第03章-搭建nacos的组件1.md",
         "source": "external-content",
@@ -32345,6 +32125,234 @@
         "source": "external-change",
         "detail": "modify",
         "at": 1786810647207
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786813126019
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813131452
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813138090
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813141530
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813145695
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813150700
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813165765
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813167874
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813169817
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813174824
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-content",
+        "detail": "created",
+        "at": 1786813946380
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813951463
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813953631
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813958635
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813958745
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813964452
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813966775
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813972451
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813983414
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813986569
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813988659
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786813993665
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814000270
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814005274
+      },
+      {
+        "path": "Notes/Z_娱乐_game/00_游戏外设/鼠标透传盒子.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814009337
+      },
+      {
+        "path": "Notes/Z_娱乐_game/00_游戏外设/鼠标透传盒子.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814014364
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814063946
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814068952
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814093503
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814094268
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814291394
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814293504
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814296489
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814298580
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814300634
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814302939
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814304036
+      },
+      {
+        "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md",
+        "source": "external-change",
+        "detail": "modify",
+        "at": 1786814309454
       }
     ]
   }
