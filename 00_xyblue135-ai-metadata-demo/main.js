@@ -6,10 +6,10 @@
 /*
  * xyblue135-AI-Metadata for Obsidian
  * Author: xyblue135
- * v0.6.1
+ * v0.7.0
  *
  * Features:
- * - Inline AI buttons beside summary_short / summary_long / tags only for the root /Notes whitelist.
+ * - Inline AI buttons beside summary_short / summary_long / tags / technical_depth only for the root /Notes whitelist.
  * - Up to N technically weighted tags (default cap 7), values only (no hierarchy); fewer valid tags are accepted.
  * - Maintains a local-only tag catalog from Markdown files under Notes/ (never sent to AI).
  * - Canonicalizes tag casing locally: existing Vault spelling first, built-in/editable technical spellings as fallback.
@@ -98,6 +98,317 @@ const DEFAULT_TAGS_HARNESS = [
   "避免同义词、近义重复、上下位概念重复占位；在最多 {{maxTags}} 个标签内尽量覆盖不同的高信息量技术维度。",
 ].join("\n");
 
+const DEFAULT_TECHNICAL_DEPTH_HARNESS = `你是一名技术内容评审员。请完整阅读下面提供的技术文章全文，对文章本身的“技术深度（technical_depth）”进行评分。
+
+## 评分目标
+
+technical_depth 衡量的是：
+
+文章本身涉及的技术机制深度、工程实现复杂度、系统复杂度、分析验证强度以及所需前置知识密度。
+
+它不是：
+
+* 文章写得好不好
+* 文章字数多少
+* 教程是否详细
+* 对某个特定读者来说难不难
+* 文章是否有很多代码、命令或截图
+* 文章是否有很多专业术语
+
+因此：
+
+一篇非常详细的软件安装教程、命令大全、工具使用说明，即使有上万字，也可能只有 10～35 分。
+
+一篇只有两三千字，但真正分析了协议、内核、编译器、数据库内部机制、分布式一致性、性能瓶颈或复杂故障根因的文章，可以达到 60～85 分。
+
+## 总分
+
+technical_depth 为 0～100 的整数。
+
+不要根据当前文章集合进行归一化。
+
+不要把“当前最难文章”强行设置为 100。
+
+100 分代表固定的专家级/研究级技术深度，因此绝大多数普通技术博客都不应该达到 90 分以上。
+
+## 五个评分维度
+
+### 1. 机制深度：0～28 分
+
+判断文章是否真正解释“为什么”和“内部如何工作”。
+
+重点包括：
+
+* 底层原理
+* 内部机制
+* 数据结构
+* 算法
+* 协议
+* 内核行为
+* 调度机制
+* 编译过程
+* 存储机制
+* 网络机制
+* 分布式机制
+* 数据流或控制流
+* 源码级行为
+
+仅告诉读者“执行什么命令”“在哪里点击”“修改什么配置”，不能获得高机制分。
+
+### 2. 工程实现：0～24 分
+
+判断文章是否包含真实、有复杂度的技术实现。
+
+重点包括：
+
+* 多组件协作
+* 完整部署
+* 架构搭建
+* 编译
+* 二次开发
+* 复杂配置
+* 自动化
+* 系统集成
+* 源码修改
+* 性能调优
+* 工程取舍
+
+注意：
+
+大量复制粘贴命令并不等于工程复杂度高。
+
+单纯安装软件、配置环境变量、启动服务、修改少量配置文件，应限制在较低分数。
+
+### 3. 分析与验证：0～19 分
+
+判断文章是否形成真正的技术分析闭环。
+
+例如：
+
+现象
+→ 收集证据
+→ 提出假设
+→ 日志/抓包/性能指标/源码分析
+→ 排除错误方向
+→ 定位根因
+→ 修改方案
+→ 再次验证
+
+以下内容可以提高本项评分：
+
+* benchmark
+* 性能测试
+* A/B 对比
+* Wireshark
+* tcpdump
+* perf
+* strace
+* 日志分析
+* 实验
+* 指标变化
+* 故障复现
+* 多方案比较
+
+如果文章只是给出最终解决办法，没有分析过程，本项不要给高分。
+
+### 4. 系统复杂度：0～17 分
+
+判断问题涉及多少技术层次以及它们之间是否存在真实关联。
+
+例如：
+
+应用
+→ 中间件
+→ 操作系统
+→ 网络协议
+→ 驱动
+→ 硬件
+
+或者：
+
+客户端
+→ 网关
+→ 服务发现
+→ Raft
+→ 存储
+→ 网络
+
+跨组件、跨系统、跨层分析通常比单一工具的使用具有更高技术深度。
+
+但不要因为文章提到了很多产品名称就自动加分，必须存在实际技术关系。
+
+### 5. 前置知识密度：0～12 分
+
+判断读者真正理解文章需要多少技术基础。
+
+例如需要理解：
+
+* 操作系统
+* 网络
+* 数据库
+* 数据结构
+* 编译原理
+* 分布式系统
+* GPU/CUDA
+* 存储
+* Linux 内核
+* 数学或机器学习理论
+
+单纯因为术语很多，不代表前置知识密度高。
+
+## 分数区间标准
+
+### 0～19：基础信息 / 简单操作
+
+典型内容：
+
+* 单个命令说明
+* 软件是什么
+* 简单参数说明
+* 基础知识点
+* 简单问题记录
+* UI 操作
+* 软件安装步骤
+
+### 20～39：基础技术教程
+
+典型内容：
+
+* 常规 Linux 教程
+* Docker 基础操作
+* 普通软件部署
+* 基本配置
+* 常见故障解决
+* API 基础使用
+* 比较完整但机制较浅的教程
+
+文章可以写得非常完整，但核心仍然是“怎么使用”。
+
+### 40～59：中等技术深度
+
+典型内容：
+
+* 开始解释内部机制
+* 多组件配置
+* 较复杂部署
+* 有一定故障分析
+* 比较深入的数据库、Linux、网络、Docker/Kubernetes 教程
+* 带有部分原理和验证的工程实践
+
+### 60～74：高级技术
+
+典型内容：
+
+* 系统级故障排查
+* 完整性能分析
+* 跨组件问题
+* 编译与复杂构建
+* 分布式系统机制
+* 网络底层问题
+* 存储内部机制
+* 有明显“证据 → 根因 → 修复 → 验证”的分析闭环
+
+### 75～89：深度技术
+
+典型内容：
+
+* 跨多个技术层
+* 深入底层机制
+* 源码级或协议级分析
+* 高复杂度工程实现
+* 性能实验充分
+* 多种工具联合定位
+* 有较强技术取舍分析
+* 接近高级工程师/专家经验总结
+
+### 90～99：专家 / 研究级
+
+只有在文章同时具备多数以下特征时使用：
+
+* 很强的机制深度
+* 源码或算法层分析
+* 高复杂度系统问题
+* 严格实验或性能验证
+* 多方案比较
+* 明确技术权衡
+* 较强原创分析
+* 对已有方法有改进或新的工程发现
+
+不要因为文章“看起来很厉害”就给 90+。
+
+### 100
+
+极少使用。
+
+代表非常完整的专家级或研究级技术成果，通常已经接近：
+
+* 高质量研究论文
+* 极深入的原创系统研究
+* 完整架构设计 + 底层实现 + 实验验证
+* 对复杂技术问题具有明显原创贡献
+
+普通博客不需要存在 100 分文章。
+
+## 特别需要防止的误判
+
+### 长文章不等于高分
+
+50000 字的命令参考手册，可能只有 25～40 分。
+
+### 代码多不等于高分
+
+大量 Shell、YAML、Docker Compose 或配置文件只是实现步骤时，不应该自动获得高分。
+
+### 安装复杂不等于技术深
+
+“安装了很多依赖、踩了很多环境问题”不代表文章达到高级技术深度。
+
+### 专业术语多不等于高分
+
+必须确认文章真正解释或使用了这些机制。
+
+### 知识类文章写得很好也不等于技术深
+
+如果主要是概念介绍、历史介绍、软件介绍、基础科普，应保持较低到中等评分。
+
+### 短文章也可能高分
+
+如果短文章准确解释了一个非常深入的核心机制，可以获得较高分数。
+
+## 评分要求
+
+阅读全文后再评分，不要只根据标题、摘要或开头判断。
+
+先在内部完成五个维度的判断，然后得到最终 technical_depth。
+
+最终分数必须是整数。
+
+相邻文章之间不必人为拉开差距；如果技术深度相近，可以得到相同分数。
+
+不要为了让分布看起来漂亮而修改分数。
+
+## 输出格式
+
+只输出以下 JSON，不要 Markdown，不要解释，不要添加任何其他文字：
+
+{
+"technical_depth": 68,
+"mechanism_depth": 20,
+"engineering_depth": 17,
+"analysis_validation": 13,
+"system_complexity": 10,
+"prerequisite_density": 8,
+"reason": "一句话说明为什么得到这个分数"
+}
+
+其中五个维度之和必须严格等于 technical_depth。
+
+reason 控制在 80 个汉字以内，重点说明决定该文章技术深度的主要原因，不要复述标题。
+
+下面是需要评分的文章全文：
+
+{{ARTICLE}}`;
+
 const DEFAULT_TECHNICAL_TAG_CANONICAL_LIST = [
   "Linux",
   "Prometheus",
@@ -181,7 +492,7 @@ const DEFAULT_SETTINGS = {
   summaryMarkdownCleanupEnabled: false,
   contentFingerprintEnabled: false,
   maxTags: 7,
-  autoUpdateEnabled: true,
+  autoUpdateEnabled: false,
   autoUpdateMinutes: 60,
   statusDoneOnlyEnabled: false,
   requestTimeoutSeconds: 180,
@@ -193,11 +504,13 @@ const DEFAULT_SETTINGS = {
   summaryShortHarnessEnabled: true,
   summaryLongHarnessEnabled: true,
   tagsHarnessEnabled: true,
+  technicalDepthHarnessEnabled: true,
   tagCaseNormalizationEnabled: true,
   technicalTagCanonicalList: DEFAULT_TECHNICAL_TAG_CANONICAL_LIST,
   summaryShortHarness: DEFAULT_SUMMARY_SHORT_HARNESS,
   summaryLongHarness: DEFAULT_SUMMARY_LONG_HARNESS,
   tagsHarness: DEFAULT_TAGS_HARNESS,
+  technicalDepthHarness: DEFAULT_TECHNICAL_DEPTH_HARNESS,
 };
 
 const DEFAULT_STATE = {
@@ -290,6 +603,9 @@ module.exports = class AiMetadataPlugin extends Plugin {
     if (!savedSettings.technicalTagCanonicalList) {
       this.settings.technicalTagCanonicalList = DEFAULT_TECHNICAL_TAG_CANONICAL_LIST;
     }
+    // v0.7.0：新增 technical_depth。只新增默认评分 Prompt，不改写既有文章。
+    if (savedSettings.technicalDepthHarnessEnabled === undefined) this.settings.technicalDepthHarnessEnabled = true;
+    if (!savedSettings.technicalDepthHarness) this.settings.technicalDepthHarness = DEFAULT_TECHNICAL_DEPTH_HARNESS;
     this.state = Object.assign({}, DEFAULT_STATE);
     this.state.files = this.loadPersistedFileState(savedState.files || {});
     // Tag Catalog 只存在于当前运行内存中，避免普通编辑/Tag 扫描反复改写 data.json。
@@ -366,8 +682,13 @@ module.exports = class AiMetadataPlugin extends Plugin {
       callback: () => void this.generateForActiveFile("tags"),
     });
     this.addCommand({
+      id: "generate-technical-depth",
+      name: "为当前 Notes 笔记评估技术深度 technical_depth",
+      callback: () => void this.generateForActiveFile("technical_depth"),
+    });
+    this.addCommand({
       id: "generate-summary-and-tags",
-      name: "为当前 Notes 笔记生成双摘要和标签",
+      name: "为当前 Notes 笔记生成 4 项 AI 元数据",
       callback: () => void this.generateForActiveFile("all"),
     });
     this.addCommand({
@@ -464,7 +785,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
       if (!source || typeof source !== "object") continue;
       const record = {};
       if (fingerprintEnabled) {
-        for (const key of ["lastSummaryShortHash", "lastSummaryLongHash", "lastTagsHash"]) {
+        for (const key of ["lastSummaryShortHash", "lastSummaryLongHash", "lastTagsHash", "lastTechnicalDepthHash"]) {
           if (typeof source[key] === "string" && source[key]) record[key] = source[key];
         }
       }
@@ -483,7 +804,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
       if (!source || typeof source !== "object") continue;
       const record = {};
       if (fingerprintEnabled) {
-        for (const key of ["lastSummaryShortHash", "lastSummaryLongHash", "lastTagsHash"]) {
+        for (const key of ["lastSummaryShortHash", "lastSummaryLongHash", "lastTagsHash", "lastTechnicalDepthHash"]) {
           if (typeof source[key] === "string" && source[key]) record[key] = source[key];
         }
       }
@@ -729,12 +1050,12 @@ module.exports = class AiMetadataPlugin extends Plugin {
         button.remove();
       }
     });
-    ["summary_short", "summary_long", "tags"].forEach((kind) => {
+    ["summary_short", "summary_long", "tags", "technical_depth"].forEach((kind) => {
       const rows = this.findPropertyRows(kind, scope);
       rows.forEach((row) => {
         if (row.querySelector(`.ai-metadata-property-button[data-ai-kind="${kind}"]`)) return;
         row.addClass("ai-metadata-enabled-row");
-        // Properties 行内按钮固定为单字段操作；批量、自动或 all 操作仍可使用实验性 Summary + Tags 单请求路径，但单字段按钮绝不顺带修改另一个字段。
+        // Properties 行内按钮固定为单字段操作；批量、自动或 all 操作仍可使用 Beta 四项元数据单请求路径，但单字段按钮绝不顺带修改另一个字段。
         const button = row.createEl("button", {
           cls: "ai-metadata-property-button clickable-icon",
           attr: {
@@ -742,7 +1063,9 @@ module.exports = class AiMetadataPlugin extends Plugin {
               ? "AI 只生成 summary_short"
               : kind === "summary_long"
                 ? "AI 只生成 summary_long"
-                : "AI 只生成 weighted tags",
+                : kind === "tags"
+                  ? "AI 只生成 weighted tags"
+                  : "AI 只评估 technical_depth",
             "data-ai-kind": kind,
             type: "button",
           },
@@ -799,7 +1122,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
     try {
       if (effectiveKind === "all") {
         const result = await this.generateAllForFile(file, "manual");
-        new Notice(`xyblue135 私人·AI 元数据：summary_short + summary_long + ${result.tags.length} 个 tags 已更新`);
+        new Notice(`xyblue135 私人·AI 元数据：summary_short + summary_long + ${result.tags.length} 个 tags + technical_depth ${result.technicalDepth} 已更新`);
       } else if (effectiveKind === "summaries") {
         await this.generateSelectedForFile(file, ["summary_short", "summary_long"], "manual");
         new Notice("xyblue135 私人·AI 元数据：summary_short + summary_long 已更新");
@@ -807,6 +1130,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
         const result = await this.generateSingleForFile(file, effectiveKind, "manual");
         if (effectiveKind === "summary_short") new Notice("xyblue135 私人·AI 元数据：summary_short 已更新");
         else if (effectiveKind === "summary_long") new Notice("xyblue135 私人·AI 元数据：summary_long 已更新");
+        else if (effectiveKind === "technical_depth") new Notice(`xyblue135 私人·AI 元数据：technical_depth 已更新为 ${result.technicalDepth}`);
         else new Notice(`xyblue135 私人·AI 元数据：已写入 ${result.tags.length} 个 tags`);
       }
       setStateForButtons("success");
@@ -857,12 +1181,12 @@ module.exports = class AiMetadataPlugin extends Plugin {
   }
 
   async generateAllForFile(file, reason, progress = null, taskContext = {}) {
-    return this.generateSelectedForFile(file, ["summary_short", "summary_long", "tags"], reason, progress, taskContext);
+    return this.generateSelectedForFile(file, ["summary_short", "summary_long", "tags", "technical_depth"], reason, progress, taskContext);
   }
 
   async generateSelectedForFile(file, kinds, reason, progress = null, taskContext = {}) {
     const requested = Array.from(new Set((Array.isArray(kinds) ? kinds : [kinds]).filter((kind) =>
-      ["summary_short", "summary_long", "tags"].includes(kind))));
+      ["summary_short", "summary_long", "tags", "technical_depth"].includes(kind))));
     if (!requested.length) throw new Error("没有可生成的元数据字段");
 
     const abortSignal = taskContext.abortSignal || null;
@@ -893,6 +1217,10 @@ module.exports = class AiMetadataPlugin extends Plugin {
         result.weightedTags = await this.generateTags(prepared.body, file.basename, currentTags, context);
         result.tags = result.weightedTags.map((item) => item.value);
       }
+      if (requested.includes("technical_depth")) {
+        result.technicalDepthResult = await this.generateTechnicalDepth(prepared.body, file.basename, context);
+        result.technicalDepth = result.technicalDepthResult.technical_depth;
+      }
     }
 
     if (requested.includes("tags") && !result.tags) {
@@ -917,6 +1245,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
         if (requested.includes("summary_short")) frontmatter.summary_short = result.summaryShort;
         if (requested.includes("summary_long")) frontmatter.summary_long = result.summaryLong;
         if (requested.includes("tags")) frontmatter.tags = result.tags;
+        if (requested.includes("technical_depth")) frontmatter.technical_depth = result.technicalDepth;
       });
     });
 
@@ -949,13 +1278,13 @@ module.exports = class AiMetadataPlugin extends Plugin {
     return match ? match[1] : "";
   }
 
-  // 内容指纹会忽略由 AI 管理的 legacy summary、summary_short、summary_long、tags 行，因此插件自身写入不会造成循环更新。
+  // 内容指纹会忽略由 AI 管理的 legacy summary、summary_short、summary_long、tags、technical_depth 行，因此插件自身写入不会造成循环更新。
   computeSourceFingerprint(raw, file) {
     const body = this.stripFrontmatter(raw).replace(/\r\n/g, "\n").trim();
     const fm = this.app.metadataCache.getFileCache(file)?.frontmatter || {};
     const sanitized = {};
     Object.keys(fm)
-      .filter((key) => !["summary", "summary_short", "summary_long", "tags", "position"].includes(key))
+      .filter((key) => !["summary", "summary_short", "summary_long", "tags", "technical_depth", "position"].includes(key))
       .sort()
       .forEach((key) => {
         sanitized[key] = this.stableClone(fm[key]);
@@ -1218,6 +1547,18 @@ module.exports = class AiMetadataPlugin extends Plugin {
       .replaceAll("{{whitelistFolder}}", this.normalizeWhitelistFolder());
   }
 
+  renderTechnicalDepthPrompt(body) {
+    return this.renderHarness(this.settings.technicalDepthHarness || DEFAULT_TECHNICAL_DEPTH_HARNESS)
+      .replaceAll("{{ARTICLE}}", String(body || ""));
+  }
+
+  renderTechnicalDepthRubric() {
+    let rubric = this.renderHarness(this.settings.technicalDepthHarness || DEFAULT_TECHNICAL_DEPTH_HARNESS);
+    const outputIndex = rubric.indexOf("## 输出格式");
+    if (outputIndex >= 0) rubric = rubric.slice(0, outputIndex);
+    return rubric.replaceAll("{{ARTICLE}}", "").trim();
+  }
+
   cleanMarkdownForSummary(body) {
     if (this.settings.summaryMarkdownCleanupEnabled !== true) return String(body || "");
 
@@ -1366,12 +1707,83 @@ module.exports = class AiMetadataPlugin extends Plugin {
     throw new StructuredOutputError("Tags 结构化输出失败", rawAttempts.join("\n\n"));
   }
 
+  async generateTechnicalDepth(body, title, context = {}) {
+    const system = this.settings.technicalDepthHarnessEnabled !== false
+      ? "请严格执行用户提供的 technical_depth 评分标准，并只返回评分 JSON。"
+      : "你是技术内容评审员。请对文章技术深度进行 0～100 整数评分，并返回包含 technical_depth、五个分项和 reason 的 JSON；五个分项之和必须等于总分。";
+    const basePrompt = this.settings.technicalDepthHarnessEnabled !== false
+      ? this.renderTechnicalDepthPrompt(body)
+      : [
+        `文章标题：${title}`,
+        "只返回 JSON：{\"technical_depth\":68,\"mechanism_depth\":20,\"engineering_depth\":17,\"analysis_validation\":13,\"system_complexity\":10,\"prerequisite_density\":8,\"reason\":\"一句话原因\"}",
+        "文章全文：",
+        body,
+      ].join("\n");
+
+    const rawAttempts = [];
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      const retryHint = attempt === 1 ? "" : "\n\n上一次输出未通过 technical_depth 数值、分项范围或分项求和校验。这是自动重试，只返回完全合法的 JSON 对象。";
+      const raw = await this.chat(
+        system,
+        `${basePrompt}${retryHint}`,
+        { ...context, phase: attempt === 1 ? "Technical Depth" : "Technical Depth（结构重试 1/1）" },
+        { jsonMode: true },
+      );
+      rawAttempts.push(raw);
+      try {
+        return this.parseTechnicalDepthEnvelope(raw, "Technical Depth");
+      } catch (error) {
+        const structured = this.asStructuredOutputError(error, raw, rawAttempts);
+        if (attempt >= 2) throw structured;
+        console.warn(`[xyblue135 私人·AI 元数据] Technical Depth 结构化输出失败，自动重试 1 次：${context.filePath || title}`, structured);
+      }
+    }
+    throw new StructuredOutputError("Technical Depth 结构化输出失败", rawAttempts.join("\n\n"));
+  }
+
+  parseTechnicalDepthEnvelope(text, label = "Technical Depth") {
+    const value = this.parseJsonObjectWithRepair(text, label);
+    return this.validateTechnicalDepthResult(value, text, label);
+  }
+
+  validateTechnicalDepthResult(value, rawText = "", label = "Technical Depth") {
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      throw new StructuredOutputError(`${label} 必须返回 JSON 对象`, rawText);
+    }
+    const ranges = {
+      technical_depth: [0, 100],
+      mechanism_depth: [0, 28],
+      engineering_depth: [0, 24],
+      analysis_validation: [0, 19],
+      system_complexity: [0, 17],
+      prerequisite_density: [0, 12],
+    };
+    const out = {};
+    for (const [key, [min, max]] of Object.entries(ranges)) {
+      const numeric = Number(value[key]);
+      if (!Number.isInteger(numeric) || numeric < min || numeric > max) {
+        throw new StructuredOutputError(`${label} 的 ${key} 必须是 ${min}～${max} 的整数`, rawText);
+      }
+      out[key] = numeric;
+    }
+    const sum = out.mechanism_depth + out.engineering_depth + out.analysis_validation + out.system_complexity + out.prerequisite_density;
+    if (sum !== out.technical_depth) {
+      throw new StructuredOutputError(`${label} 五个维度之和 ${sum} 不等于 technical_depth ${out.technical_depth}`, rawText);
+    }
+    out.reason = String(value.reason || "").replace(/\s+/g, " ").trim().slice(0, 80);
+    if (!out.reason) throw new StructuredOutputError(`${label} 缺少 reason`, rawText);
+    return out;
+  }
+
   async generateMetadataBundle(body, title, currentTags, requestedKinds, context = {}) {
     const requested = Array.from(new Set(requestedKinds || []));
     const wantShort = requested.includes("summary_short");
     const wantLong = requested.includes("summary_long");
     const wantTags = requested.includes("tags");
+    const wantDepth = requested.includes("technical_depth");
     const combinedBody = this.cleanMarkdownForSummary(body);
+    const fullBody = String(body || "");
+    const sharedCombinedBody = combinedBody === fullBody;
     const maxTags = Math.max(1, Number(this.settings.maxTags) || 7);
 
     const shortHarness = wantShort && this.settings.summaryShortHarnessEnabled !== false
@@ -1383,6 +1795,9 @@ module.exports = class AiMetadataPlugin extends Plugin {
     const tagsHarness = wantTags && this.settings.tagsHarnessEnabled
       ? `\n[Tags Harness]\n${this.renderHarness(this.settings.tagsHarness)}`
       : "";
+    const depthHarness = wantDepth && this.settings.technicalDepthHarnessEnabled !== false
+      ? `\n[Technical Depth 评分标准]\n${this.renderTechnicalDepthRubric()}`
+      : "";
 
     const system = [
       "你是 Obsidian 知识库的元数据整理助手。一次请求需要完成指定的多个元数据任务；各字段用途不同，不能互相复制或混淆。",
@@ -1392,6 +1807,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
       shortHarness,
       longHarness,
       tagsHarness,
+      depthHarness,
     ].filter(Boolean).join("\n");
 
     const taskLines = [];
@@ -1408,6 +1824,18 @@ module.exports = class AiMetadataPlugin extends Plugin {
       taskLines.push(`- tags：生成最多 ${maxTags} 个互不重复、合法的标签并给出 0~1 的 weight；优先质量，不要求凑满。`);
       schema.tags = [{ value: "标签", weight: 0.0 }];
     }
+    if (wantDepth) {
+      taskLines.push("- technical_depth：完整阅读文章后按五维评分标准打分；五个维度之和必须严格等于总分。最终 frontmatter 只保存总分。");
+      schema.technical_depth = {
+        technical_depth: 68,
+        mechanism_depth: 20,
+        engineering_depth: 17,
+        analysis_validation: 13,
+        system_complexity: 10,
+        prerequisite_density: 8,
+        reason: "一句话说明评分原因",
+      };
+    }
 
     const basePrompt = [
       `笔记标题：${title}`,
@@ -1422,9 +1850,16 @@ module.exports = class AiMetadataPlugin extends Plugin {
       "只返回上面要求的字段，不要增加解释字段。",
       wantShort && wantLong ? "summary_short 负责快速识别主题；summary_long 负责还原文章结构，两者必须明显区分信息密度，不能只是同一句话改写长度。" : "",
       wantTags ? `插件会在本地过滤非法 tags、去重并按 weight 排序，最终最多保留 ${maxTags} 个。` : "",
+      wantDepth ? "technical_depth 必须使用完整正文评分，不得只根据标题、摘要、开头、长度、代码数量或术语数量判断。" : "",
       "",
-      "笔记正文：",
-      combinedBody,
+      sharedCombinedBody && wantDepth ? "笔记完整正文（供本次所有任务使用）：" : "",
+      sharedCombinedBody && wantDepth ? fullBody : "",
+      !sharedCombinedBody && (wantShort || wantLong || wantTags) ? "用于摘要/标签任务的正文：" : "",
+      !sharedCombinedBody && (wantShort || wantLong || wantTags) ? combinedBody : "",
+      !sharedCombinedBody && wantDepth ? "用于 technical_depth 评分的完整文章全文：" : "",
+      !sharedCombinedBody && wantDepth ? fullBody : "",
+      !wantDepth && (wantShort || wantLong || wantTags) ? "笔记正文：" : "",
+      !wantDepth && (wantShort || wantLong || wantTags) ? combinedBody : "",
     ].filter((line) => line !== "").join("\n");
 
     const rawAttempts = [];
@@ -1438,7 +1873,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
       );
       rawAttempts.push(raw);
       try {
-        const parsed = this.parseMetadataBundle(raw, { wantShort, wantLong, wantTags });
+        const parsed = this.parseMetadataBundle(raw, { wantShort, wantLong, wantTags, wantDepth });
         const result = {};
         if (wantShort) {
           result.summaryShort = this.normalizeSummaryText(parsed.summaryShort, this.settings.summaryShortMaxChars, 100);
@@ -1451,6 +1886,10 @@ module.exports = class AiMetadataPlugin extends Plugin {
         if (wantTags) {
           result.weightedTags = this.rankWeightedTags(parsed.tags);
           result.tags = result.weightedTags.map((item) => item.value);
+        }
+        if (wantDepth) {
+          result.technicalDepthResult = parsed.technicalDepthResult;
+          result.technicalDepth = parsed.technicalDepthResult.technical_depth;
         }
         return result;
       } catch (error) {
@@ -1491,6 +1930,18 @@ module.exports = class AiMetadataPlugin extends Plugin {
         throw new StructuredOutputError("合并请求缺少 tags 数组", text);
       }
       out.tags = field.value;
+    }
+
+    if (expected.wantDepth) {
+      const depthValue = value.technical_depth ?? value.technicalDepth ?? value.depth_score ?? value.depthScore;
+      if (depthValue === undefined || depthValue === null) {
+        throw new StructuredOutputError("合并请求缺少 technical_depth 评分对象", text);
+      }
+      if (depthValue && typeof depthValue === "object" && !Array.isArray(depthValue)) {
+        out.technicalDepthResult = this.validateTechnicalDepthResult(depthValue, text, "合并请求 technical_depth");
+      } else {
+        throw new StructuredOutputError("合并请求的 technical_depth 必须包含总分、五个分项和 reason", text);
+      }
     }
 
     return out;
@@ -1913,6 +2364,12 @@ module.exports = class AiMetadataPlugin extends Plugin {
     return String(value).trim().length > 0;
   }
 
+  hasValidTechnicalDepth(file) {
+    const fm = this.app.metadataCache.getFileCache(file)?.frontmatter || {};
+    const numeric = Number(fm.technical_depth);
+    return Number.isInteger(numeric) && numeric >= 0 && numeric <= 100;
+  }
+
   getMetadataCompletion(file, fingerprint) {
     const record = this.state.files[file.path] || {};
     if (this.settings.contentFingerprintEnabled === true) {
@@ -1920,12 +2377,14 @@ module.exports = class AiMetadataPlugin extends Plugin {
         summaryShortDone: Boolean(fingerprint) && record.lastSummaryShortHash === fingerprint,
         summaryLongDone: Boolean(fingerprint) && record.lastSummaryLongHash === fingerprint,
         tagsDone: Boolean(fingerprint) && record.lastTagsHash === fingerprint,
+        technicalDepthDone: Boolean(fingerprint) && record.lastTechnicalDepthHash === fingerprint,
       };
     }
     return {
       summaryShortDone: this.hasNonEmptySummaryShort(file),
       summaryLongDone: this.hasNonEmptySummaryLong(file),
       tagsDone: this.hasNonEmptyTags(file),
+      technicalDepthDone: this.hasValidTechnicalDepth(file),
     };
   }
 
@@ -1938,6 +2397,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
       delete record.lastSummaryShortHash;
       delete record.lastSummaryLongHash;
       delete record.lastTagsHash;
+      delete record.lastTechnicalDepthHash;
     }
   }
 
@@ -1954,6 +2414,8 @@ module.exports = class AiMetadataPlugin extends Plugin {
         else delete record.lastSummaryLongHash;
         if (this.hasNonEmptyTags(file)) record.lastTagsHash = fingerprint;
         else delete record.lastTagsHash;
+        if (this.hasValidTechnicalDepth(file)) record.lastTechnicalDepthHash = fingerprint;
+        else delete record.lastTechnicalDepthHash;
         this.state.files[file.path] = record;
       } catch (error) {
         console.warn("xyblue135 私人·AI 元数据：初始化内容指纹基线失败", file.path, error);
@@ -1966,18 +2428,20 @@ module.exports = class AiMetadataPlugin extends Plugin {
     const kinds = Array.isArray(kindOrKinds)
       ? kindOrKinds
       : kindOrKinds === "all"
-        ? ["summary_short", "summary_long", "tags"]
+        ? ["summary_short", "summary_long", "tags", "technical_depth"]
         : [kindOrKinds];
 
     if (this.settings.contentFingerprintEnabled === true) {
       if (kinds.includes("summary_short")) record.lastSummaryShortHash = fingerprint;
       if (kinds.includes("summary_long")) record.lastSummaryLongHash = fingerprint;
       if (kinds.includes("tags")) record.lastTagsHash = fingerprint;
+      if (kinds.includes("technical_depth")) record.lastTechnicalDepthHash = fingerprint;
     } else {
       delete record.lastSummaryHash;
       delete record.lastSummaryShortHash;
       delete record.lastSummaryLongHash;
       delete record.lastTagsHash;
+      delete record.lastTechnicalDepthHash;
     }
     // 成功后只清理真正会被 UI 使用的错误状态；不再保存审计时间、来源、reason、tag scores 或 updateLog。
     record.lastError = "";
@@ -2098,7 +2562,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
       const record = this.state.files[file.path] || {};
       const body = this.stripFrontmatter(raw).trim();
       const emptyBody = !body;
-      const { summaryShortDone, summaryLongDone, tagsDone } = this.getMetadataCompletion(file, fingerprint);
+      const { summaryShortDone, summaryLongDone, tagsDone, technicalDepthDone } = this.getMetadataCompletion(file, fingerprint);
       return {
         file,
         folder: this.getFolderPathForFile(file),
@@ -2106,8 +2570,9 @@ module.exports = class AiMetadataPlugin extends Plugin {
         summaryShortDone,
         summaryLongDone,
         tagsDone,
+        technicalDepthDone,
         emptyBody,
-        pending: !emptyBody && (!summaryShortDone || !summaryLongDone || !tagsDone),
+        pending: !emptyBody && (!summaryShortDone || !summaryLongDone || !tagsDone || !technicalDepthDone),
         preview: includePreview ? (emptyBody ? "（无可分析正文）" : this.makeNotePreview(raw)) : "",
         lastError: emptyBody ? "" : (record.lastError || ""),
         lastErrorType: record.lastErrorType || "",
@@ -2122,6 +2587,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
         summaryShortDone: false,
         summaryLongDone: false,
         tagsDone: false,
+        technicalDepthDone: false,
         pending: true,
         preview: "读取预览失败",
         lastError: message,
@@ -2328,6 +2794,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
             summaryShortDone: info.summaryShortDone,
             summaryLongDone: info.summaryLongDone,
             tagsDone: info.tagsDone,
+            technicalDepthDone: info.technicalDepthDone,
           });
         }
       }
@@ -2395,10 +2862,11 @@ module.exports = class AiMetadataPlugin extends Plugin {
           if (!queued.summaryShortDone) missingKinds.push("summary_short");
           if (!queued.summaryLongDone) missingKinds.push("summary_long");
           if (!queued.tagsDone) missingKinds.push("tags");
+          if (!queued.technicalDepthDone) missingKinds.push("technical_depth");
           if (missingKinds.length) {
             await this.generateSelectedForFile(file, missingKinds, "manual-folder", progress, taskContext);
           } else {
-            skippedFiles.push({ path: file.path, message: "summary_short / summary_long / tags 已有内容", kind: "already-complete" });
+            skippedFiles.push({ path: file.path, message: "summary_short / summary_long / tags / technical_depth 已有内容", kind: "already-complete" });
             continue;
           }
           processedFiles.push(file.path);
@@ -2539,8 +3007,8 @@ module.exports = class AiMetadataPlugin extends Plugin {
         }
         try {
           const prepared = await this.prepareFile(file);
-          const { summaryShortDone, summaryLongDone, tagsDone } = this.getMetadataCompletion(file, prepared.fingerprint);
-          if (summaryShortDone && summaryLongDone && tagsDone) {
+          const { summaryShortDone, summaryLongDone, tagsDone, technicalDepthDone } = this.getMetadataCompletion(file, prepared.fingerprint);
+          if (summaryShortDone && summaryLongDone && tagsDone && technicalDepthDone) {
             skipped += 1;
             continue;
           }
@@ -2555,6 +3023,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
             if (!summaryShortDone) missingKinds.push("summary_short");
             if (!summaryLongDone) missingKinds.push("summary_long");
             if (!tagsDone) missingKinds.push("tags");
+            if (!technicalDepthDone) missingKinds.push("technical_depth");
             if (missingKinds.length) {
               await this.generateSelectedForFile(file, missingKinds, "auto", progress, taskContext);
             } else {
@@ -2604,7 +3073,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
       this.cycleMode = null;
       if (!this.unloading) {
         this.setRuntimeStatus("idle");
-        // 关键调度规则：只有整个周期（summary_short + summary_long + tags + 写入）完全结束后，才从这里开始计算下一次间隔。
+        // 关键调度规则：只有整个周期（summary_short + summary_long + tags + technical_depth + 写入）完全结束后，才从这里开始计算下一次间隔。
         if (this.settings.autoUpdateEnabled) this.scheduleNextAutoRun();
         else this.refreshStatusBar();
       }
@@ -2661,6 +3130,7 @@ module.exports = class AiMetadataPlugin extends Plugin {
       if (kind === "summary_short") button.setAttribute("aria-label", "AI 只生成 summary_short");
       else if (kind === "summary_long") button.setAttribute("aria-label", "AI 只生成 summary_long");
       else if (kind === "tags") button.setAttribute("aria-label", "AI 只生成 weighted tags");
+      else if (kind === "technical_depth") button.setAttribute("aria-label", "AI 只评估 technical_depth");
       else button.setAttribute("aria-label", `AI 生成 ${kind}`);
     }
   }
@@ -2798,7 +3268,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("API 请求超时（秒）")
-      .setDesc("默认 180 秒（3 分钟）。每次 API 请求超过该时间，本次更新判定失败且不会写入半成品；实验合并模式下 Summary + Tags 共用这一次超时。")
+      .setDesc("默认 180 秒（3 分钟）。每次 API 请求超过该时间，本次更新判定失败且不会写入半成品；实验合并模式下 4 项 AI 元数据合并请求共用这一次超时。")
       .addText((text) => {
         text.inputEl.type = "number";
         text.setValue(String(this.plugin.settings.requestTimeoutSeconds)).onChange(async (value) => {
@@ -2813,7 +3283,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("API 请求间隔（秒）")
-      .setDesc("默认 30 秒。所有 API 请求进入同一个串行队列，绝不并发；上一请求完成后至少等待该时间才启动下一请求。实验合并模式可把同一篇笔记的 Summary + Tags 从两次请求减少为一次。")
+      .setDesc("默认 30 秒。所有 API 请求进入同一个串行队列，绝不并发；上一请求完成后至少等待该时间才启动下一请求。实验合并模式可把同一篇笔记的 多项元数据从多次请求减少为一次。")
       .addText((text) => {
         text.inputEl.type = "number";
         text.setValue(String(this.plugin.settings.requestIntervalSeconds)).onChange(async (value) => {
@@ -2827,8 +3297,8 @@ class AiMetadataSettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("实验性：批量合并 Summary + Tags 请求")
-      .setDesc("默认开启。只作用于“同时生成双摘要 + tags”、文件夹识别/同步和自动更新：同一篇笔记用一次 /chat/completions 同时得到 summary_short、summary_long 与 tags；若只缺其中两个字段，也会尽量一次请求补齐。文章 Properties 中 summary_short / summary_long / tags 旁的 ✨ 按钮永远只生成当前字段，不会顺带改其他字段。关闭后批量流程恢复为 Summary Short、Summary Long、Tags 三次串行请求。")
+      .setName("Beta：批量合并 4 项 AI 元数据请求")
+      .setDesc("默认开启，属于 Beta 功能。只作用于“同时生成 4 项 AI 元数据”、文件夹识别/同步和自动更新：同一篇笔记用一次 /chat/completions 同时得到 summary_short、summary_long、tags 与 technical_depth；若只缺其中两项或三项，也会尽量一次请求补齐。Properties 中四个字段旁的 ✨ 按钮永远只生成当前字段。关闭后批量流程恢复为 4 个字段串行请求。")
       .addToggle((toggle) => toggle.setValue(this.plugin.settings.experimentalCombinedRequestEnabled === true).onChange(async (value) => {
         this.plugin.settings.experimentalCombinedRequestEnabled = value;
         await this.plugin.saveAllData();
@@ -2839,7 +3309,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("结构化 JSON 模式")
-      .setDesc("默认开启。对需要 JSON 的 Tags / 合并请求发送 OpenAI-compatible response_format=json_object，让模型从 API 层优先返回合法 JSON；如果你的代理不支持该字段，可以关闭。")
+      .setDesc("默认开启。对需要 JSON 的 Tags / Technical Depth / 合并请求发送 OpenAI-compatible response_format=json_object，让模型从 API 层优先返回合法 JSON；如果你的代理不支持该字段，可以关闭。")
       .addToggle((toggle) => toggle.setValue(this.plugin.settings.structuredJsonModeEnabled !== false).onChange(async (value) => {
         this.plugin.settings.structuredJsonModeEnabled = value;
         await this.plugin.saveAllData();
@@ -2855,7 +3325,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("结构化输出自动重试")
-      .setDesc("固定开启 1 次：仅在 JSON 解析、summary_short / summary_long 字段或 tags 数量/合法性校验失败时重试；网络错误、HTTP 错误和超时不会因为这个分支额外重试。")
+      .setDesc("固定开启 1 次：仅在 JSON 解析、summary_short / summary_long 字段、tags 数量/合法性或 technical_depth 分项求和校验失败时重试；网络错误、HTTP 错误和超时不会因为这个分支额外重试。")
       .addButton((button) => button.setButtonText("固定：1 次").setDisabled(true));
 
     new Setting(containerEl)
@@ -2880,14 +3350,14 @@ class AiMetadataSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("内容指纹 fingerprint 识别")
-      .setDesc("默认关闭。关闭时只按 Properties 是否已有内容判断：summary_short、summary_long、tags 各自非空才视为对应字段已完成，正文后来修改也不会自动判为过期。开启后记录正文内容指纹；正文或其他非 summary/summary_short/summary_long/tags/position 属性变化时，相应双摘要/Tags 会重新进入待更新。首次开启会把当前已有非空 summary_short / summary_long / tags 建立为当前基线，不会立即把全部文章重新生成。关闭时会删除数据库中的持久化指纹标记。")
+      .setDesc("默认关闭。关闭时只按 Properties 是否已有内容判断：summary_short、summary_long、tags、technical_depth 各自有效才视为对应字段已完成，正文后来修改也不会自动判为过期。开启后记录正文内容指纹；正文或其他非 summary/summary_short/summary_long/tags/technical_depth/position 属性变化时，相应 4 项 AI 元数据会重新进入待更新。首次开启会把当前已有有效 summary_short / summary_long / tags / technical_depth 建立为当前基线，不会立即把全部文章重新生成。关闭时会删除数据库中的持久化指纹标记。")
       .addToggle((toggle) => toggle.setValue(this.plugin.settings.contentFingerprintEnabled === true).onChange(async (value) => {
         toggle.setDisabled(true);
         try {
           this.plugin.settings.contentFingerprintEnabled = value === true;
           if (value === true) {
             await this.plugin.initializeFingerprintBaseline();
-            new Notice("xyblue135 私人·AI 元数据：已开启内容指纹识别，并以当前 双摘要/Tags 建立基线");
+            new Notice("xyblue135 私人·AI 元数据：已开启内容指纹识别，并以当前 4 项 AI 元数据建立基线");
           } else {
             this.plugin.clearPersistentFingerprintMarkers();
             new Notice("xyblue135 私人·AI 元数据：已关闭内容指纹识别，数据库中的指纹标记已删除");
@@ -2901,7 +3371,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("摘要输入 Markdown 清理")
-      .setDesc("默认关闭。开启后在发送 Summary 前清理无意义 Markdown 格式：去除标题 #、反引号/粗体/删除线/引用等格式符，保留其中的文字；删除图片嵌入和链接 URL；超过 500 字符的 fenced 代码块替换为省略提示，短代码保留。Tags 单独生成时仍使用原正文；实验性合并 Summary + Tags 时两者共用清理后的正文。")
+      .setDesc("默认关闭。开启后在发送 Summary 前清理无意义 Markdown 格式：去除标题 #、反引号/粗体/删除线/引用等格式符，保留其中的文字；删除图片嵌入和链接 URL；超过 500 字符的 fenced 代码块替换为省略提示，短代码保留。Tags 单独生成时仍使用原正文；Beta 合并时 summary_short / summary_long / tags 使用清理后的正文；technical_depth 始终读取未清理的完整正文。")
       .addToggle((toggle) => toggle.setValue(this.plugin.settings.summaryMarkdownCleanupEnabled === true).onChange(async (value) => {
         this.plugin.settings.summaryMarkdownCleanupEnabled = value;
         await this.plugin.saveAllData();
@@ -2990,7 +3460,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
     containerEl.createEl("h3", { text: "界面状态" });
     new Setting(containerEl)
       .setName("显示 AI 状态")
-      .setDesc("在 Obsidian 底部状态栏显示当前 双摘要/Tags 请求、请求间隔等待倒计时、写入阶段和下一次自动检查倒计时。")
+      .setDesc("在 Obsidian 底部状态栏显示当前 双摘要/Tags/Technical Depth 请求、请求间隔等待倒计时、写入阶段和下一次自动检查倒计时。")
       .addToggle((toggle) => toggle.setValue(this.plugin.settings.statusBarEnabled !== false).onChange(async (value) => {
         this.plugin.settings.statusBarEnabled = value;
         await this.plugin.saveAllData();
@@ -3010,7 +3480,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("自动触发更新")
-      .setDesc("开启后按设定频率扫描 /Notes；关闭会清除下一次定时任务。若自动扫描正在等待 API，也会立即中止该自动任务；手动识别/同步不受影响。")
+      .setDesc("默认关闭。开启后按设定频率扫描 /Notes；关闭会清除下一次定时任务。若自动扫描正在等待 API，也会立即中止该自动任务；手动识别/同步不受影响。")
       .addToggle((toggle) => toggle.setValue(this.plugin.settings.autoUpdateEnabled).onChange(async (value) => {
         await this.plugin.setAutoUpdateEnabled(value);
         this.display();
@@ -3052,7 +3522,7 @@ class AiMetadataSettingTab extends PluginSettingTab {
     provenance.createEl("summary", { text: "更新来源识别规则" });
     provenance.createEl("div", {
       cls: "setting-item-description",
-      text: "默认关闭内容指纹识别：summary_short/summary_long/tags 只要已有非空内容就视为完成，不再因为正文变化自动判为过期；此模式不会在数据库保存 hash 指纹。开启 fingerprint 后，插件才会持久化去除 summary/summary_short/summary_long/tags/position 后的源指纹，并用它识别正文变化。插件自身写入仍记录为 ai-plugin。",
+      text: "默认关闭内容指纹识别：summary_short/summary_long/tags/technical_depth 只要已有有效内容就视为完成，不再因为正文变化自动判为过期；此模式不会在数据库保存 hash 指纹。开启 fingerprint 后，插件才会持久化去除 summary/summary_short/summary_long/tags/technical_depth/position 后的源指纹，并用它识别正文变化。插件自身写入仍记录为 ai-plugin。",
     });
 
     containerEl.createEl("h3", { text: "高级输出约束" });
@@ -3131,6 +3601,31 @@ class AiMetadataSettingTab extends PluginSettingTab {
       })
       .addButton((button) => button.setButtonText("恢复默认").onClick(async () => {
         this.plugin.settings.tagsHarness = DEFAULT_TAGS_HARNESS;
+        await this.plugin.saveAllData();
+        this.display();
+      }));
+
+    new Setting(containerEl)
+      .setName("技术深度评分约束（Technical Depth Prompt）")
+      .setDesc("默认开启。完整阅读文章全文后按 0～100 固定尺度评分；单字段和 Beta 合并请求都会校验五个维度的整数范围及分项之和。最终只写入 frontmatter 的 technical_depth 总分。支持 {{ARTICLE}} 作为全文占位符。")
+      .addToggle((toggle) => toggle.setValue(this.plugin.settings.technicalDepthHarnessEnabled !== false).onChange(async (value) => {
+        this.plugin.settings.technicalDepthHarnessEnabled = value;
+        await this.plugin.saveAllData();
+      }));
+
+    new Setting(containerEl)
+      .setName("技术深度评分 Prompt")
+      .setDesc("默认即当前 5 维 technical_depth 评分标准。单独生成时 {{ARTICLE}} 会替换为完整正文；Beta 合并时复用评分规则，并将评分明细嵌入合并 JSON。")
+      .addTextArea((area) => {
+        area.inputEl.rows = 22;
+        area.inputEl.addClass("ai-metadata-harness-textarea");
+        area.setValue(this.plugin.settings.technicalDepthHarness || DEFAULT_TECHNICAL_DEPTH_HARNESS).onChange(async (value) => {
+          this.plugin.settings.technicalDepthHarness = value;
+          await this.plugin.saveAllData();
+        });
+      })
+      .addButton((button) => button.setButtonText("恢复默认").onClick(async () => {
+        this.plugin.settings.technicalDepthHarness = DEFAULT_TECHNICAL_DEPTH_HARNESS;
         await this.plugin.saveAllData();
         this.display();
       }));
@@ -3305,8 +3800,8 @@ class PendingNotesDashboardModal extends Modal {
     contentEl.createEl("h2", { text: "待更新笔记 / 文件夹识别" });
     const intro = contentEl.createEl("div", { cls: "ai-metadata-pending-intro" });
     intro.setText(this.plugin.settings.statusDoneOnlyEnabled === true
-      ? "当前已启用 status 元数据校验：这里只统计并识别 frontmatter 中 status: done 的文章。undone、缺少 status 或其他状态不会进入批量队列；文章内的 ✨ 手动生成仍可使用。"
-      : "当前批量范围为全部文章：像 Obsidian 文件管理器一样展开 Notes 子文件夹。每个文件夹右侧的“识别”按钮处理该文件夹及其子文件夹中的待更新 Markdown；文章内的 ✨ 只更新对应字段。");
+      ? "当前已启用 status 元数据校验：这里只统计并识别 frontmatter 中 status: done 的文章。undone、缺少 status 或其他状态不会进入批量队列；文章内四个 AI 字段的 ✨ 手动生成仍可使用。"
+      : "当前批量范围为全部文章：像 Obsidian 文件管理器一样展开 Notes 子文件夹。每个文件夹右侧的“识别”按钮处理该文件夹及其子文件夹中的待更新 Markdown；文章内四个 AI 字段的 ✨ 只更新对应字段。");
 
     const toolbar = contentEl.createDiv({ cls: "ai-metadata-pending-toolbar" });
     const expandButton = toolbar.createEl("button", { text: "展开待更新目录" });
@@ -3504,6 +3999,7 @@ class PendingNotesDashboardModal extends Modal {
       if (!info.summaryShortDone) badges.createSpan({ text: "Summary Short", cls: "ai-metadata-pending-badge" });
       if (!info.summaryLongDone) badges.createSpan({ text: "Summary Long", cls: "ai-metadata-pending-badge" });
       if (!info.tagsDone) badges.createSpan({ text: "Tags", cls: "ai-metadata-pending-badge" });
+      if (!info.technicalDepthDone) badges.createSpan({ text: "Technical Depth", cls: "ai-metadata-pending-badge" });
     }
     row.createDiv({ cls: "ai-metadata-file-path", text: info.file.path });
     row.createDiv({ cls: "ai-metadata-file-preview", text: info.preview || "（无可预览正文）" });

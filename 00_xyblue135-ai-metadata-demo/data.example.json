@@ -6,7 +6,10 @@
     "whitelistFolder": "Notes",
     "summaryShortMaxChars": 100,
     "summaryLongMaxChars": 300,
-    "contentFingerprintEnabled": false
+    "contentFingerprintEnabled": false,
+    "autoUpdateEnabled": false,
+    "experimentalCombinedRequestEnabled": true,
+    "technicalDepthHarnessEnabled": true
   },
   "state": {
     "files": {}

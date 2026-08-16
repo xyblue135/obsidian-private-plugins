@@ -8,6 +8,70 @@
 
 ---
 
+## v0.7.0：新增 technical_depth，AI 元数据扩展为 4 项
+
+这一版新增第四个 AI 元数据字段：
+
+```yaml
+summary_short: "..."
+summary_long: "..."
+tags:
+  - ...
+technical_depth: 68
+```
+
+### 1. 新增 technical_depth 技术深度评分
+
+- 使用固定 **0～100** 绝对尺度，不对当前文章集合归一化。
+- 默认按五个维度评分：机制深度 0～28、工程实现 0～24、分析与验证 0～19、系统复杂度 0～17、前置知识密度 0～12。
+- 模型必须返回总分、五个分项和 `reason`；插件在本地再次校验整数范围以及“五个维度之和 = technical_depth”。
+- 最终只向文章 frontmatter 写入 `technical_depth` 总分，不额外写入分项和 reason。
+- Properties 中 `technical_depth` 行会出现独立 ✨，只重算该字段。
+
+### 2. Beta 合并请求升级为一次生成 4 项
+
+开启 **Beta：批量合并 4 项 AI 元数据请求** 时，同一篇文章缺少多项字段会尽量只发送一次 `/chat/completions`：
+
+```text
+summary_short
+summary_long
+tags
+technical_depth
+```
+
+如果只缺其中 2～3 项，也只要求模型返回缺失项。Properties 行内的四个 ✨ 仍保持严格单字段语义，不会顺带覆盖其他字段。
+
+`technical_depth` 在合并 JSON 中携带评分明细供本地校验，但写入 frontmatter 时仍只保存总分。
+
+### 3. technical_depth 始终按完整正文评分
+
+技术深度评分不会只读 `summary_long`，也不会只看标题或摘要。即使开启“摘要输入 Markdown 清理”，`technical_depth` 仍使用未清理的完整文章正文；摘要和 Tags 可以继续按原设置使用清理后的文本。
+
+默认 Markdown 清理关闭时，Beta 合并请求只发送一份完整正文，不重复占用 Token。
+
+### 4. 待更新识别与 fingerprint 完整兼容
+
+`technical_depth` 已接入：
+
+- 文件夹待更新树；
+- 自动/手动批量识别；
+- 单篇重试；
+- 内容 fingerprint；
+- 持久化 `lastTechnicalDepthHash`；
+- 状态栏阶段提示。
+
+因此一篇文章只有双摘要和 Tags、但没有 `technical_depth` 时，会继续被识别为待更新，而不会误判为完成。
+
+### 5. 自动生成仍默认关闭
+
+`autoUpdateEnabled` 的默认值保持为 **false**。升级不会强制修改用户已经保存的开关状态；新安装或没有保存该设置时默认关闭。Beta 四项合并功能默认开启，但它只决定“一次生成几项”，不会主动开启自动扫描。
+
+### 6. 升级包继续不携带 data.json
+
+发布 ZIP 不包含 `data.json`，因此覆盖安装不会覆盖现有 API Key、模型、Harness、自动更新开关和历史状态。`data.example.json` 只作为无密钥示例。
+
+---
+
 ## v0.6.1：精简 data.json，普通编辑不再制造 Git 状态噪声
 
 这一版把插件状态拆成“必须持久化”和“仅运行期缓存”两部分，目标是避免每次编辑 Markdown 都让 Git 判定插件 `data.json` 已修改。
