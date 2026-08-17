@@ -1,12 +1,76 @@
 {
   "recentFiles": [
     {
-      "basename": "安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】",
-      "path": "Notes/02代码/code_编译环境/安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】.md"
+      "basename": "git连GitHub【不介绍远端仓库】",
+      "path": "Notes/01_CICD/运维_git/git连GitHub【不介绍远端仓库】.md"
+    },
+    {
+      "basename": "关于gh-github-cli",
+      "path": "Notes/01_CICD/工具/关于gh-github-cli.md"
     },
     {
       "basename": "远端有新的提交_本地无法commit【千万别force push】",
       "path": "Notes/01_CICD/github客户端/远端有新的提交_本地无法commit【千万别force push】.md"
+    },
+    {
+      "basename": "简单介绍github客户端",
+      "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md"
+    },
+    {
+      "basename": "给git配置换行为LF而不是CRLF",
+      "path": "Notes/01_CICD/运维_git/给git配置换行为LF而不是CRLF.md"
+    },
+    {
+      "basename": "git常见分支如hotfix_dev_feat",
+      "path": "Notes/01_CICD/运维_git/git常见分支如hotfix_dev_feat.md"
+    },
+    {
+      "basename": "微信的聊天备份",
+      "path": "Notes/Y_常用小知识_软件/微信的聊天备份.md"
+    },
+    {
+      "basename": "个人信息",
+      "path": "Notes/0_个人信息-工作经历/个人信息/个人信息.md"
+    },
+    {
+      "basename": "4G、5G NSA、5G SA 到底是什么？",
+      "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/学习信息/4G、5G NSA、5G SA 到底是什么？.md"
+    },
+    {
+      "basename": "竖屏显示器旋转方向问题",
+      "path": "Notes/Y_常用小知识_软件/竖屏显示器旋转方向问题.md"
+    },
+    {
+      "basename": "win的快捷方式图标丢失",
+      "path": "Notes/Y_常用小知识_软件/win的快捷方式图标丢失.md"
+    },
+    {
+      "basename": "PyTorch 与 ONNX Runtime 的 CUDA 环境对齐的故障排除",
+      "path": "Notes/01运维_0ai相关/图像识别/PyTorch 与 ONNX Runtime 的 CUDA 环境对齐的故障排除.md"
+    },
+    {
+      "basename": "win的winget",
+      "path": "Notes/Y_常用小知识_软件/win的winget.md"
+    },
+    {
+      "basename": "Windows不是所有版本默认开启长路径",
+      "path": "Notes/Y_常用小知识_软件/Windows不是所有版本默认开启长路径.md"
+    },
+    {
+      "basename": "安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】",
+      "path": "Notes/02代码/code_编译环境/安装MSYS2环境【不能装 D 盘 脚本硬编码C msys64】.md"
+    },
+    {
+      "basename": "sunshine分支foundation版本",
+      "path": "Notes/04音视频/音视频_知识/串流-sunshine/sunshine分支foundation版本.md"
+    },
+    {
+      "basename": "sunshine分支Apollo版本",
+      "path": "Notes/04音视频/音视频_知识/串流-sunshine/sunshine分支Apollo版本.md"
+    },
+    {
+      "basename": "开发tabby-插件quick commands",
+      "path": "Notes/01运维_0网络/连接工具/开发tabby-插件quick commands.md"
     },
     {
       "basename": "密码管理",
@@ -23,10 +87,6 @@
     {
       "basename": "Nacos_集群冷启动时_CP_JRaft_启动竞态：原因、排障与_systemd_治理",
       "path": "Notes/01运维_0linux/运维_服务发现/nacos大类【服务通讯录】/Nacos_集群冷启动时_CP_JRaft_启动竞态：原因、排障与_systemd_治理.md"
-    },
-    {
-      "basename": "简单介绍github客户端",
-      "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md"
     },
     {
       "basename": "使用ps3手柄玩pc游戏并放到电视上且多人游玩",
@@ -133,72 +193,12 @@
       "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/关于虚拟硬盘的格式.md"
     },
     {
-      "basename": "关于gh-github-cli",
-      "path": "Notes/01_CICD/工具/关于gh-github-cli.md"
-    },
-    {
       "basename": "编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
       "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
     },
     {
       "basename": "编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
       "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
-    },
-    {
-      "basename": "【Git】分支详细",
-      "path": "Notes/01_CICD/git/【Git】分支详细.md"
-    },
-    {
-      "basename": "安装vs环境",
-      "path": "Notes/02代码/代码_c/安装vs环境.md"
-    },
-    {
-      "basename": "指针+数组运算就是C语言高效的根源",
-      "path": "Notes/02代码/代码_c/指针+数组运算就是C语言高效的根源.md"
-    },
-    {
-      "basename": "c语言的指针内存处理对比python内存处理",
-      "path": "Notes/02代码/代码_c/c语言的指针内存处理对比python内存处理.md"
-    },
-    {
-      "basename": "编译java程序【gradle】",
-      "path": "Notes/02代码/代码_java/编译java程序【gradle】.md"
-    },
-    {
-      "basename": "部署apache_http和apache_tomcat_修正",
-      "path": "Notes/02代码/代码_java/部署apache_http和apache_tomcat_修正.md"
-    },
-    {
-      "basename": "obsidian目前附件规范标准",
-      "path": "Notes/0_obsidian/obsidian目前附件规范标准.md"
-    },
-    {
-      "basename": "Mermaid语法介绍",
-      "path": "Notes/0_obsidian/Mermaid语法介绍.md"
-    },
-    {
-      "basename": "戴睿T30免电池供电改造_超详细博客",
-      "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md"
-    },
-    {
-      "basename": "00_ollama常用命令",
-      "path": "Notes/01运维_0ai相关/ollama系列/00_ollama常用命令.md"
-    },
-    {
-      "basename": "ollama的11434端口的v1参数",
-      "path": "Notes/01运维_0ai相关/ollama系列/ollama的11434端口的v1参数.md"
-    },
-    {
-      "basename": "ollama不再依赖于WSL",
-      "path": "Notes/01运维_0ai相关/ollama系列/ollama不再依赖于WSL.md"
-    },
-    {
-      "basename": "ollama前端ui和服务端的关系",
-      "path": "Notes/01运维_0ai相关/ollama系列/ollama前端ui和服务端的关系.md"
-    },
-    {
-      "basename": "ollama_同时加载多个模型配置教程",
-      "path": "Notes/01运维_0ai相关/ollama系列/ollama_同时加载多个模型配置教程.md"
     }
   ],
   "omittedPaths": [],

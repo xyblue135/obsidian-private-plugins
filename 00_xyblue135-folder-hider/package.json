@@ -1,0 +1,20 @@
+{
+  "name": "xyblue135-folder-hider",
+  "version": "1.0.0",
+  "description": "Obsidian 文件夹视觉隐藏插件",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production"
+  },
+  "keywords": ["obsidian", "plugin", "folder", "hide"],
+  "author": "xyblue135",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "latest",
+    "builtin-modules": "latest",
+    "esbuild": "latest",
+    "obsidian": "latest",
+    "typescript": "latest"
+  }
+}

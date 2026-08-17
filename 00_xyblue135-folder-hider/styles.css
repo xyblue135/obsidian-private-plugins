@@ -1,0 +1,4 @@
+/* 文件夹隐藏：仅影响 Obsidian 文件浏览器的视觉显示，不修改 Vault 中的真实文件。 */
+.nav-folder.xyblue135-folder-hider-hidden {
+  display: none !important;
+}
