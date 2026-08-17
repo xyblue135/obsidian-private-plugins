@@ -1,6 +1,54 @@
 {
   "recentFiles": [
     {
+      "basename": "常用环境类命令",
+      "path": "常用环境类命令.md"
+    },
+    {
+      "basename": "gitignore怎么配置白名单",
+      "path": "Notes/01_CICD/运维_git/gitignore怎么配置白名单.md"
+    },
+    {
+      "basename": "【ethtool】ethtool -p eno1 10【指示灯闪烁10秒】",
+      "path": "Notes/01运维_0网络/网卡配置/【ethtool】ethtool -p eno1 10【指示灯闪烁10秒】.md"
+    },
+    {
+      "basename": "【ip n】ip neighbor",
+      "path": "Notes/01运维_0网络/网卡配置/【ip n】ip neighbor.md"
+    },
+    {
+      "basename": "【ip rule】ip rule【Policy Routing策略路由】",
+      "path": "Notes/01运维_0网络/网卡配置/【ip rule】ip rule【Policy Routing策略路由】.md"
+    },
+    {
+      "basename": "00_ollama常用命令",
+      "path": "Notes/01运维_0ai相关/ollama系列/00_ollama常用命令.md"
+    },
+    {
+      "basename": "添加开始菜单搜索",
+      "path": "Notes/Y_常用小知识_软件/添加开始菜单搜索.md"
+    },
+    {
+      "basename": "Windows netsh interface portproxy 端口代理完整教程",
+      "path": "Notes/01运维_0网络/代理反代类/Windows netsh interface portproxy 端口代理完整教程.md"
+    },
+    {
+      "basename": "附件资源健康检查_稳定展开可复制版 (1)",
+      "path": "主页组件/附件资源健康检查_稳定展开可复制版 (1).md"
+    },
+    {
+      "basename": "附件资源健康检查-Mirror-Attachments-v1.6.6",
+      "path": "主页组件/附件资源健康检查-Mirror-Attachments-v1.6.6.md"
+    },
+    {
+      "basename": "4G、5G NSA、5G SA 到底是什么？",
+      "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/学习信息/4G、5G NSA、5G SA 到底是什么？.md"
+    },
+    {
+      "basename": "个人信息",
+      "path": "Notes/0_个人信息-工作经历/个人信息/个人信息.md"
+    },
+    {
       "basename": "git连GitHub【不介绍远端仓库】",
       "path": "Notes/01_CICD/运维_git/git连GitHub【不介绍远端仓库】.md"
     },
@@ -27,14 +75,6 @@
     {
       "basename": "微信的聊天备份",
       "path": "Notes/Y_常用小知识_软件/微信的聊天备份.md"
-    },
-    {
-      "basename": "个人信息",
-      "path": "Notes/0_个人信息-工作经历/个人信息/个人信息.md"
-    },
-    {
-      "basename": "4G、5G NSA、5G SA 到底是什么？",
-      "path": "Notes/0_个人信息-工作经历/上海欣诺通信股份有限公司/学习信息/4G、5G NSA、5G SA 到底是什么？.md"
     },
     {
       "basename": "竖屏显示器旋转方向问题",
@@ -159,46 +199,6 @@
     {
       "basename": "使用hashcat工具且显卡加速进行一定的暴力破解",
       "path": "Notes/Y_破解和攻击类/使用hashcat工具且显卡加速进行一定的暴力破解.md"
-    },
-    {
-      "basename": "linux的救援模式以及对grub访问设置加密",
-      "path": "Notes/运维_驱动-重做系统-引导/救援类/linux的救援模式以及对grub访问设置加密.md"
-    },
-    {
-      "basename": "IPMI是服务器失联后的远程救援通道",
-      "path": "Notes/运维_驱动-重做系统-引导/救援类/IPMI是服务器失联后的远程救援通道.md"
-    },
-    {
-      "basename": "gz压缩速度较慢",
-      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/gz压缩速度较慢.md"
-    },
-    {
-      "basename": "如何拍摄系统快照和备份",
-      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/如何拍摄系统快照和备份.md"
-    },
-    {
-      "basename": "如何规避rm-rf的风险",
-      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/如何规避rm-rf的风险.md"
-    },
-    {
-      "basename": "检查硬盘smart健康情况",
-      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/检查硬盘smart健康情况.md"
-    },
-    {
-      "basename": "关于win磁盘io的不真实性",
-      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/关于win磁盘io的不真实性.md"
-    },
-    {
-      "basename": "关于虚拟硬盘的格式",
-      "path": "Notes/运维_存储命令-文件系统-分区-日志/存储类命令&知识/关于虚拟硬盘的格式.md"
-    },
-    {
-      "basename": "编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
-      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
-    },
-    {
-      "basename": "编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
-      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
     }
   ],
   "omittedPaths": [],
