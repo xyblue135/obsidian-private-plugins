@@ -1,16 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /*
  * xyblue135 私人 · 代码块增强
  * 类型：xyblue135 私人插件（非公共发布版）
  * 说明：用户可见文案与维护注释已中文化；内部插件 ID 与 data.json 保持不变，以兼容原有设置和数据。
  */
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const obsidian_1 = require("obsidian");
 const DEFAULT_SETTINGS = {
     wrapEnabled: false,
     styleMode: 'dark',
+    showCopyBar: false,
     showToolbarMarker: true,
     overrideCodeBackground: true,
+    syntaxHighlight: false,
     toolbarHeight: 20,
     copyButtonSize: 16,
     copyIconSize: 6,
@@ -27,7 +29,7 @@ const DEFAULT_SETTINGS = {
     accentColor: '#7aa2f7',
 };
 /**
- * xyblue135 私人 · 代码块增强 v1.2.0
+ * xyblue135 私人 · 代码块增强 v1.2.1
  * - 保留 v1.1.4 的安全滚动条实现。
  * - 新增设置页和实时可调紧凑深色 UI。
  */
@@ -76,8 +78,10 @@ class CodeBlockWrapTogglePlugin extends obsidian_1.Plugin {
         const body = document.body;
         body.classList.toggle('xyblue135-code-wrap-enabled', this.settings.wrapEnabled);
         body.classList.toggle('xyblue135-code-custom-dark', this.settings.styleMode === 'dark');
+        body.classList.toggle('xyblue135-code-hide-copy-bar', !this.settings.showCopyBar);
         body.classList.toggle('xyblue135-code-hide-marker', !this.settings.showToolbarMarker);
         body.classList.toggle('xyblue135-code-bg-override', this.settings.overrideCodeBackground);
+        body.classList.toggle('xyblue135-code-no-highlight', !this.settings.syntaxHighlight);
         const vars = {
             '--xy-code-toolbar-height': `${this.settings.toolbarHeight}px`,
             '--xy-code-copy-button-size': `${this.settings.copyButtonSize}px`,
@@ -292,7 +296,7 @@ class CodeBlockWrapTogglePlugin extends obsidian_1.Plugin {
         this.lineHandlers.set(line, handler);
     }
     onunload() {
-        document.body.classList.remove('xyblue135-code-wrap-enabled', 'xyblue135-code-custom-dark', 'xyblue135-code-hide-marker', 'xyblue135-code-bg-override');
+        document.body.classList.remove('xyblue135-code-wrap-enabled', 'xyblue135-code-custom-dark', 'xyblue135-code-hide-copy-bar', 'xyblue135-code-hide-marker', 'xyblue135-code-bg-override', 'xyblue135-code-no-highlight');
         const vars = [
             '--xy-code-toolbar-height', '--xy-code-copy-button-size', '--xy-code-copy-icon-size',
             '--xy-code-padding-v', '--xy-code-padding-h', '--xy-code-radius', '--xy-code-scrollbar-height',
@@ -315,6 +319,7 @@ class CodeBlockWrapTogglePlugin extends obsidian_1.Plugin {
         document.querySelectorAll('body > .xyblue135-codeblock-scrollbar-overlay').forEach((el) => el.remove());
     }
 }
+module.exports = CodeBlockWrapTogglePlugin;
 class CodeBlockWrapSettingTab extends obsidian_1.PluginSettingTab {
     constructor(app, plugin) {
         super(app, plugin);
@@ -329,6 +334,20 @@ class CodeBlockWrapSettingTab extends obsidian_1.PluginSettingTab {
             cls: 'setting-item-description',
         });
         containerEl.createEl('h3', { text: '显示行为' });
+        new obsidian_1.Setting(containerEl)
+            .setName('显示顶部复制栏')
+            .setDesc('开启后代码块顶部出现工具栏与复制按钮；关闭后整个复制栏隐藏，代码块更干净，复制请使用系统快捷键或右键菜单。')
+            .addToggle((toggle) => toggle.setValue(this.plugin.settings.showCopyBar).onChange(async (value) => {
+            this.plugin.settings.showCopyBar = value;
+            await this.plugin.saveSettings();
+        }));
+        new obsidian_1.Setting(containerEl)
+            .setName('语法高亮')
+            .setDesc('开启后代码关键字/字符串等使用彩色语法高亮；关闭后代码统一为单色文字，更素净。')
+            .addToggle((toggle) => toggle.setValue(this.plugin.settings.syntaxHighlight).onChange(async (value) => {
+            this.plugin.settings.syntaxHighlight = value;
+            await this.plugin.saveSettings();
+        }));
         new obsidian_1.Setting(containerEl)
             .setName('代码块自动换行')
             .setDesc('关闭时长代码保持单行，并在底部使用横向滚动条。')
@@ -414,7 +433,8 @@ class CodeBlockWrapSettingTab extends obsidian_1.PluginSettingTab {
         });
         setting.addText((text) => {
             textControl = text;
-            text.setPlaceholder('#10141b')
+            text
+                .setPlaceholder('#10141b')
                 .setValue(this.plugin.settings[key])
                 .onChange(async (value) => {
                 const normalized = value.trim();
@@ -429,5 +449,3 @@ class CodeBlockWrapSettingTab extends obsidian_1.PluginSettingTab {
         });
     }
 }
-
-module.exports = CodeBlockWrapTogglePlugin;

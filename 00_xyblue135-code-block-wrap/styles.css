@@ -343,3 +343,57 @@ body.xyblue135-code-wrap-enabled > .xyblue135-codeblock-scrollbar-overlay { disp
   font-family: var(--font-monospace);
   font-size: 12px;
 }
+
+/* =========================================================
+   关闭顶部复制栏（v1.2.2）
+   开启「显示顶部复制栏」后正常显示工具栏；关闭后整个复制栏
+   （工具栏背景条、>_ 标记、复制按钮）都隐藏，代码块更干净。
+   ========================================================= */
+/* 阅读模式 / Live Preview 已渲染代码块：去掉顶部工具栏行 */
+body.xyblue135-code-hide-copy-bar .markdown-rendered .el-pre > pre:not(.frontmatter):has(> button.copy-code-button):has(> code),
+body.xyblue135-code-hide-copy-bar .markdown-source-view.mod-cm6 .cm-preview-code-block pre:has(> button.copy-code-button):has(> code) {
+  grid-template-rows: minmax(0, auto) !important;
+}
+body.xyblue135-code-hide-copy-bar .markdown-rendered .el-pre > pre:not(.frontmatter):has(> button.copy-code-button):has(> code) > code,
+body.xyblue135-code-hide-copy-bar .markdown-source-view.mod-cm6 .cm-preview-code-block pre:has(> button.copy-code-button):has(> code) > code {
+  grid-row: 1 !important;
+}
+
+/* 隐藏工具栏背景条与 >_ 标记 */
+body.xyblue135-code-hide-copy-bar .markdown-rendered .el-pre > pre:not(.frontmatter):has(> button.copy-code-button):has(> code)::before,
+body.xyblue135-code-hide-copy-bar .markdown-source-view.mod-cm6 .cm-preview-code-block pre:has(> button.copy-code-button):has(> code)::before,
+body.xyblue135-code-hide-copy-bar .markdown-rendered .el-pre > pre:not(.frontmatter):has(> button.copy-code-button):has(> code)::after,
+body.xyblue135-code-hide-copy-bar .markdown-source-view.mod-cm6 .cm-preview-code-block pre:has(> button.copy-code-button):has(> code)::after {
+  display: none !important;
+}
+
+/* 隐藏复制按钮（阅读模式 / Live Preview / Source 编辑态） */
+body.xyblue135-code-hide-copy-bar .markdown-rendered .el-pre > pre:not(.frontmatter) > button.copy-code-button,
+body.xyblue135-code-hide-copy-bar .markdown-source-view.mod-cm6 .cm-preview-code-block button.copy-code-button,
+body.xyblue135-code-hide-copy-bar .markdown-source-view.mod-cm6 .code-block-flair {
+  display: none !important;
+}
+
+/* Source / Live Preview 编辑态：代码块首行不再预留工具栏高度 */
+body.xyblue135-code-hide-copy-bar .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock-begin {
+  padding-top: 0 !important;
+}
+body.xyblue135-code-hide-copy-bar .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock-begin::before {
+  display: none !important;
+}
+
+/* =========================================================
+   关闭语法高亮（v1.2.3）
+   开启「语法高亮」后保留 Obsidian 彩色着色；关闭后所有
+   token 统一继承代码文字颜色，变成单色文本，更素净。
+   ========================================================= */
+body.xyblue135-code-no-highlight .markdown-rendered .el-pre > pre:not(.frontmatter) > code span,
+body.xyblue135-code-no-highlight .markdown-source-view.mod-cm6 .cm-preview-code-block pre > code span,
+body.xyblue135-code-no-highlight .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock span {
+  color: inherit !important;
+  font-style: inherit !important;
+  font-weight: inherit !important;
+  text-decoration: none !important;
+  background: transparent !important;
+  text-shadow: none !important;
+}

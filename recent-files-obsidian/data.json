@@ -5,6 +5,14 @@
       "path": "Notes/01_CICD/git/【Git Bundle】 比 Patch 更适合与 Codex 协同开发.md"
     },
     {
+      "basename": "【Git Bundle】对比多种离线交换代码方式较优选择",
+      "path": "Notes/01_CICD/git/【Git Bundle】对比多种离线交换代码方式较优选择.md"
+    },
+    {
+      "basename": "【gitignore】 删除被忽略文件的风险",
+      "path": "Notes/01_CICD/git/【gitignore】 删除被忽略文件的风险.md"
+    },
+    {
       "basename": "简单介绍github客户端",
       "path": "Notes/01_CICD/github客户端/简单介绍github客户端.md"
     },
@@ -23,10 +31,6 @@
     {
       "basename": "【gitignore】怎么配置白名单",
       "path": "Notes/01_CICD/git/【gitignore】怎么配置白名单.md"
-    },
-    {
-      "basename": "【gitignore】 删除被忽略文件的风险",
-      "path": "Notes/01_CICD/git/【gitignore】 删除被忽略文件的风险.md"
     },
     {
       "basename": "【branch】git常见分支命名_发布版本",
@@ -195,10 +199,6 @@
     {
       "basename": "添加开始菜单搜索",
       "path": "Notes/Y_常用小知识_软件/添加开始菜单搜索.md"
-    },
-    {
-      "basename": "Windows netsh interface portproxy 端口代理完整教程",
-      "path": "Notes/01运维_0网络/代理反代类/Windows netsh interface portproxy 端口代理完整教程.md"
     }
   ],
   "omittedPaths": [],

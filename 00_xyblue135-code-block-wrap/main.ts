@@ -8,8 +8,10 @@ import { App, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 interface CodeBlockWrapSettings {
   wrapEnabled: boolean;
   styleMode: 'dark' | 'theme';
+  showCopyBar: boolean;
   showToolbarMarker: boolean;
   overrideCodeBackground: boolean;
+  syntaxHighlight: boolean;
   toolbarHeight: number;
   copyButtonSize: number;
   copyIconSize: number;
@@ -29,8 +31,10 @@ interface CodeBlockWrapSettings {
 const DEFAULT_SETTINGS: CodeBlockWrapSettings = {
   wrapEnabled: false,
   styleMode: 'dark',
+  showCopyBar: false,
   showToolbarMarker: true,
   overrideCodeBackground: true,
+  syntaxHighlight: false,
   toolbarHeight: 20,
   copyButtonSize: 16,
   copyIconSize: 6,
@@ -111,8 +115,10 @@ export default class CodeBlockWrapTogglePlugin extends Plugin {
     const body = document.body;
     body.classList.toggle('xyblue135-code-wrap-enabled', this.settings.wrapEnabled);
     body.classList.toggle('xyblue135-code-custom-dark', this.settings.styleMode === 'dark');
+    body.classList.toggle('xyblue135-code-hide-copy-bar', !this.settings.showCopyBar);
     body.classList.toggle('xyblue135-code-hide-marker', !this.settings.showToolbarMarker);
     body.classList.toggle('xyblue135-code-bg-override', this.settings.overrideCodeBackground);
+    body.classList.toggle('xyblue135-code-no-highlight', !this.settings.syntaxHighlight);
 
     const vars: Record<string, string> = {
       '--xy-code-toolbar-height': `${this.settings.toolbarHeight}px`,
@@ -335,7 +341,7 @@ export default class CodeBlockWrapTogglePlugin extends Plugin {
   }
 
   onunload(): void {
-    document.body.classList.remove('xyblue135-code-wrap-enabled', 'xyblue135-code-custom-dark', 'xyblue135-code-hide-marker', 'xyblue135-code-bg-override');
+    document.body.classList.remove('xyblue135-code-wrap-enabled', 'xyblue135-code-custom-dark', 'xyblue135-code-hide-copy-bar', 'xyblue135-code-hide-marker', 'xyblue135-code-bg-override', 'xyblue135-code-no-highlight');
     const vars = [
       '--xy-code-toolbar-height', '--xy-code-copy-button-size', '--xy-code-copy-icon-size',
       '--xy-code-padding-v', '--xy-code-padding-h', '--xy-code-radius', '--xy-code-scrollbar-height',
@@ -372,6 +378,22 @@ class CodeBlockWrapSettingTab extends PluginSettingTab {
     });
 
     containerEl.createEl('h3', { text: '显示行为' });
+    new Setting(containerEl)
+      .setName('显示顶部复制栏')
+      .setDesc('开启后代码块顶部出现工具栏与复制按钮；关闭后整个复制栏隐藏，代码块更干净，复制请使用系统快捷键或右键菜单。')
+      .addToggle((toggle) => toggle.setValue(this.plugin.settings.showCopyBar).onChange(async (value) => {
+        this.plugin.settings.showCopyBar = value;
+        await this.plugin.saveSettings();
+      }));
+
+    new Setting(containerEl)
+      .setName('语法高亮')
+      .setDesc('开启后代码关键字/字符串等使用彩色语法高亮；关闭后代码统一为单色文字，更素净。')
+      .addToggle((toggle) => toggle.setValue(this.plugin.settings.syntaxHighlight).onChange(async (value) => {
+        this.plugin.settings.syntaxHighlight = value;
+        await this.plugin.saveSettings();
+      }));
+
     new Setting(containerEl)
       .setName('代码块自动换行')
       .setDesc('关闭时长代码保持单行，并在底部使用横向滚动条。')
