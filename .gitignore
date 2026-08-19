@@ -19,3 +19,4 @@ node_modules/
 # 备份/恢复插件状态。但请知悉：obsidian-livesync、pandoc 等插件的 data.json
 # 可能含同步地址 / API Key 等凭据。若此仓库未来 push 到 GitHub，务必设为
 # 私有仓库，或先手动清理敏感字段再提交。
+recent-files-obsidian/data.json
