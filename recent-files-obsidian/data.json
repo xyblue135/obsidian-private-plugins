@@ -1,6 +1,130 @@
 {
   "recentFiles": [
     {
+      "basename": "常用环境类命令",
+      "path": "常用环境类命令.md"
+    },
+    {
+      "basename": "未命名",
+      "path": "待分类/未命名.md"
+    },
+    {
+      "basename": "提示词",
+      "path": "提示词.md"
+    },
+    {
+      "basename": "让普通 CMD【非powershell】 也能使用 x64 Native Tools Command Prompt for VS 环境",
+      "path": "Notes/02代码/代码_c/让普通 CMD【非powershell】 也能使用 x64 Native Tools Command Prompt for VS 环境.md"
+    },
+    {
+      "basename": "使用CockpitTools后codex并不能稳定跑",
+      "path": "Notes/01运维_0ai相关/网关/cockpittools/使用CockpitTools后codex并不能稳定跑.md"
+    },
+    {
+      "basename": "pip相关_02在软路由中安装py和pip模块",
+      "path": "Notes/02代码/代码_python/00_pip环境/pip相关_02在软路由中安装py和pip模块.md"
+    },
+    {
+      "basename": "Linux下的偏开发的可视化dockge",
+      "path": "Notes/01运维_0linux/运维_docker/03_可视化与工具/Linux下的偏开发的可视化dockge.md"
+    },
+    {
+      "basename": "【投屏】有线usb-scrcpy和无线scrcpy",
+      "path": "Notes/02代码/code_android/adb相关/【投屏】有线usb-scrcpy和无线scrcpy.md"
+    },
+    {
+      "basename": "修改链接的远端仓库地址",
+      "path": "Notes/01_CICD/git/修改链接的远端仓库地址.md"
+    },
+    {
+      "basename": "编Rust+React 混合项目编译部署完整教程",
+      "path": "Notes/02代码/代码_RUST【编译噩梦 使用天堂】/编Rust+React 混合项目编译部署完整教程.md"
+    },
+    {
+      "basename": "linux用v4l-utils操作采集卡",
+      "path": "Notes/04音视频/音视频_知识/采集卡/linux用v4l-utils操作采集卡.md"
+    },
+    {
+      "basename": "密码管理",
+      "path": "密码管理.md"
+    },
+    {
+      "basename": "安装n卡的cuda_toolkit【nvcc -v】以及codec_sdk",
+      "path": "Notes/Z_nvidia/n卡加速类/安装n卡的cuda_toolkit【nvcc -v】以及codec_sdk.md"
+    },
+    {
+      "basename": "避雷寨板笔记本-风扇异响-电池鼓包",
+      "path": "Notes/Y_常用小知识_硬件/避雷寨板笔记本-风扇异响-电池鼓包.md"
+    },
+    {
+      "basename": "CUDA Toolkit简单介绍",
+      "path": "Notes/Z_nvidia/n卡加速类/CUDA Toolkit简单介绍.md"
+    },
+    {
+      "basename": "使用hashcat工具且显卡加速对压缩包一定的暴力破解",
+      "path": "Notes/Y_破解和攻击类/使用hashcat工具且显卡加速对压缩包一定的暴力破解.md"
+    },
+    {
+      "basename": "arp协议和arp攻击",
+      "path": "Notes/Y_破解和攻击类/arp协议和arp攻击.md"
+    },
+    {
+      "basename": "kail破解密码",
+      "path": "Notes/Y_破解和攻击类/kail破解密码.md"
+    },
+    {
+      "basename": "戴睿T30免电池供电改造_超详细博客",
+      "path": "Notes/Y_常用小知识_硬件/戴睿T30免电池供电改造_超详细博客.md"
+    },
+    {
+      "basename": "Windows不是所有版本默认开启长路径",
+      "path": "Notes/Y_常用小知识_软件/Windows不是所有版本默认开启长路径.md"
+    },
+    {
+      "basename": "win的winget",
+      "path": "Notes/Y_常用小知识_软件/win的winget.md"
+    },
+    {
+      "basename": "微信的聊天备份",
+      "path": "Notes/Y_常用小知识_软件/微信的聊天备份.md"
+    },
+    {
+      "basename": "12222",
+      "path": "Notes/02代码/代码_RUST【编译噩梦 使用天堂】/12222.md"
+    },
+    {
+      "basename": "编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
+      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg_gpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
+    },
+    {
+      "basename": "编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】",
+      "path": "Notes/04音视频/音视频_ffmpeg/编译ffmpeg-cpu版本【必须要x64 Native Tools for VS2022 再 切换powershell 不然编译出来也是有问题的】.md"
+    },
+    {
+      "basename": "个人物品维护",
+      "path": "个人物品维护清单/个人物品维护.md"
+    },
+    {
+      "basename": "代码调用采集卡主屏幕黑屏一次原因",
+      "path": "Notes/04音视频/音视频_知识/采集卡/代码调用采集卡主屏幕黑屏一次原因.md"
+    },
+    {
+      "basename": "采集卡参数说明：便宜与专业设备的区别、编码格式、带宽、延迟与网络传输",
+      "path": "Notes/04音视频/音视频_知识/采集卡/采集卡参数说明：便宜与专业设备的区别、编码格式、带宽、延迟与网络传输.md"
+    },
+    {
+      "basename": "【branch】main 和 master 完整区别",
+      "path": "Notes/01_CICD/git/【branch】main 和 master 完整区别.md"
+    },
+    {
+      "basename": "Linux下的偏运维的可视化portainer",
+      "path": "Notes/01运维_0linux/运维_docker/03_可视化与工具/Linux下的偏运维的可视化portainer.md"
+    },
+    {
+      "basename": "PostgreSQL vs MySQL",
+      "path": "Notes/03数据库/PostgreSQL vs MySQL.md"
+    },
+    {
       "basename": "【Git Bundle】 比 Patch 更适合与 Codex 协同开发",
       "path": "Notes/01_CICD/git/【Git Bundle】 比 Patch 更适合与 Codex 协同开发.md"
     },
@@ -57,28 +181,12 @@
       "path": "Notes/01_CICD/git/【打补丁】给文件打patch补丁.md"
     },
     {
-      "basename": "pip相关_02在软路由中安装py和pip模块",
-      "path": "Notes/02代码/代码_python/00_pip环境/pip相关_02在软路由中安装py和pip模块.md"
-    },
-    {
       "basename": "Linux内核自用常用参数",
       "path": "Notes/01运维_0linux/00_内核/Linux内核自用常用参数.md"
     },
     {
       "basename": "X86软路由配合纯AP使用",
       "path": "Notes/01运维_0linux/嵌入式/X86软路由配合纯AP使用.md"
-    },
-    {
-      "basename": "使用CockpitTools后codex并不能稳定跑",
-      "path": "Notes/01运维_0ai相关/网关/cockpittools/使用CockpitTools后codex并不能稳定跑.md"
-    },
-    {
-      "basename": "常用环境类命令",
-      "path": "常用环境类命令.md"
-    },
-    {
-      "basename": "12",
-      "path": "Notes/Z_nvidia/12.md"
     },
     {
       "basename": "Windows_&_Linux_屏幕捕获底层技术完整对比教程",
@@ -89,116 +197,8 @@
       "path": "Notes/02代码/code_android/adb相关/scrcpy 虚拟显示器使用教程.md"
     },
     {
-      "basename": "个人物品维护",
-      "path": "个人物品维护清单/个人物品维护.md"
-    },
-    {
       "basename": "00_ollama常用命令",
       "path": "Notes/01运维_0ai相关/ollama系列/00_ollama常用命令.md"
-    },
-    {
-      "basename": "Spring Boot 找不到主类：一次由 Unicode 特殊横杠导致的 Windows 路径排障记录",
-      "path": "Notes/02代码/代码_java/Spring Boot 找不到主类：一次由 Unicode 特殊横杠导致的 Windows 路径排障记录.md"
-    },
-    {
-      "basename": "密码管理",
-      "path": "密码管理.md"
-    },
-    {
-      "basename": "关于gh-github-cli",
-      "path": "Notes/01_CICD/工具/关于gh-github-cli.md"
-    },
-    {
-      "basename": "ollama_同时加载多个模型配置教程",
-      "path": "Notes/01运维_0ai相关/ollama系列/ollama_同时加载多个模型配置教程.md"
-    },
-    {
-      "basename": "ollama不再依赖于WSL",
-      "path": "Notes/01运维_0ai相关/ollama系列/ollama不再依赖于WSL.md"
-    },
-    {
-      "basename": "ollama前端ui和服务端的关系",
-      "path": "Notes/01运维_0ai相关/ollama系列/ollama前端ui和服务端的关系.md"
-    },
-    {
-      "basename": "ollama通过Modelfile解决模型上下文限制",
-      "path": "Notes/01运维_0ai相关/ollama系列/ollama通过Modelfile解决模型上下文限制.md"
-    },
-    {
-      "basename": "【开发者模式】shizuku的常见问题",
-      "path": "Notes/02代码/code_android/apk相关/【开发者模式】shizuku的常见问题.md"
-    },
-    {
-      "basename": "【apk】雹禁用apk的运行来提高性能",
-      "path": "Notes/02代码/code_android/apk相关/【apk】雹禁用apk的运行来提高性能.md"
-    },
-    {
-      "basename": "sunshine分支Apollo版本",
-      "path": "Notes/04音视频/音视频_知识/串流-sunshine/sunshine分支Apollo版本.md"
-    },
-    {
-      "basename": "让普通 CMD【非powershell】 也能使用 x64 Native Tools Command Prompt for VS 环境",
-      "path": "Notes/02代码/代码_c/让普通 CMD【非powershell】 也能使用 x64 Native Tools Command Prompt for VS 环境.md"
-    },
-    {
-      "basename": "ngc【大量sdk包】",
-      "path": "Notes/Z_nvidia/ngc【大量sdk包】.md"
-    },
-    {
-      "basename": "关于just可以另外一个跑run的区别",
-      "path": "Notes/02代码/代码_RUST【编译噩梦 使用天堂】/关于just可以另外一个跑run的区别.md"
-    },
-    {
-      "basename": "为什么Ultralytics能避开部署大坑【好处】",
-      "path": "Notes/01运维_0ai相关/图像识别/ultralytics【一站式开源 Python 库】/为什么Ultralytics能避开部署大坑【好处】.md"
-    },
-    {
-      "basename": "pip相关_指定安装位置",
-      "path": "Notes/02代码/代码_python/00_pip环境/pip相关_指定安装位置.md"
-    },
-    {
-      "basename": "linux用v4l-utils操作采集卡",
-      "path": "Notes/04音视频/音视频_知识/采集卡/linux用v4l-utils操作采集卡.md"
-    },
-    {
-      "basename": "yolo全版本对比",
-      "path": "Notes/01运维_0ai相关/图像识别/yolo全版本对比.md"
-    },
-    {
-      "basename": "通过opencv预处理图片促进yolo推理速度和质量",
-      "path": "Notes/01运维_0ai相关/图像识别/opencv/通过opencv预处理图片促进yolo推理速度和质量.md"
-    },
-    {
-      "basename": "YOLO_检测中的坐标系转换：从模型输出到屏幕像素",
-      "path": "Notes/01运维_0ai相关/图像识别/YOLO_检测中的坐标系转换：从模型输出到屏幕像素.md"
-    },
-    {
-      "basename": "YOLO_带_UI_的工具包",
-      "path": "Notes/01运维_0ai相关/图像识别/YOLO_带_UI_的工具包.md"
-    },
-    {
-      "basename": "opencv对比yolo",
-      "path": "Notes/01运维_0ai相关/图像识别/opencv/opencv对比yolo.md"
-    },
-    {
-      "basename": "夸克的小脚本",
-      "path": "Notes/0_个人信息-工作经历/便携小脚本/夸克的小脚本.md"
-    },
-    {
-      "basename": "【ethtool】ethtool -p eno1 10【指示灯闪烁10秒】",
-      "path": "Notes/01运维_0网络/网卡配置/【ethtool】ethtool -p eno1 10【指示灯闪烁10秒】.md"
-    },
-    {
-      "basename": "【ip n】ip neighbor",
-      "path": "Notes/01运维_0网络/网卡配置/【ip n】ip neighbor.md"
-    },
-    {
-      "basename": "【ip rule】ip rule【Policy Routing策略路由】",
-      "path": "Notes/01运维_0网络/网卡配置/【ip rule】ip rule【Policy Routing策略路由】.md"
-    },
-    {
-      "basename": "添加开始菜单搜索",
-      "path": "Notes/Y_常用小知识_软件/添加开始菜单搜索.md"
     }
   ],
   "omittedPaths": [],

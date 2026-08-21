@@ -13,7 +13,13 @@ const DEFAULT_TEMPLATE = "---\nsummary:\ntags: []\ncreated: {{timestamp}}\nupdat
 const DEFAULT_SETTINGS = {
     menuEmoji: "📝",
     noteTemplate: DEFAULT_TEMPLATE,
+    // 状态栏（左侧 ribbon）快捷入口的目标文件夹。留空表示仓库根目录。
+    targetFolder: "/待分类",
 };
+/**
+ * 左侧 ribbon 与右键菜单统一使用「Emoji 图标」：取自设置中的 menuEmoji（默认 📝）。
+ * Emoji 本身自带配色，天然适配浅色 / 深色主题，无需额外处理。
+ */
 /**
  * xyblue135 私人 · 文件夹模板笔记 主插件。
  *
@@ -32,24 +38,49 @@ class FolderTemplateNotePlugin extends obsidian_1.Plugin {
     /** 插件加载时执行。 */
     async onload() {
         await this.loadSettings();
-        // 注册插件设置页，用于修改菜单 Emoji / Unicode 和元数据模板。
+        // 注册插件设置页，用于修改菜单 Emoji / Unicode、元数据模板和快捷入口目标文件夹。
         this.addSettingTab(new FolderTemplateNoteSettingTab(this.app, this));
+        // 在左侧 ribbon（状态栏快捷入口）添加一个快捷方式，点击后快速创建模板笔记。
+        // 图标用 Emoji（取自设置 menuEmoji，默认 📝），天然适配浅色 / 深色主题。
+        // 目标文件夹由设置中的 targetFolder 决定，默认是仓库根目录的 /待分类。
+        const ribbonEl = this.addRibbonIcon("file-plus-2", this.getRibbonTooltip(), async () => {
+            const folder = await this.resolveTargetFolder();
+            if (!folder) {
+                return;
+            }
+            new NoteNameModal(this.app, folder, this.getMenuTitle(), async (name) => {
+                await this.createTemplateNote(folder, name);
+            }).open();
+        });
+        // 把 ribbon 里默认的线条图标替换成 Emoji。
+        const ribbonEmoji = this.getMenuEmoji();
+        if (ribbonEl) {
+            ribbonEl.empty();
+            ribbonEl.setText(ribbonEmoji);
+            ribbonEl.addClass("xyblue135-ribbon-emoji");
+        }
         // 监听文件浏览器的右键菜单。
         this.registerEvent(this.app.workspace.on("file-menu", (menu, file) => {
             // 只处理文件夹；右键普通 Markdown 文件时不显示此菜单项。
             if (!(file instanceof obsidian_1.TFolder)) {
                 return;
             }
+            const emoji = this.getMenuEmoji();
             menu.addItem((item) => {
                 item
                     .setTitle(this.getMenuTitle())
-                    .setIcon("file-plus-2")
                     .onClick(() => {
                     // 点击菜单后弹出笔记名称输入框。
                     new NoteNameModal(this.app, file, this.getMenuTitle(), async (name) => {
                         await this.createTemplateNote(file, name);
                     }).open();
                 });
+                // 把菜单项前面的线条图标换成 Emoji。
+                const iconContainer = item.dom?.querySelector(".menu-item-icon");
+                if (iconContainer) {
+                    iconContainer.empty();
+                    iconContainer.setText(emoji);
+                }
             });
         }));
     }
@@ -63,6 +94,7 @@ class FolderTemplateNotePlugin extends obsidian_1.Plugin {
         const saved = (await this.loadData());
         const hasValidMenuEmoji = typeof saved?.menuEmoji === "string";
         const hasValidNoteTemplate = typeof saved?.noteTemplate === "string";
+        const hasValidTargetFolder = typeof saved?.targetFolder === "string";
         this.settings = Object.assign({}, DEFAULT_SETTINGS, saved ?? {});
         // 防止用户手动修改 data.json 后出现非字符串值。
         if (!hasValidMenuEmoji) {
@@ -71,9 +103,12 @@ class FolderTemplateNotePlugin extends obsidian_1.Plugin {
         if (!hasValidNoteTemplate) {
             this.settings.noteTemplate = DEFAULT_TEMPLATE;
         }
+        if (!hasValidTargetFolder) {
+            this.settings.targetFolder = DEFAULT_SETTINGS.targetFolder;
+        }
         // 首次安装或从旧版本升级时，把缺少的默认字段真正写入 data.json。
         // 这样设置页显示的内容与插件实际保存的数据始终保持一致。
-        if (!hasValidMenuEmoji || !hasValidNoteTemplate) {
+        if (!hasValidMenuEmoji || !hasValidNoteTemplate || !hasValidTargetFolder) {
             await this.saveSettings();
         }
     }
@@ -87,12 +122,76 @@ class FolderTemplateNotePlugin extends obsidian_1.Plugin {
         await this.saveSettings();
     }
     /**
-     * 根据设置生成右键菜单标题。
-     * Emoji 可以留空；留空后只显示“新建模板笔记”。
+     * 读取要在图标上显示的 Emoji。
+     * 来自设置中的 menuEmoji；若留空则回退到默认 📝，保证图标永远有内容。
+     */
+    getMenuEmoji() {
+        const emoji = this.settings.menuEmoji.trim();
+        return emoji || "📝";
+    }
+    /**
+     * 根据设置生成菜单 / 弹窗标题。
+     * Emoji 现在作为图标显示，所以标题这里只保留文字“新建模板笔记”，避免重复。
      */
     getMenuTitle() {
-        const emoji = this.settings.menuEmoji.trim();
-        return emoji ? `${emoji} 新建模板笔记` : "新建模板笔记";
+        return "新建模板笔记";
+    }
+    /**
+     * 生成左侧 ribbon 图标的悬停提示。
+     * 提示里带上当前的目标文件夹路径，让用户一眼看清笔记会创建到哪里。
+     */
+    getRibbonTooltip() {
+        const target = this.getDisplayTargetPath();
+        return `新建模板笔记（快捷入口 → ${target}）`;
+    }
+    /**
+     * 把设置中的目标文件夹路径整理成展示用的字符串。
+     * 空 / “/” / “.” 都视为仓库根目录，展示为 “/”。
+     */
+    getDisplayTargetPath() {
+        const raw = (this.settings.targetFolder || "").trim();
+        if (!raw || raw === "/" || raw === ".") {
+            return "/";
+        }
+        const normalized = (0, obsidian_1.normalizePath)(raw);
+        return normalized.startsWith("/") ? normalized : `/${normalized}`;
+    }
+    /**
+     * 解析“状态栏快捷入口”要使用的目标文件夹。
+     *
+     * - 文件夹已存在：直接返回。
+     * - 目标路径是个文件（不是文件夹）：报错并返回 null。
+     * - 文件夹不存在：自动创建（支持多级路径），再返回。
+     * - 路径为空 / “/” / “.”：返回仓库根目录。
+     */
+    async resolveTargetFolder() {
+        const raw = (this.settings.targetFolder || "").trim();
+        if (!raw || raw === "/" || raw === ".") {
+            return this.app.vault.getRoot();
+        }
+        const normalized = (0, obsidian_1.normalizePath)(raw);
+        const existing = this.app.vault.getAbstractFileByPath(normalized);
+        if (existing instanceof obsidian_1.TFolder) {
+            return existing;
+        }
+        if (existing) {
+            new obsidian_1.Notice(`目标路径不是文件夹，无法创建笔记：${normalized}`);
+            return null;
+        }
+        try {
+            await this.app.vault.createFolder(normalized);
+        }
+        catch (error) {
+            console.error("[xyblue135 私人·文件夹模板笔记] 创建目标文件夹失败：", error);
+            new obsidian_1.Notice(`创建目标文件夹失败：${normalized}`);
+            return null;
+        }
+        const created = this.app.vault.getAbstractFileByPath(normalized);
+        if (!(created instanceof obsidian_1.TFolder)) {
+            new obsidian_1.Notice(`目标文件夹解析失败：${normalized}`);
+            return null;
+        }
+        return created;
     }
     /** 在指定文件夹中创建一篇带模板内容的新笔记。 */
     async createTemplateNote(folder, rawName) {
@@ -291,6 +390,18 @@ class FolderTemplateNoteSettingTab extends obsidian_1.PluginSettingTab {
                 .setValue(this.plugin.settings.menuEmoji)
                 .onChange(async (value) => {
                 this.plugin.settings.menuEmoji = value;
+                await this.plugin.saveSettings();
+            });
+        });
+        new obsidian_1.Setting(containerEl)
+            .setName("状态栏快捷入口 · 目标文件夹")
+            .setDesc("点按左侧状态栏（ribbon）图标时，新笔记会创建到这个文件夹。留空表示仓库根目录。路径用 / 分隔，例如 待分类 或 项目/草稿。文件夹不存在时会自动创建。")
+            .addText((text) => {
+            text
+                .setPlaceholder("/待分类")
+                .setValue(this.plugin.settings.targetFolder)
+                .onChange(async (value) => {
+                this.plugin.settings.targetFolder = value.trim();
                 await this.plugin.saveSettings();
             });
         });

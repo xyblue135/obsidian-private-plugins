@@ -24,3 +24,9 @@
 .xyblue135-template-note-variable-help code {
   white-space: normal;
 }
+
+/* 左侧 ribbon 图标使用 Emoji 时，让字号与默认线条图标一致，避免偏大/偏小。 */
+.xyblue135-ribbon-emoji {
+  font-size: 18px;
+  line-height: 1;
+}

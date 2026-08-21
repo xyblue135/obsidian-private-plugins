@@ -9,6 +9,14 @@
   "deleteAttachmentsWithNote": true,
   "recycleHistory": [
     {
+      "id": "20260822001103659-j2ymfw",
+      "deletedAt": "2026-08-21T16:11:03.892Z",
+      "originalPath": "z_attachments/12",
+      "recyclePath": "z_attachments/_MirrorAttachmentsTrash/20260822001103659-j2ymfw/12",
+      "reason": "last-shared-note-delete",
+      "notePath": "Notes/Z_nvidia/12.md"
+    },
+    {
       "id": "20260816001027951-j2iz9t",
       "deletedAt": "2026-08-15T16:10:28.070Z",
       "originalPath": "z_attachments/测试test",
